@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Modal from "./Modal";
 import axios from "axios";
 import { useRouter } from "next/navigation";
@@ -10,6 +10,10 @@ const AddRating = () => {
   const [modalOpen, setModalOpen] = useState(false);
 
   const router = useRouter();
+
+  useEffect(() => {
+    setInputs({});
+  }, [modalOpen]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -55,7 +59,7 @@ const AddRating = () => {
           />
 
           <label htmlFor="scary" className="block my-2 text-lg font-medium ">
-            Scary
+            Scary {inputs.scary !== undefined && `(${inputs.scary})`}
           </label>
           <input
             id="scary"
@@ -65,12 +69,12 @@ const AddRating = () => {
             max="10"
             step="0.5"
             className="w-full h-1 bg-white rounded-lg  cursor-pointer p-2"
-            value={inputs.scary || 5}
+            value={inputs.scary}
             onChange={handleChange}
           />
 
           <label htmlFor="story" className="block my-2 text-lg font-medium ">
-            Story
+            Story {inputs.story !== undefined && `(${inputs.story})`}
           </label>
           <input
             id="story"
@@ -80,12 +84,12 @@ const AddRating = () => {
             max="10"
             step="0.5"
             className="w-full h-1 bg-white rounded-lg  cursor-pointer p-2"
-            value={inputs.story || 5}
+            value={inputs.story}
             onChange={handleChange}
           />
 
           <label htmlFor="acting" className="block my-2 text-lg font-medium ">
-            Acting
+            Acting {inputs.acting !== undefined && `(${inputs.acting})`}
           </label>
           <input
             id="acting"
@@ -95,7 +99,7 @@ const AddRating = () => {
             max="10"
             step="0.5"
             className="w-full h-1 bg-white rounded-lg  cursor-pointer p-2"
-            value={inputs.acting || 5}
+            value={inputs.acting}
             onChange={handleChange}
           />
 

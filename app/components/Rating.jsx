@@ -75,7 +75,8 @@ const Rating = ({ rating }) => {
             />
 
             <label htmlFor="scary" className="block my-2 text-lg font-medium ">
-              Scary
+              Scary{" "}
+              {ratingtToEdit.scary !== undefined && `(${ratingtToEdit.scary})`}
             </label>
             <input
               id="scary"
@@ -90,7 +91,8 @@ const Rating = ({ rating }) => {
             />
 
             <label htmlFor="story" className="block my-2 text-lg font-medium ">
-              Story
+              Story{" "}
+              {ratingtToEdit.story !== undefined && `(${ratingtToEdit.story})`}
             </label>
             <input
               id="story"
@@ -105,7 +107,9 @@ const Rating = ({ rating }) => {
             />
 
             <label htmlFor="acting" className="block my-2 text-lg font-medium ">
-              Acting
+              Acting{" "}
+              {ratingtToEdit.acting !== undefined &&
+                `(${ratingtToEdit.acting})`}
             </label>
             <input
               id="acting"
