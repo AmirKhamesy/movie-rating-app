@@ -4,6 +4,7 @@ import React, { useState } from "react";
 import Modal from "./Modal";
 import { useRouter } from "next/navigation";
 import axios from "axios";
+import Autocomplete from "./Autocomplete";
 
 const Rating = ({ rating }) => {
   const [openModalEdit, setOpenModalEdit] = useState(false);
@@ -65,13 +66,10 @@ const Rating = ({ rating }) => {
         <Modal modalOpen={openModalEdit} setModalOpen={setOpenModalEdit}>
           <form className="w-full" onSubmit={handleEditSubmit}>
             <h1 className="text-2xl pb-3">New Rating</h1>
-            <input
-              type="text"
-              placeholder="Title"
-              name="title"
-              className="w-full p-2"
-              value={ratingtToEdit.title || ""}
-              onChange={handleChange}
+
+            <Autocomplete
+              value={ratingtToEdit.title}
+              handleChange={handleChange}
             />
 
             <label htmlFor="scary" className="block my-2 text-lg font-medium ">

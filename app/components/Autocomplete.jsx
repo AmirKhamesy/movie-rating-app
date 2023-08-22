@@ -67,7 +67,7 @@ const Autocomplete = ({ value, handleChange }) => {
         name="title"
         className="border rounded p-2 w-full"
         placeholder="Search for a movie..."
-        value={inputValue}
+        value={inputValue || value}
         onChange={(e) => selectMovieSuggestion(e.target.value)}
         onBlur={handleBlur}
         onFocus={handleFocus}
