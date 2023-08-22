@@ -4,9 +4,15 @@ import { useEffect, useState } from "react";
 import Modal from "./Modal";
 import axios from "axios";
 import { useRouter } from "next/navigation";
+import Autocomplete from "./Autocomplete";
 
 const AddRating = () => {
-  const [inputs, setInputs] = useState({});
+  const [inputs, setInputs] = useState({
+    title: "",
+    scary: 0,
+    story: 0,
+    acting: 0,
+  });
   const [modalOpen, setModalOpen] = useState(false);
 
   const router = useRouter();
@@ -49,15 +55,7 @@ const AddRating = () => {
       <Modal modalOpen={modalOpen} setModalOpen={setModalOpen}>
         <form className="w-full" onSubmit={handleSubmit}>
           <h1 className="text-2xl pb-3">New Rating</h1>
-          <input
-            type="text"
-            placeholder="Title"
-            name="title"
-            className="w-full p-2"
-            value={inputs.title || ""}
-            onChange={handleChange}
-          />
-
+          <Autocomplete value={inputs.title} handleChange={handleChange} />
           <label htmlFor="scary" className="block my-2 text-lg font-medium ">
             Scary {inputs.scary !== undefined && `(${inputs.scary})`}
           </label>
