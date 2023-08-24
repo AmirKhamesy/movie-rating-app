@@ -11,7 +11,11 @@ const ProgressBar = ({ title, score }) => {
           <div
             style={{ width: `${progressPercentage}%` }}
             className={`h-full ${
-              progressPercentage < 70 ? "bg-red-400" : "bg-green-400"
+              progressPercentage > 70
+                ? "bg-green-400"
+                : progressPercentage > 30
+                ? "bg-yellow-400"
+                : "bg-red-400"
             }`}
           >
             <div className="flex justify-start items-center h-full px-2">
