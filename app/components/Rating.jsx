@@ -86,12 +86,14 @@ const Rating = ({ rating }) => {
       {/* Display Movie Image */}
       <div className="flex flex-row gap-3">
         {movieDetails.poster_path && (
-          <Image
-            src={`https://image.tmdb.org/t/p/w300${movieDetails.poster_path}`}
-            alt={rating.title}
-            width="135"
-            height="200"
-          />
+          <div className="h-fit">
+            <Image
+              src={`https://image.tmdb.org/t/p/w300${movieDetails.poster_path}`}
+              alt={rating.title}
+              width="200"
+              height="60"
+            />
+          </div>
         )}
 
         <div className="w-full">
