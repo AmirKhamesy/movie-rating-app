@@ -1,3 +1,5 @@
+"use client";
+
 import AddRating from "../components/AddRating";
 import RatingsList from "../components/RatingsList";
 

@@ -83,21 +83,22 @@ const Rating = ({ rating }) => {
 
   return (
     <li className="p-3 my-5 bg-slate-200" key={rating.id}>
+      <h1 className="text-2xl font-bold">{rating.title}</h1>
+
       {/* Display Movie Image */}
       <div className="flex flex-row gap-3">
         {movieDetails.poster_path && (
-          <div className="h-fit">
+          <div className="my-auto">
             <Image
               src={`https://image.tmdb.org/t/p/w300${movieDetails.poster_path}`}
               alt={rating.title}
-              width="200"
-              height="60"
+              width="150"
+              height="200"
             />
           </div>
         )}
 
         <div className="w-full">
-          <h1 className="text-2xl font-bold">{rating.title}</h1>
           <ProgressBar title={"Scary"} score={rating.scary} color="red" />
           <ProgressBar title={"Story"} score={rating.story} color="green" />
           <ProgressBar title={"Acting"} score={rating.acting} color="blue" />
