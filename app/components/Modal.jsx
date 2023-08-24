@@ -34,7 +34,7 @@ const Modal = ({ children, modalOpen, setModalOpen }) => {
   return (
     <>
       {modalOpen && (
-        <div className="fixed inset-0 flex justify-center items-center bg-black/50">
+        <div className="fixed inset-0 flex justify-center items-center bg-black/50 z-10">
           <div ref={modalRef} className="w-1/2 bg-slate-300 p-5 modal-content">
             <button
               onClick={() => setModalOpen(false)}

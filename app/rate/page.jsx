@@ -2,7 +2,7 @@ import AddRating from "../components/AddRating";
 import RatingsList from "../components/RatingsList";
 
 async function getRatings() {
-  const res = await fetch("http://localhost:3000/api/ratings", {
+  const res = await fetch(`${process.env.NEXT_PUBLIC_API}/api/ratings`, {
     next: { revalidate: 0 },
   });
 
