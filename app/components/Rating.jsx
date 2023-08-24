@@ -37,6 +37,10 @@ const Rating = ({ rating }) => {
   };
 
   useEffect(() => {
+    setRatingToEdit(rating);
+  }, [openModalEdit]);
+
+  useEffect(() => {
     fetchMovieDetails(ratingToEdit.title);
   }, [ratingToEdit.title]);
 
@@ -83,17 +87,17 @@ const Rating = ({ rating }) => {
         {movieDetails.poster_path && (
           <Image
             src={`https://image.tmdb.org/t/p/w300${movieDetails.poster_path}`}
-            alt={ratingToEdit.title}
+            alt={rating.title}
             width={100}
             height={150}
           />
         )}
 
         <div className="w-full">
-          <h1 className="text-2xl font-bold">{ratingToEdit.title}</h1>
-          <p>Scary: {ratingToEdit.scary}</p>
-          <p>Story: {ratingToEdit.story}</p>
-          <p>Acting: {ratingToEdit.acting}</p>
+          <h1 className="text-2xl font-bold">{rating.title}</h1>
+          <p>Scary: {rating.scary}</p>
+          <p>Story: {rating.story}</p>
+          <p>Acting: {rating.acting}</p>
         </div>
       </div>
       <div className="pt-5">
