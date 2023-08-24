@@ -1,6 +1,10 @@
 import AddRating from "../components/AddRating";
 import RatingsList from "../components/RatingsList";
 
+export const fetchCache = "force-no-store";
+export const revalidate = 0; // seconds
+export const dynamic = "force-dynamic";
+
 async function getRatings() {
   const res = await fetch(`${process.env.NEXT_PUBLIC_API}/api/ratings`, {
     next: { revalidate: 0 },
