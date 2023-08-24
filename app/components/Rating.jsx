@@ -125,7 +125,7 @@ const Rating = ({ rating }) => {
               max="10"
               step="0.5"
               className="w-full h-1 bg-white rounded-lg  cursor-pointer p-2"
-              value={ratingToEdit.scary || 5}
+              value={ratingToEdit.scary}
               onChange={handleChange}
             />
 
@@ -141,7 +141,7 @@ const Rating = ({ rating }) => {
               max="10"
               step="0.5"
               className="w-full h-1 bg-white rounded-lg  cursor-pointer p-2"
-              value={ratingToEdit.story || 5}
+              value={ratingToEdit.story}
               onChange={handleChange}
             />
 
@@ -157,7 +157,7 @@ const Rating = ({ rating }) => {
               max="10"
               step="0.5"
               className="w-full h-1 bg-white rounded-lg  cursor-pointer p-2"
-              value={ratingToEdit.acting || 5}
+              value={ratingToEdit.acting}
               onChange={handleChange}
             />
 
