@@ -1,11 +1,9 @@
-"use client";
-
 import AddRating from "../components/AddRating";
 import RatingsList from "../components/RatingsList";
 
 async function getRatings() {
   const res = await fetch("http://localhost:3000/api/ratings", {
-    cache: "no-cache",
+    next: { revalidate: 0 },
   });
 
   if (!res.ok) {
