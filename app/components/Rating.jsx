@@ -99,9 +99,9 @@ const Rating = ({ rating }) => {
         )}
 
         <div className="w-full">
-          <ProgressBar title={"Scary"} score={rating.scary} color="red" />
-          <ProgressBar title={"Story"} score={rating.story} color="green" />
-          <ProgressBar title={"Acting"} score={rating.acting} color="blue" />
+          <ProgressBar title={"Scary"} score={rating.scary} />
+          <ProgressBar title={"Story"} score={rating.story} />
+          <ProgressBar title={"Acting"} score={rating.acting} />
         </div>
       </div>
       <div className="pt-5">
