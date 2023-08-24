@@ -84,13 +84,13 @@ const Rating = ({ rating }) => {
   return (
     <li className="p-3 my-5 bg-slate-200" key={rating.id}>
       {/* Display Movie Image */}
-      <div className="flex flex-row w-full gap-3">
+      <div className="flex flex-row gap-3">
         {movieDetails.poster_path && (
           <Image
             src={`https://image.tmdb.org/t/p/w300${movieDetails.poster_path}`}
             alt={rating.title}
-            width={100}
-            height={150}
+            width="135"
+            height="200"
           />
         )}
 
