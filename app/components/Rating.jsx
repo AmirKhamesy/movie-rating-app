@@ -41,8 +41,8 @@ const Rating = ({ rating }) => {
   }, [openModalEdit]);
 
   useEffect(() => {
-    fetchMovieDetails(ratingToEdit.title);
-  }, [ratingToEdit.title]);
+    fetchMovieDetails(rating.title);
+  }, [rating]);
 
   const handleEditSubmit = (e) => {
     e.preventDefault();

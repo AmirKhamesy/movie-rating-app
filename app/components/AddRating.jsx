@@ -103,7 +103,13 @@ const AddRating = () => {
 
           <button
             type="submit"
-            className="bg-blue-700 text-white px-5 py-2 mt-2"
+            className="bg-blue-700 text-white px-5 py-2 mt-2 disabled:bg-blue-300"
+            disabled={
+              inputs.story == undefined ||
+              inputs.scary == undefined ||
+              inputs.acting == undefined ||
+              inputs.title == undefined
+            }
           >
             Submit
           </button>
