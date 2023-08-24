@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import axios from "axios";
 import Autocomplete from "./Autocomplete";
 import Image from "next/image";
+import ProgressBar from "./ProgressBar";
 
 const Rating = ({ rating }) => {
   const [openModalEdit, setOpenModalEdit] = useState(false);
@@ -95,9 +96,9 @@ const Rating = ({ rating }) => {
 
         <div className="w-full">
           <h1 className="text-2xl font-bold">{rating.title}</h1>
-          <p>Scary: {rating.scary}</p>
-          <p>Story: {rating.story}</p>
-          <p>Acting: {rating.acting}</p>
+          <ProgressBar title={"Scary"} score={rating.scary} color="red" />
+          <ProgressBar title={"Story"} score={rating.story} color="green" />
+          <ProgressBar title={"Acting"} score={rating.acting} color="blue" />
         </div>
       </div>
       <div className="pt-5">
