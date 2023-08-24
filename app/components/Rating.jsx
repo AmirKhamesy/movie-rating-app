@@ -1,26 +1,53 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Modal from "./Modal";
 import { useRouter } from "next/navigation";
 import axios from "axios";
 import Autocomplete from "./Autocomplete";
+import Image from "next/image";
 
 const Rating = ({ rating }) => {
   const [openModalEdit, setOpenModalEdit] = useState(false);
-  const [ratingtToEdit, setRatingtToEdit] = useState(rating);
+  const [ratingToEdit, setRatingToEdit] = useState(rating);
   const [openModalDelete, setOpenModalDelete] = useState(false);
+  const [movieDetails, setMovieDetails] = useState({});
 
   const router = useRouter();
+
+  const fetchMovieDetails = async (title) => {
+    try {
+      const response = await axios.get(
+        `https://api.themoviedb.org/3/search/movie`,
+        {
+          params: {
+            api_key: process.env.NEXT_PUBLIC_TMDB_KEY,
+            query: title,
+          },
+        }
+      );
+
+      if (response.data.results && response.data.results.length > 0) {
+        const movie = response.data.results[0];
+        setMovieDetails(movie);
+      }
+    } catch (error) {
+      console.error("Error fetching movie details:", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchMovieDetails(ratingToEdit.title);
+  }, [ratingToEdit.title]);
 
   const handleEditSubmit = (e) => {
     e.preventDefault();
     axios
-      .patch(`/api/ratings/${rating.id}`, ratingtToEdit)
+      .patch(`/api/ratings/${rating.id}`, ratingToEdit)
       .then((res) => console.log(res))
       .catch((err) => console.log(err))
       .finally(() => {
-        setRatingtToEdit(ratingtToEdit);
+        setRatingToEdit(ratingToEdit);
         setOpenModalEdit(false);
         router.refresh();
       });
@@ -32,7 +59,7 @@ const Rating = ({ rating }) => {
       .then((res) => console.log(res))
       .catch((err) => console.log(err))
       .finally(() => {
-        setRatingtToEdit(ratingtToEdit);
+        setRatingToEdit(ratingToEdit);
         setOpenModalEdit(false);
         router.refresh();
       });
@@ -43,7 +70,7 @@ const Rating = ({ rating }) => {
     const value =
       name === "title" ? e.target.value : parseFloat(e.target.value);
 
-    setRatingtToEdit((prevState) => ({
+    setRatingToEdit((prevState) => ({
       ...prevState,
       [name]: value,
     }));
@@ -51,10 +78,24 @@ const Rating = ({ rating }) => {
 
   return (
     <li className="p-3 my-5 bg-slate-200" key={rating.id}>
-      <h1 className="text-2xl font-bold">{rating.title}</h1>
-      <p>Scary: {rating.scary}</p>
-      <p>Story: {rating.story}</p>
-      <p>Acting: {rating.acting}</p>
+      {/* Display Movie Image */}
+      <div className="flex flex-row w-full gap-3">
+        {movieDetails.poster_path && (
+          <Image
+            src={`https://image.tmdb.org/t/p/w300${movieDetails.poster_path}`}
+            alt={ratingToEdit.title}
+            width={100}
+            height={150}
+          />
+        )}
+
+        <div className="w-full">
+          <h1 className="text-2xl font-bold">{ratingToEdit.title}</h1>
+          <p>Scary: {ratingToEdit.scary}</p>
+          <p>Story: {ratingToEdit.story}</p>
+          <p>Acting: {ratingToEdit.acting}</p>
+        </div>
+      </div>
       <div className="pt-5">
         <button
           className="text-blue-700 mr-3"
@@ -65,16 +106,16 @@ const Rating = ({ rating }) => {
 
         <Modal modalOpen={openModalEdit} setModalOpen={setOpenModalEdit}>
           <form className="w-full" onSubmit={handleEditSubmit}>
-            <h1 className="text-2xl pb-3">New Rating</h1>
+            <h1 className="text-2xl pb-3">Edit Rating</h1>
 
             <Autocomplete
-              value={ratingtToEdit.title}
+              value={ratingToEdit.title}
               handleChange={handleChange}
             />
 
             <label htmlFor="scary" className="block my-2 text-lg font-medium ">
               Scary{" "}
-              {ratingtToEdit.scary !== undefined && `(${ratingtToEdit.scary})`}
+              {ratingToEdit.scary !== undefined && `(${ratingToEdit.scary})`}
             </label>
             <input
               id="scary"
@@ -84,13 +125,13 @@ const Rating = ({ rating }) => {
               max="10"
               step="0.5"
               className="w-full h-1 bg-white rounded-lg  cursor-pointer p-2"
-              value={ratingtToEdit.scary || 5}
+              value={ratingToEdit.scary || 5}
               onChange={handleChange}
             />
 
             <label htmlFor="story" className="block my-2 text-lg font-medium ">
               Story{" "}
-              {ratingtToEdit.story !== undefined && `(${ratingtToEdit.story})`}
+              {ratingToEdit.story !== undefined && `(${ratingToEdit.story})`}
             </label>
             <input
               id="story"
@@ -100,14 +141,13 @@ const Rating = ({ rating }) => {
               max="10"
               step="0.5"
               className="w-full h-1 bg-white rounded-lg  cursor-pointer p-2"
-              value={ratingtToEdit.story || 5}
+              value={ratingToEdit.story || 5}
               onChange={handleChange}
             />
 
             <label htmlFor="acting" className="block my-2 text-lg font-medium ">
               Acting{" "}
-              {ratingtToEdit.acting !== undefined &&
-                `(${ratingtToEdit.acting})`}
+              {ratingToEdit.acting !== undefined && `(${ratingToEdit.acting})`}
             </label>
             <input
               id="acting"
@@ -117,7 +157,7 @@ const Rating = ({ rating }) => {
               max="10"
               step="0.5"
               className="w-full h-1 bg-white rounded-lg  cursor-pointer p-2"
-              value={ratingtToEdit.acting || 5}
+              value={ratingToEdit.acting || 5}
               onChange={handleChange}
             />
 

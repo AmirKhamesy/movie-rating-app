@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import Image from "next/image";
 
 const API_KEY = process.env.NEXT_PUBLIC_TMDB_KEY;
@@ -15,6 +15,7 @@ const Autocomplete = ({ value, handleChange }) => {
   const [inputValue, setInputValue] = useState("");
   const [suggestions, setSuggestions] = useState([]);
   const [isTyping, setIsTyping] = useState(false);
+  const autocompleteRef = useRef(null); // Ref for autocomplete element
 
   useEffect(() => {
     const timeoutId = setTimeout(() => {
@@ -37,8 +38,8 @@ const Autocomplete = ({ value, handleChange }) => {
   }, [inputValue, isTyping]);
 
   const handleBlur = () => {
-    setIsTyping(false);
     setInputValueInParent(inputValue);
+    setIsTyping(false);
   };
 
   const handleFocus = () => {
@@ -60,8 +61,25 @@ const Autocomplete = ({ value, handleChange }) => {
     setSuggestions([]);
   };
 
+  // Handle click outside of autocomplete
+  const handleClickOutside = (event) => {
+    if (
+      autocompleteRef.current &&
+      !autocompleteRef.current.contains(event.target)
+    ) {
+      setSuggestions([]);
+    }
+  };
+
+  useEffect(() => {
+    document.addEventListener("click", handleClickOutside);
+    return () => {
+      document.removeEventListener("click", handleClickOutside);
+    };
+  }, []);
+
   return (
-    <div className="w-full relative">
+    <div className="w-full relative" ref={autocompleteRef}>
       <input
         type="text"
         name="title"
