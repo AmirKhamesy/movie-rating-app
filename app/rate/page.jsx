@@ -1,5 +1,8 @@
+import { getServerSession } from "next-auth";
 import AddRating from "../components/AddRating";
 import RatingsList from "../components/RatingsList";
+import { authOptions } from "../api/auth/[...nextauth]/route";
+import { redirect } from "next/navigation";
 
 export const fetchCache = "force-no-store";
 export const revalidate = 0; // seconds
@@ -19,11 +22,16 @@ async function getRatings() {
 
 const RatePage = async () => {
   const ratings = await getRatings();
+  const session = await getServerSession(authOptions);
 
+  if (!session) redirect("/");
+
+  console.log("server session", session);
   return (
     <div className="max-w-4xl mx-auto mt-4">
       <div className="my-5 flex flex-col gap-4">
         <h1 className="text-3xl font-bold">Rating page</h1>
+        <p>Hello {session.user.name}</p>
         <AddRating />
       </div>
 
