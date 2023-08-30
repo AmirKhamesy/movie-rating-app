@@ -13,7 +13,7 @@ export const LogoutButton = () => {
 const Button = ({ text, func }) => {
   return (
     <button
-      className="bg-green-700 text-white p-3 cursor-pointer m-1"
+      className="bg-green-600 hover:bg-green-700 text-white p-3 cursor-pointer m-1"
       onClick={() => func()}
     >
       {text}
