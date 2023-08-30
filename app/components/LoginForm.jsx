@@ -3,7 +3,6 @@
 import Link from "next/link";
 import { useState } from "react";
 import { signIn } from "next-auth/react";
-import { redirect } from "next/navigation";
 
 export default function LoginForm() {
   const [email, setEmail] = useState("");
@@ -17,6 +16,7 @@ export default function LoginForm() {
       const res = await signIn("credentials", {
         email,
         password,
+        redirect: false,
       });
 
       if (res.error) {
@@ -24,7 +24,7 @@ export default function LoginForm() {
         return;
       }
 
-      redirect("/");
+      window.location.reload();
     } catch (error) {
       console.log(error);
     }
