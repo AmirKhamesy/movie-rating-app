@@ -1,12 +1,12 @@
 import { getServerSession } from "next-auth";
 import { authOptions } from "./api/auth/[...nextauth]/route";
 import { LogoutButton } from "./auth";
-import { redirect } from "next/navigation";
+import LoginForm from "./components/LoginForm";
 
 const HomePage = async () => {
   const session = await getServerSession(authOptions);
 
-  if (!session) redirect("/api/auth/signin");
+  if (!session) return <LoginForm />;
 
   return (
     <div className="flex justify-between">
