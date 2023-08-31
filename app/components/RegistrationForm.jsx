@@ -10,11 +10,22 @@ export default function RegisterForm() {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
 
+  const isEmailValid = (email) => {
+    // Regular expression for basic email validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     if (!name || !email || !password) {
       setError("All fields are necessary.");
+      return;
+    }
+
+    if (!isEmailValid(email)) {
+      setError("Invalid email format.");
       return;
     }
 
