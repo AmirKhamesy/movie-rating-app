@@ -32,7 +32,7 @@ export default function LoginForm() {
 
   return (
     <div className="absolute h-screen w-screen bg-white top-0 left-0 flex items-center justify-center ">
-      <div className="max-w-md w-full p-6 m-5 shadow-lg rounded-lg border-t-4 border-green-400">
+      <div className="max-w-md w-full p-6 sm:shadow-lg rounded-lg sm:border-t-4 border-green-400">
         <h1 className="text-xl font-bold my-4">Login</h1>
 
         <form onSubmit={handleSubmit} className="flex flex-col gap-3">
