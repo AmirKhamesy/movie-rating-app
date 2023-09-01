@@ -104,9 +104,9 @@ const Rating = ({ rating }) => {
           <ProgressBar title={"Acting"} score={rating.acting} />
         </div>
       </div>
-      <div className="pt-5">
+      <div className="pt-3 ml-1">
         <button
-          className="text-blue-700 mr-3"
+          className="text-blue-700 mr-5"
           onClick={() => setOpenModalEdit(true)}
         >
           Edit

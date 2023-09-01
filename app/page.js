@@ -1,17 +1,17 @@
-import React from "react";
+import { getServerSession } from "next-auth";
+import { authOptions } from "./api/auth/[...nextauth]/route";
+import { LogoutButton } from "./auth";
+import LoginForm from "./components/LoginForm";
 
-const HomePage = () => {
+const HomePage = async () => {
+  const session = await getServerSession(authOptions);
+
+  if (!session) return <LoginForm />;
+
   return (
-    <div>
-      <h1 className="text-4xl">Home Page</h1>
-      <p className="py-10">
-        lorem ipsumlorem ipsumlorem ipsumlorem ipsumlorem ipsumlorem ipsumlorem
-        ipsumlorem ipsumlorem ipsum lorem ipsumlorem ipsumlorem ipsumlorem
-        ipsumlorem ipsumlorem ipsumlorem ipsumlorem ipsumlorem ipsum lorem
-        ipsumlorem ipsumlorem ipsumlorem ipsumlorem ipsumlorem ipsumlorem
-        ipsumlorem ipsumlorem ipsum lorem ipsumlorem ipsumlorem ipsumlorem
-        ipsumlorem ipsumlorem ipsumlorem ipsumlorem ipsumlorem ipsum
-      </p>
+    <div className="flex justify-between">
+      <h1 className="text-4xl">Hello {session?.user?.name}</h1>
+      <LogoutButton />
     </div>
   );
 };
