@@ -66,7 +66,7 @@ const AddRating = () => {
             min="0"
             max="10"
             step="0.5"
-            className="w-full h-1 bg-white rounded-lg  cursor-pointer p-2"
+            className="Slider"
             value={inputs.scary}
             onChange={handleChange}
           />
@@ -81,7 +81,7 @@ const AddRating = () => {
             min="0"
             max="10"
             step="0.5"
-            className="w-full h-1 bg-white rounded-lg  cursor-pointer p-2"
+            className="Slider"
             value={inputs.story}
             onChange={handleChange}
           />
@@ -96,7 +96,7 @@ const AddRating = () => {
             min="0"
             max="10"
             step="0.5"
-            className="w-full h-1 bg-white rounded-lg  cursor-pointer p-2"
+            className="Slider"
             value={inputs.acting}
             onChange={handleChange}
           />
