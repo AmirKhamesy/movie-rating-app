@@ -95,7 +95,7 @@ const Autocomplete = ({ value, handleChange }) => {
           {suggestions.map((movie) => (
             <li
               key={movie.id}
-              className="p-2 flex items-center hover:bg-blue-300 cursor-pointer"
+              className="flex items-center gap-2 p-1 hover:bg-blue-300 cursor-pointer"
               onClick={() => selectMovieSuggestion(movie.title)}
             >
               <Image
@@ -103,10 +103,10 @@ const Autocomplete = ({ value, handleChange }) => {
                 alt={`${movie.title} Poster`}
                 width="100"
                 height="200"
-                className="w-10 h-14 mr-2"
+                className="w-12"
               />
-              <div className="flex flex-col">
-                <span>{movie.title}</span>
+              <div className="flex flex-col  justify-between h-14">
+                <span className="font-semibold text-md">{movie.title}</span>
                 <span className="text-xs text-gray-600">
                   {new Date(movie.release_date).toLocaleDateString("en-US", {
                     year: "numeric",
