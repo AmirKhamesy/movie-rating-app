@@ -105,7 +105,7 @@ const Autocomplete = ({ value, handleChange }) => {
                 height="200"
                 className="w-12"
               />
-              <div className="flex flex-col  justify-between h-14">
+              <div className="flex flex-col  justify-between">
                 <span className="font-semibold text-md">{movie.title}</span>
                 <span className="text-xs text-gray-600">
                   {new Date(movie.release_date).toLocaleDateString("en-US", {
