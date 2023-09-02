@@ -91,7 +91,7 @@ const Autocomplete = ({ value, handleChange }) => {
         onFocus={handleFocus}
       />
       {suggestions?.length > 0 && (
-        <ul className="absolute left-0 mt-2 w-64 bg-white border rounded shadow max-h-64 overflow-y-scroll">
+        <ul className="absolute left-0 mt-2 w-full bg-white border rounded shadow max-h-64 overflow-y-scroll">
           {suggestions.map((movie) => (
             <li
               key={movie.id}
@@ -105,7 +105,16 @@ const Autocomplete = ({ value, handleChange }) => {
                 height="200"
                 className="w-10 h-14 mr-2"
               />
-              <span>{movie.title}</span>
+              <div className="flex flex-col">
+                <span>{movie.title}</span>
+                <span className="text-xs text-gray-600">
+                  {new Date(movie.release_date).toLocaleDateString("en-US", {
+                    year: "numeric",
+                    month: "long",
+                    day: "numeric",
+                  })}
+                </span>
+              </div>
             </li>
           ))}
         </ul>
