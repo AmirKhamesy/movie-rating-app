@@ -15,7 +15,18 @@ const Autocomplete = ({ value, handleChange }) => {
   const [inputValue, setInputValue] = useState("");
   const [suggestions, setSuggestions] = useState([]);
   const [isTyping, setIsTyping] = useState(false);
+  const [selectedMoviePoster, setselectedMoviePoster] = useState("");
   const autocompleteRef = useRef(null); // Ref for autocomplete element
+
+  useEffect(() => {
+    if (value) {
+      const getMoviePoster = async () => {
+        const movie_details = await fetchMovieSuggestions(value);
+        setselectedMoviePoster(movie_details[0].poster_path);
+      };
+      getMoviePoster();
+    }
+  }, []);
 
   useEffect(() => {
     const timeoutId = setTimeout(() => {
@@ -55,10 +66,11 @@ const Autocomplete = ({ value, handleChange }) => {
     });
   };
 
-  const selectMovieSuggestion = (title) => {
+  const selectMovieSuggestion = (title, poster = "") => {
     setInputValue(title);
     setInputValueInParent(title);
     setSuggestions([]);
+    setselectedMoviePoster(poster);
   };
 
   // Handle click outside of autocomplete
@@ -80,23 +92,36 @@ const Autocomplete = ({ value, handleChange }) => {
 
   return (
     <div className="w-full relative" ref={autocompleteRef}>
-      <input
-        type="text"
-        name="title"
-        className="border rounded p-2 w-full"
-        placeholder="Search for a movie..."
-        value={inputValue || value}
-        onChange={(e) => selectMovieSuggestion(e.target.value)}
-        onBlur={handleBlur}
-        onFocus={handleFocus}
-      />
+      <div className="flex justify-between gap-2">
+        {selectedMoviePoster && (
+          <Image
+            src={`https://image.tmdb.org/t/p/w92/${selectedMoviePoster}`}
+            alt={`${selectedMoviePoster} Poster`}
+            width="100"
+            height="200"
+            className="w-12"
+          />
+        )}
+        <input
+          type="text"
+          name="title"
+          className="border rounded p-2 w-full"
+          placeholder="Search for a movie..."
+          value={inputValue || value}
+          onChange={(e) => selectMovieSuggestion(e.target.value)}
+          onBlur={handleBlur}
+          onFocus={handleFocus}
+        />
+      </div>
       {suggestions?.length > 0 && (
         <ul className="absolute left-0 mt-2 w-full bg-white border rounded shadow max-h-64 overflow-y-scroll">
           {suggestions.map((movie) => (
             <li
               key={movie.id}
               className="flex items-center gap-2 p-1 hover:bg-blue-300 cursor-pointer"
-              onClick={() => selectMovieSuggestion(movie.title)}
+              onClick={() =>
+                selectMovieSuggestion(movie.title, movie.poster_path)
+              }
             >
               <Image
                 src={`https://image.tmdb.org/t/p/w92/${movie.poster_path}`}
