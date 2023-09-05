@@ -7,6 +7,7 @@ import axios from "axios";
 import Autocomplete from "./Autocomplete";
 import Image from "next/image";
 import ProgressBar from "./ProgressBar";
+import moment from "moment";
 
 const Rating = ({ rating }) => {
   const [openModalEdit, setOpenModalEdit] = useState(false);
@@ -114,8 +115,12 @@ const Rating = ({ rating }) => {
 
         <Modal modalOpen={openModalEdit} setModalOpen={setOpenModalEdit}>
           <form className="w-full" onSubmit={handleEditSubmit}>
-            <h1 className="text-2xl pb-3">Edit Rating</h1>
-
+            <div className="flex justify-between items-center  mb-3">
+              <h1 className="text-2xl">Edit Rating</h1>
+              <p className="text-sm text-gray-500">
+                Updated {moment(ratingToEdit.updatedAt).fromNow()}
+              </p>
+            </div>
             <Autocomplete
               value={ratingToEdit.title}
               handleChange={handleChange}
