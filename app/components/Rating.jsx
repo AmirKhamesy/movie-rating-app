@@ -132,7 +132,7 @@ const Rating = ({ rating }) => {
               min="0"
               max="10"
               step="0.5"
-              className="w-full h-1 bg-white rounded-lg  cursor-pointer p-2"
+              className="Slider"
               value={ratingToEdit.scary}
               onChange={handleChange}
             />
@@ -148,7 +148,7 @@ const Rating = ({ rating }) => {
               min="0"
               max="10"
               step="0.5"
-              className="w-full h-1 bg-white rounded-lg  cursor-pointer p-2"
+              className="Slider"
               value={ratingToEdit.story}
               onChange={handleChange}
             />
@@ -164,7 +164,7 @@ const Rating = ({ rating }) => {
               min="0"
               max="10"
               step="0.5"
-              className="w-full h-1 bg-white rounded-lg  cursor-pointer p-2"
+              className="Slider"
               value={ratingToEdit.acting}
               onChange={handleChange}
             />

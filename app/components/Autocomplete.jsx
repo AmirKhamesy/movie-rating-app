@@ -15,7 +15,21 @@ const Autocomplete = ({ value, handleChange }) => {
   const [inputValue, setInputValue] = useState("");
   const [suggestions, setSuggestions] = useState([]);
   const [isTyping, setIsTyping] = useState(false);
+  const [selectedMoviePoster, setSelectedMoviePoster] = useState("");
+  const [highlightedSuggestionIndex, setHighlightedSuggestionIndex] =
+    useState(-1);
   const autocompleteRef = useRef(null); // Ref for autocomplete element
+  const suggestionListRef = useRef(null); // Ref for suggestion list element
+
+  useEffect(() => {
+    if (value) {
+      const getMoviePoster = async () => {
+        const movie_details = await fetchMovieSuggestions(value);
+        setSelectedMoviePoster(movie_details[0].poster_path);
+      };
+      getMoviePoster();
+    }
+  }, []);
 
   useEffect(() => {
     const timeoutId = setTimeout(() => {
@@ -23,7 +37,9 @@ const Autocomplete = ({ value, handleChange }) => {
         const fetchSuggestions = async () => {
           if (inputValue) {
             const movies = await fetchMovieSuggestions(inputValue);
-            setSuggestions(movies);
+            //If user has clicked on a title, dont suggest that same title to them
+            if (!(movies.length === 1 && value === movies[0].title))
+              setSuggestions(movies);
           } else {
             setSuggestions([]);
           }
@@ -55,10 +71,38 @@ const Autocomplete = ({ value, handleChange }) => {
     });
   };
 
-  const selectMovieSuggestion = (title) => {
+  const selectMovieSuggestion = (title, poster = "") => {
     setInputValue(title);
     setInputValueInParent(title);
     setSuggestions([]);
+    setSelectedMoviePoster(poster);
+  };
+
+  const handleKeyDown = (e) => {
+    if (e.key === "Tab" || e.key === "ArrowDown") {
+      e.preventDefault();
+      if (highlightedSuggestionIndex < suggestions.length - 1) {
+        setHighlightedSuggestionIndex(highlightedSuggestionIndex + 1);
+      }
+    } else if (e.key === "ArrowUp") {
+      e.preventDefault();
+      if (highlightedSuggestionIndex > 0) {
+        setHighlightedSuggestionIndex(highlightedSuggestionIndex - 1);
+      }
+    } else if (e.key === "Enter" && highlightedSuggestionIndex >= 0) {
+      e.preventDefault();
+      const selectedSuggestion = suggestions[highlightedSuggestionIndex];
+      selectMovieSuggestion(
+        selectedSuggestion.title,
+        selectedSuggestion.poster_path
+      );
+    }
+    // Scroll to the selected suggestion
+    if (suggestionListRef.current && highlightedSuggestionIndex >= 0) {
+      const listItem =
+        suggestionListRef.current.children[highlightedSuggestionIndex];
+      listItem.scrollIntoView({ behavior: "smooth", block: "center" });
+    }
   };
 
   // Handle click outside of autocomplete
@@ -80,32 +124,61 @@ const Autocomplete = ({ value, handleChange }) => {
 
   return (
     <div className="w-full relative" ref={autocompleteRef}>
-      <input
-        type="text"
-        name="title"
-        className="border rounded p-2 w-full"
-        placeholder="Search for a movie..."
-        value={inputValue || value}
-        onChange={(e) => selectMovieSuggestion(e.target.value)}
-        onBlur={handleBlur}
-        onFocus={handleFocus}
-      />
+      <div className="flex justify-between gap-2">
+        {selectedMoviePoster && (
+          <Image
+            src={`https://image.tmdb.org/t/p/w92/${selectedMoviePoster}`}
+            alt={`${selectedMoviePoster} Poster`}
+            width="100"
+            height="200"
+            className="w-12"
+          />
+        )}
+        <input
+          type="text"
+          name="title"
+          className="border rounded p-2 w-full"
+          placeholder="Search for a movie..."
+          value={inputValue || value}
+          onChange={(e) => selectMovieSuggestion(e.target.value)}
+          onBlur={handleBlur}
+          onFocus={handleFocus}
+          onKeyDown={handleKeyDown}
+        />
+      </div>
       {suggestions?.length > 0 && (
-        <ul className="absolute left-0 mt-2 w-64 bg-white border rounded shadow max-h-64 overflow-y-scroll">
-          {suggestions.map((movie) => (
+        <ul
+          className="absolute left-0 mt-2 w-full bg-white border rounded shadow max-h-64 overflow-y-scroll"
+          ref={suggestionListRef}
+        >
+          {suggestions.map((movie, index) => (
             <li
               key={movie.id}
-              className="p-2 flex items-center hover:bg-blue-300 cursor-pointer"
-              onClick={() => selectMovieSuggestion(movie.title)}
+              className={`flex items-center gap-2 p-1 hover:bg-blue-300 cursor-pointer ${
+                index === highlightedSuggestionIndex ? "bg-blue-300" : ""
+              }`}
+              onMouseEnter={() => setHighlightedSuggestionIndex(index)}
+              onClick={() =>
+                selectMovieSuggestion(movie.title, movie.poster_path)
+              }
             >
               <Image
                 src={`https://image.tmdb.org/t/p/w92/${movie.poster_path}`}
                 alt={`${movie.title} Poster`}
                 width="100"
                 height="200"
-                className="w-10 h-14 mr-2"
+                className="w-12"
               />
-              <span>{movie.title}</span>
+              <div className="flex flex-col justify-between">
+                <span className="font-semibold text-md">{movie.title}</span>
+                <span className="text-xs text-gray-600">
+                  {new Date(movie.release_date).toLocaleDateString("en-US", {
+                    year: "numeric",
+                    month: "long",
+                    day: "numeric",
+                  })}
+                </span>
+              </div>
             </li>
           ))}
         </ul>
