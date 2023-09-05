@@ -15,14 +15,17 @@ const Autocomplete = ({ value, handleChange }) => {
   const [inputValue, setInputValue] = useState("");
   const [suggestions, setSuggestions] = useState([]);
   const [isTyping, setIsTyping] = useState(false);
-  const [selectedMoviePoster, setselectedMoviePoster] = useState("");
+  const [selectedMoviePoster, setSelectedMoviePoster] = useState("");
+  const [highlightedSuggestionIndex, setHighlightedSuggestionIndex] =
+    useState(-1);
   const autocompleteRef = useRef(null); // Ref for autocomplete element
+  const suggestionListRef = useRef(null); // Ref for suggestion list element
 
   useEffect(() => {
     if (value) {
       const getMoviePoster = async () => {
         const movie_details = await fetchMovieSuggestions(value);
-        setselectedMoviePoster(movie_details[0].poster_path);
+        setSelectedMoviePoster(movie_details[0].poster_path);
       };
       getMoviePoster();
     }
@@ -70,7 +73,34 @@ const Autocomplete = ({ value, handleChange }) => {
     setInputValue(title);
     setInputValueInParent(title);
     setSuggestions([]);
-    setselectedMoviePoster(poster);
+    setSelectedMoviePoster(poster);
+  };
+
+  const handleKeyDown = (e) => {
+    if (e.key === "Tab" || e.key === "ArrowDown") {
+      e.preventDefault();
+      if (highlightedSuggestionIndex < suggestions.length - 1) {
+        setHighlightedSuggestionIndex(highlightedSuggestionIndex + 1);
+      }
+    } else if (e.key === "ArrowUp") {
+      e.preventDefault();
+      if (highlightedSuggestionIndex > 0) {
+        setHighlightedSuggestionIndex(highlightedSuggestionIndex - 1);
+      }
+    } else if (e.key === "Enter" && highlightedSuggestionIndex >= 0) {
+      e.preventDefault();
+      const selectedSuggestion = suggestions[highlightedSuggestionIndex];
+      selectMovieSuggestion(
+        selectedSuggestion.title,
+        selectedSuggestion.poster_path
+      );
+    }
+    // Scroll to the selected suggestion
+    if (suggestionListRef.current && highlightedSuggestionIndex >= 0) {
+      const listItem =
+        suggestionListRef.current.children[highlightedSuggestionIndex];
+      listItem.scrollIntoView({ behavior: "smooth", block: "center" });
+    }
   };
 
   // Handle click outside of autocomplete
@@ -111,14 +141,21 @@ const Autocomplete = ({ value, handleChange }) => {
           onChange={(e) => selectMovieSuggestion(e.target.value)}
           onBlur={handleBlur}
           onFocus={handleFocus}
+          onKeyDown={handleKeyDown}
         />
       </div>
       {suggestions?.length > 0 && (
-        <ul className="absolute left-0 mt-2 w-full bg-white border rounded shadow max-h-64 overflow-y-scroll">
-          {suggestions.map((movie) => (
+        <ul
+          className="absolute left-0 mt-2 w-full bg-white border rounded shadow max-h-64 overflow-y-scroll"
+          ref={suggestionListRef}
+        >
+          {suggestions.map((movie, index) => (
             <li
               key={movie.id}
-              className="flex items-center gap-2 p-1 hover:bg-blue-300 cursor-pointer"
+              className={`flex items-center gap-2 p-1 hover:bg-blue-300 cursor-pointer ${
+                index === highlightedSuggestionIndex ? "bg-blue-300" : ""
+              }`}
+              onMouseEnter={() => setHighlightedSuggestionIndex(index)}
               onClick={() =>
                 selectMovieSuggestion(movie.title, movie.poster_path)
               }
@@ -130,7 +167,7 @@ const Autocomplete = ({ value, handleChange }) => {
                 height="200"
                 className="w-12"
               />
-              <div className="flex flex-col  justify-between">
+              <div className="flex flex-col justify-between">
                 <span className="font-semibold text-md">{movie.title}</span>
                 <span className="text-xs text-gray-600">
                   {new Date(movie.release_date).toLocaleDateString("en-US", {
