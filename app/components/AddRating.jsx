@@ -6,6 +6,7 @@ import axios from "axios";
 import { useRouter } from "next/navigation";
 import Autocomplete from "./Autocomplete";
 import debounce from "lodash/debounce"; // Import debounce from lodash
+import moment from "moment";
 
 const AddRating = () => {
   const [inputs, setInputs] = useState({
@@ -14,6 +15,15 @@ const AddRating = () => {
     story: 0,
     acting: 0,
   });
+  const [editing, setEditing] = useState({
+    id: "",
+    title: "",
+    scary: 0,
+    story: 0,
+    acting: 0,
+    createdAt: "",
+    updatedAt: "",
+  });
   const [movieValid, setMovieValid] = useState(false);
   const [modalOpen, setModalOpen] = useState(false);
   const [debounceTimer, setDebounceTimer] = useState(null); // Add debounceTimer state
@@ -21,42 +31,39 @@ const AddRating = () => {
   const router = useRouter();
 
   useEffect(() => {
-    setInputs({});
+    setInputs({
+      title: "",
+      scary: 0,
+      story: 0,
+      acting: 0,
+    });
+    setEditing({
+      id: "",
+      title: "",
+      scary: 0,
+      story: 0,
+      acting: 0,
+      createdAt: "",
+      updatedAt: "",
+    });
   }, [modalOpen]);
-
-  // Create a debounced function to check movie validity
-  const checkMovieValidDebounced = debounce(async (title) => {
-    if (title) {
-      try {
-        const res = await axios.post("/api/movieValid", { title });
-        if (res.data.error) {
-          setMovieValid(false);
-          if (res.data.error === "Movie already exists") {
-            // Handle editing existing movie
-          }
-        } else {
-          setMovieValid(true);
-        }
-      } catch (err) {
-        if (
-          err.response.data.error === "No title provided" ||
-          err.response.data.error === "Movie not found in TMDB"
-        ) {
-          setMovieValid(false);
-        }
-      }
-    }
-  }, 250); // Wait for 250ms before executing
 
   const handleChange = (e) => {
     const name = e.target.name;
     const value =
       name === "title" ? e.target.value : parseFloat(e.target.value);
 
-    setInputs((prevState) => ({
-      ...prevState,
-      [name]: value,
-    }));
+    if (editing.id) {
+      setEditing((prevState) => ({
+        ...prevState,
+        [name]: value,
+      }));
+    } else {
+      setInputs((prevState) => ({
+        ...prevState,
+        [name]: value,
+      }));
+    }
 
     // Cancel the previous debounce and start a new one
     if (name === "title") {
@@ -70,14 +77,79 @@ const AddRating = () => {
     }
   };
 
+  // Create a debounced function to check movie validity
+  const checkMovieValidDebounced = debounce(async (title) => {
+    if (title) {
+      try {
+        const res = await axios.post("/api/movieValid", { title });
+        if (res.data.error) {
+          setMovieValid(false);
+          if (!editing.id) {
+            setEditing({
+              id: "",
+              title: "",
+              scary: 0,
+              story: 0,
+              acting: 0,
+              createdAt: "",
+              updatedAt: "",
+            });
+          }
+          if (res.data.error === "Movie already exists") {
+            if (!editing.id) {
+              // Handle editing existing movie
+              delete res.data.error;
+              setEditing(res.data);
+            }
+          }
+        } else {
+          setMovieValid(true);
+        }
+      } catch (err) {
+        if (
+          err.response.data.error === "No title provided" ||
+          err.response.data.error === "Movie not found in TMDB"
+        ) {
+          setMovieValid(false);
+          setEditing({
+            id: "",
+            title: "",
+            scary: 0,
+            story: 0,
+            acting: 0,
+            createdAt: "",
+            updatedAt: "",
+          });
+        }
+      }
+    }
+  }, 250); // Wait for 250ms before executing
+
   const handleSubmit = (e) => {
     e.preventDefault();
-    axios
-      .post("/api/ratings", inputs)
+    const apiUrl = editing.id ? `/api/ratings/${editing.id}` : "/api/ratings";
+
+    const axiosMethod = editing.id ? axios.patch : axios.post;
+
+    axiosMethod(apiUrl, editing.id ? editing : inputs)
       .then((res) => console.log(res))
       .catch((err) => console.log(err))
       .finally(() => {
-        setInputs({});
+        setInputs({
+          title: "",
+          scary: 0,
+          story: 0,
+          acting: 0,
+        });
+        setEditing({
+          id: "",
+          title: "",
+          scary: 0,
+          story: 0,
+          acting: 0,
+          createdAt: "",
+          updatedAt: "",
+        });
         setModalOpen(false);
         router.refresh();
       });
@@ -93,10 +165,24 @@ const AddRating = () => {
       </button>
       <Modal modalOpen={modalOpen} setModalOpen={setModalOpen}>
         <form className="w-full" onSubmit={handleSubmit}>
-          <h1 className="text-2xl pb-3">New Rating</h1>
-          <Autocomplete value={inputs.title} handleChange={handleChange} />
+          <div className="flex justify-between items-center  mb-3">
+            <h1 className="text-2xl">
+              {editing.id ? "Editing" : "New"} Rating
+            </h1>
+            {editing.id && (
+              <p className="text-sm text-gray-500">
+                Updated {moment(editing.updatedAt).fromNow()}
+              </p>
+            )}{" "}
+          </div>
+          <Autocomplete
+            value={editing.id ? editing.title : inputs.title}
+            handleChange={handleChange}
+          />
           <label htmlFor="scary" className="block my-2 text-lg font-medium">
-            Scary {inputs.scary !== undefined && `(${inputs.scary})`}
+            Scary{" "}
+            {(editing.id ? editing.scary : inputs.scary) !== undefined &&
+              `(${editing.id ? editing.scary : inputs.scary})`}
           </label>
           <input
             id="scary"
@@ -106,12 +192,14 @@ const AddRating = () => {
             max="10"
             step="0.5"
             className="Slider"
-            value={inputs.scary}
+            value={editing.id ? editing.scary : inputs.scary}
             onChange={handleChange}
           />
 
           <label htmlFor="story" className="block my-2 text-lg font-medium">
-            Story {inputs.story !== undefined && `(${inputs.story})`}
+            Story{" "}
+            {(editing.id ? editing.story : inputs.story) !== undefined &&
+              `(${editing.id ? editing.story : inputs.story})`}
           </label>
           <input
             id="story"
@@ -121,12 +209,14 @@ const AddRating = () => {
             max="10"
             step="0.5"
             className="Slider"
-            value={inputs.story}
+            value={editing.id ? editing.story : inputs.story}
             onChange={handleChange}
           />
 
           <label htmlFor="acting" className="block my-2 text-lg font-medium">
-            Acting {inputs.acting !== undefined && `(${inputs.acting})`}
+            Acting{" "}
+            {(editing.id ? editing.acting : inputs.acting) !== undefined &&
+              `(${editing.id ? editing.acting : inputs.acting})`}{" "}
           </label>
           <input
             id="acting"
@@ -136,7 +226,7 @@ const AddRating = () => {
             max="10"
             step="0.5"
             className="Slider"
-            value={inputs.acting}
+            value={editing.id ? editing.acting : inputs.acting}
             onChange={handleChange}
           />
 
@@ -144,11 +234,12 @@ const AddRating = () => {
             type="submit"
             className="bg-blue-700 text-white px-5 py-2 mt-2 disabled:bg-blue-300"
             disabled={
-              inputs.story === undefined ||
-              inputs.scary === undefined ||
-              inputs.acting === undefined ||
-              inputs.title === undefined ||
-              !movieValid
+              !editing.id &&
+              (inputs.story === undefined ||
+                inputs.scary === undefined ||
+                inputs.acting === undefined ||
+                inputs.title === undefined ||
+                !movieValid)
             }
           >
             Submit

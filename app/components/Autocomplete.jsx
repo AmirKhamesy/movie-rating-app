@@ -23,11 +23,7 @@ const Autocomplete = ({ value, handleChange }) => {
 
   useEffect(() => {
     if (value) {
-      const getMoviePoster = async () => {
-        const movie_details = await fetchMovieSuggestions(value);
-        setSelectedMoviePoster(movie_details[0].poster_path);
-      };
-      getMoviePoster();
+      getMoviePoster(value);
     }
   }, []);
 
@@ -52,6 +48,11 @@ const Autocomplete = ({ value, handleChange }) => {
       clearTimeout(timeoutId);
     };
   }, [inputValue, isTyping]);
+
+  const getMoviePoster = async (title) => {
+    const movie_details = await fetchMovieSuggestions(title);
+    setSelectedMoviePoster(movie_details[0].poster_path);
+  };
 
   const handleBlur = () => {
     setInputValueInParent(inputValue);
@@ -123,7 +124,7 @@ const Autocomplete = ({ value, handleChange }) => {
   }, []);
 
   return (
-    <div className="w-full relative" ref={autocompleteRef}>
+    <div className="w-full relative pb-1" ref={autocompleteRef}>
       <div className="flex justify-between gap-2">
         {selectedMoviePoster && (
           <Image
