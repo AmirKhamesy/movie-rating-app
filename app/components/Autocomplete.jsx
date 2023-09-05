@@ -46,7 +46,7 @@ const Autocomplete = ({ value, handleChange }) => {
         };
         fetchSuggestions();
       }
-    }, 500);
+    }, 250);
 
     return () => {
       clearTimeout(timeoutId);

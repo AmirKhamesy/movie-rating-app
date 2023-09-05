@@ -23,7 +23,9 @@ export async function POST(req) {
     });
 
     if (existingMovie) {
-      return new NextResponse(JSON.stringify(existingMovie));
+      return new NextResponse(
+        JSON.stringify({ error: "Movie already exists", ...existingMovie })
+      );
     }
 
     const tmdbApiKey = process.env.NEXT_PUBLIC_TMDB_KEY;
@@ -36,9 +38,7 @@ export async function POST(req) {
       tmdbResponse.data.results[0].title === title
     ) {
       // Movie exists in TMDB
-      return new NextResponse(
-        JSON.stringify({ tmdbMovie: tmdbResponse.data.results[0] })
-      );
+      return new NextResponse(JSON.stringify(tmdbResponse.data.results[0]));
     } else {
       // Movie not found in TMDB
       return new NextResponse(
