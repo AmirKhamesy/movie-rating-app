@@ -37,7 +37,9 @@ const Autocomplete = ({ value, handleChange }) => {
         const fetchSuggestions = async () => {
           if (inputValue) {
             const movies = await fetchMovieSuggestions(inputValue);
-            setSuggestions(movies);
+            //If user has clicked on a title, dont suggest that same title to them
+            if (!(movies.length === 1 && value === movies[0].title))
+              setSuggestions(movies);
           } else {
             setSuggestions([]);
           }
