@@ -1,6 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -18,6 +15,17 @@ model Rating {
   acting Float?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  listId String @db.ObjectId
+  list List @relation(fields: [listId], references: [id])
+}
+
+model List {
+  id String @id @default(auto()) @map("_id") @db.ObjectId
+  userId String @db.ObjectId
+  user User @relation(fields: [userId], references: [id])
+  ratings Rating[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model User {
@@ -25,5 +33,5 @@ model User {
   email String @unique
   password String
   name String?
-
+  lists List[]
 }
