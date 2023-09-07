@@ -5,6 +5,7 @@ generator client {
 datasource db {
   provider = "mongodb"
   url      = env("DATABASE_URL")
+  relationMode = "prisma"
 }
 
 model Rating {
@@ -21,6 +22,7 @@ model Rating {
 
 model List {
   id String @id @default(auto()) @map("_id") @db.ObjectId
+  name String
   userId String @db.ObjectId
   user User @relation(fields: [userId], references: [id])
   ratings Rating[]

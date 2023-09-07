@@ -14,7 +14,56 @@ async function main() {
       password,
     },
   });
-  console.log({ user });
+
+  const list = await prisma.list.create({
+    data: {
+      userId: user.id,
+      name: "Test List1",
+      ratings: {
+        create: [
+          {
+            title: "Test Movie title1",
+            scary: 9,
+            story: 8,
+            acting: 4,
+          },
+        ],
+      },
+    },
+  });
+
+  // const rating = await prisma.rating.create({
+  //   data: {
+  //     title: "Test Movie title1",
+  //     scary: 9,
+  //     story: 8,
+  //     acting: 4,
+  //     listId: list.id,
+  //   },
+  // });
+
+  // const listsThatHaveRatings = await prisma.list.findMany({
+  //   include: {
+  //     ratings: true,
+  //   },
+  //   where: {
+  //     ratings: {
+  //       some: {
+  //         listId: {
+  //           equals: undefined,
+  //         },
+  //       },
+  //     },
+  //   },
+  // });
+
+  // const ratingsForList = await prisma.rating.findMany({
+  //   where: {
+  //     listId: listsThatHaveRatings[0].id,
+  //   },
+  // });
+
+  console.log({ list });
 }
 main()
   .then(() => prisma.$disconnect())
