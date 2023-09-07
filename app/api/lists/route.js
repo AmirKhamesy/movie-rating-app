@@ -17,10 +17,10 @@ export const POST = async (req) => {
     const body = await req.json();
     const { title } = body;
 
-    const newList = await prisma.lists.create({
+    const newList = await prisma.list.create({
       data: {
-        title,
-        userId: session.id,
+        name: title,
+        userId: session.user.id,
       },
     });
 
