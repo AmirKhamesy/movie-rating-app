@@ -28,7 +28,10 @@ const RatePage = async () => {
       </div>
       {lists &&
         lists.map((list) => (
-          <div key={list.id} className="bg-white shadow-lg rounded-lg p-4 mb-4">
+          <div
+            key={list.id}
+            className="bg-white shadow-md rounded-lg p-4 mb-4 hover:cursor-pointer hover:shadow-lg"
+          >
             <div className="flex justify-between">
               <h1 className="text-2xl font-semibold text-gray-800">
                 {list.name}

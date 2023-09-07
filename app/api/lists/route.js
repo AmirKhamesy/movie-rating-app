@@ -43,7 +43,7 @@ export const GET = async () => {
 
     const lists = await prisma.list.findMany({
       where: {
-        userId: session.id,
+        userId: session.user.id,
       },
     });
 
