@@ -28,6 +28,12 @@ const AddList = () => {
       });
   };
 
+  const handleKeyPress = (e) => {
+    if (e.key === "Enter" && title !== "") {
+      handleSubmit(e);
+    }
+  };
+
   return (
     <div>
       <button
@@ -48,6 +54,7 @@ const AddList = () => {
               placeholder="List name"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
+              onKeyPress={handleKeyPress}
             />
 
             <button
