@@ -1,60 +1,85 @@
-import AddRating from "../components/AddRating";
-import RatingsList from "../components/RatingsList";
-import { cookies } from "next/headers";
-import moment from "moment";
+"use client";
+
+import React, { useEffect, useState } from "react";
 import AddList from "../components/AddList";
+import moment from "moment";
+import { useRouter } from "next/navigation";
 
-async function getLists() {
-  const res = await fetch(`${process.env.NEXT_PUBLIC_API}/api/lists`, {
-    next: { revalidate: 0 },
-    credentials: "include",
-    headers: { Cookie: cookies().toString() }, //HACK: Send cookies to server
-  });
+const RatePage = () => {
+  const [lists, setLists] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const { push } = useRouter();
 
-  if (!res.ok) {
-    throw new Error("Failed to get ratings");
-  }
+  useEffect(() => {
+    async function fetchLists() {
+      try {
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API}/api/lists`, {
+          credentials: "include",
+          headers: { Cookie: document.cookie }, // Send cookies to server
+        });
 
-  return res.json();
-}
+        if (!res.ok) {
+          throw new Error("Failed to get lists");
+        }
 
-const RatePage = async () => {
-  const lists = await getLists();
+        const data = await res.json();
+        setLists(data);
+        setLoading(false);
+      } catch (error) {
+        console.error(error);
+      }
+    }
+    fetchLists();
+  }, []);
+
+  const navigateToList = (listName) => {
+    push(`/rate/${listName}`);
+  };
 
   return (
     <div className="max-w-4xl mx-auto mt-4">
-      <div className="my-5">
-        <AddList />
-      </div>
-      {lists &&
-        lists.map((list) => (
-          <div
-            key={list.id}
-            className="bg-white shadow-md rounded-lg p-4 mb-4 hover:cursor-pointer hover:shadow-lg"
-          >
-            <div className="flex justify-between">
-              <h1 className="text-2xl font-semibold text-gray-800">
-                {list.name}
-              </h1>
-              <div className="flex flex-col items-end">
-                <p className="text-sm text-gray-600">
-                  {list.RatingsCount ? list.RatingsCount : "No"} Rating
-                  {list.RatingsCount !== 1 && "s"}
-                </p>
-                <p className="text-xs text-gray-500">
-                  Last updated {moment(list.updatedAt).fromNow()}
-                </p>
-              </div>
-            </div>
+      {loading ? (
+        <div className="w-[8rem] h-[8rem] border-t-2 border-blue-500 border-solid rounded-full animate-spin m-auto"></div>
+      ) : (
+        <div>
+          <div className="my-5">
+            <AddList />
           </div>
-        ))}
-      {/* <div className="my-5 flex flex-col gap-4">
-        <AddRating />
-      </div>
-
-      <RatingsList ratings={ratings} /> */}
+          {lists &&
+            lists.map((list) => (
+              <div
+                key={list.id}
+                className="bg-white shadow-md rounded-lg p-4 mb-4 hover:cursor-pointer hover:shadow-lg"
+                onClick={() => navigateToList(list.name)}
+              >
+                <div className="flex justify-between">
+                  <h1 className="text-2xl font-semibold text-gray-800">
+                    {list.name}
+                  </h1>
+                  <div className="flex flex-col items-end">
+                    <p className="text-sm text-gray-600">
+                      {list.RatingsCount ? list.RatingsCount : "No"} Rating
+                      {list.RatingsCount !== 1 && "s"}
+                    </p>
+                    <p className="text-xs text-gray-500">
+                      Last updated {moment(list.updatedAt).fromNow()}
+                    </p>
+                  </div>
+                </div>
+              </div>
+            ))}
+        </div>
+      )}
     </div>
   );
 };
 
 export default RatePage;
+
+{
+  /* <div className="my-5 flex flex-col gap-4">
+        <AddRating />
+      </div>
+
+      <RatingsList ratings={ratings} /> */
+}
