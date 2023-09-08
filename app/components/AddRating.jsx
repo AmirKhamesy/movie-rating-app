@@ -8,7 +8,7 @@ import Autocomplete from "./Autocomplete";
 import debounce from "lodash/debounce"; // Import debounce from lodash
 import moment from "moment";
 
-const AddRating = () => {
+const AddRating = ({ listName }) => {
   const [inputs, setInputs] = useState({
     title: "",
     scary: 0,

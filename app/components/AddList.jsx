@@ -3,12 +3,12 @@
 import { useEffect, useState } from "react";
 import Modal from "./Modal";
 import axios from "axios";
+import debounce from "lodash/debounce"; // Import lodash debounce
 
 const AddList = () => {
   const [title, setTitle] = useState("");
   const [modalOpen, setModalOpen] = useState(false);
   const [debouncedTitle, setDebouncedTitle] = useState("");
-  const [debounceTimer, setDebounceTimer] = useState(null);
   const [listExists, setListExists] = useState(true);
 
   useEffect(() => {
@@ -25,10 +25,14 @@ const AddList = () => {
     }
   }, [debouncedTitle]);
 
+  const debouncedInputChange = debounce((newTitle) => {
+    setDebouncedTitle(newTitle);
+  }, 250);
+
   const handleSubmit = (e) => {
     e.preventDefault();
     // Cancel the debounce timer if a submit is triggered
-    clearTimeout(debounceTimer);
+    debouncedInputChange.cancel();
     axios
       .post("/api/lists", { title })
       .then((res) => console.log(res))
@@ -36,25 +40,16 @@ const AddList = () => {
       .finally(() => {
         setTitle("");
         setModalOpen(false);
+        window.location.reload();
       });
-  };
-
-  const handleKeyPress = (e) => {
-    if (e.key === "Enter" && title !== "" && !listExists) {
-      handleSubmit(e);
-    }
   };
 
   const handleInputChange = (e) => {
     setListExists(true);
     const newTitle = e.target.value;
     setTitle(newTitle);
-    // Cancel the previous debounce and start a new one
-    clearTimeout(debounceTimer);
-    const newDebounceTimer = setTimeout(() => {
-      setDebouncedTitle(newTitle);
-    }, 250);
-    setDebounceTimer(newDebounceTimer);
+    // Call the debouncedInputChange function with the new title
+    debouncedInputChange(newTitle);
   };
 
   return (
@@ -77,7 +72,6 @@ const AddList = () => {
               placeholder="List name"
               value={title}
               onChange={handleInputChange}
-              onKeyUp={handleKeyPress}
             />
 
             <button

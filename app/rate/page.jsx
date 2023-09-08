@@ -1,9 +1,9 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import AddList from "../components/AddList";
 import moment from "moment";
 import { useRouter } from "next/navigation";
+import AddList from "../components/AddList";
 
 const RatePage = () => {
   const [lists, setLists] = useState([]);
@@ -39,7 +39,7 @@ const RatePage = () => {
   return (
     <div className="max-w-4xl mx-auto mt-4">
       {loading ? (
-        <div className="w-[8rem] h-[8rem] border-t-2 border-blue-500 border-solid rounded-full animate-spin m-auto"></div>
+        <div className="m-auto spinner"></div>
       ) : (
         <div>
           <div className="my-5">
@@ -75,11 +75,3 @@ const RatePage = () => {
 };
 
 export default RatePage;
-
-{
-  /* <div className="my-5 flex flex-col gap-4">
-        <AddRating />
-      </div>
-
-      <RatingsList ratings={ratings} /> */
-}
