@@ -72,6 +72,15 @@ export const POST = async (req, { params }) => {
       return NextResponse.json({ message: "Error while creating new rating." });
     }
 
+    const updatedList = await prisma.list.update({
+      where: {
+        id: listId,
+      },
+      data: {
+        updatedAt: new Date(),
+      },
+    });
+
     return NextResponse.json(rating);
   } catch (error) {
     console.log(error);
