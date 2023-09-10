@@ -21,7 +21,7 @@ export const POST = async (req) => {
       where: {
         name: {
           equals: title,
-          mode: "insenstive",
+          mode: "insensitive",
         },
         userId: session.user.id,
       },
