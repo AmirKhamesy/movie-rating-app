@@ -17,6 +17,25 @@ export const POST = async (req) => {
     const body = await req.json();
     const { title } = body;
 
+    const listExists = await prisma.list.findMany({
+      where: {
+        name: {
+          equals: title,
+          mode: "insenstive",
+        },
+        userId: session.user.id,
+      },
+    });
+
+    if (listExists.length >= 1) {
+      return new NextResponse(
+        JSON.stringify({ error: "List already exists" }),
+        {
+          status: 401,
+        }
+      );
+    }
+
     const newList = await prisma.list.create({
       data: {
         name: title,

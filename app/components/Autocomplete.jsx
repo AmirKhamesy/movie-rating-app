@@ -145,6 +145,7 @@ const Autocomplete = ({ value, handleChange }) => {
           onBlur={handleBlur}
           onFocus={handleFocus}
           onKeyDown={handleKeyDown}
+          autoFocus
         />
       </div>
       {suggestions?.length > 0 && (

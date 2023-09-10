@@ -3,10 +3,7 @@
 import { useEffect, useState } from "react";
 import Modal from "./Modal";
 import axios from "axios";
-import { useRouter } from "next/navigation";
 import Autocomplete from "./Autocomplete";
-import debounce from "lodash/debounce"; // Import debounce from lodash
-import moment from "moment";
 
 const AddListRating = ({ listName }) => {
   const [inputs, setInputs] = useState({
@@ -16,8 +13,6 @@ const AddListRating = ({ listName }) => {
     acting: 0,
   });
   const [modalOpen, setModalOpen] = useState(false);
-
-  const router = useRouter();
 
   useEffect(() => {
     setInputs({
@@ -56,7 +51,7 @@ const AddListRating = ({ listName }) => {
           acting: 0,
         });
         setModalOpen(false);
-        router.refresh();
+        window.location.reload();
       });
   };
 

@@ -72,6 +72,7 @@ const AddList = () => {
               placeholder="List name"
               value={title}
               onChange={handleInputChange}
+              autoFocus
             />
 
             <button
