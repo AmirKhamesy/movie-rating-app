@@ -64,6 +64,9 @@ export const GET = async () => {
       where: {
         userId: session.user.id,
       },
+      orderBy: {
+        updatedAt: "desc",
+      },
     });
 
     // Append the number of ratings per list to each list object
