@@ -153,11 +153,33 @@ export const DELETE = async (req, { params }) => {
     }
 
     const { name } = params;
-    const list = await prisma.list.delete({
-      where: { name, userId },
+    const userId = session.user.id;
+
+    const list = await prisma.list.findMany({
+      where: {
+        name: {
+          equals: name,
+          mode: "insensitive",
+        },
+        userId,
+      },
     });
 
-    return NextResponse.json("List deleted");
+    const listId = list[0].id;
+
+    console.log("here ------------------");
+    console.log(listId);
+    if (listId) {
+      const deletedList = await prisma.list.delete({
+        where: {
+          id: listId,
+        },
+      });
+
+      return NextResponse.json("List deleted");
+    } else {
+      return NextResponse.json({ message: "Problem deleting lists" });
+    }
   } catch (error) {
     console.log(error);
     return NextResponse.json({ message: "DELETE Error" }, { status: 500 });

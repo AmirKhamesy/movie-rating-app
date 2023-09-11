@@ -1,5 +1,6 @@
 "use client";
 import AddListRating from "./AddListRating";
+import EditList from "./EditList";
 import Rating from "./Rating";
 import React, { useEffect, useState } from "react";
 
@@ -20,7 +21,7 @@ const RatingsList = (params) => {
           }
         );
         if (!res.ok) {
-          window.location.href = "http://localhost:3000/rate";
+          window.location.href = "/rate";
         }
 
         const data = await res.json();
@@ -43,7 +44,10 @@ const RatingsList = (params) => {
         <div>
           <h1 className="text-3xl font-extrabold">{ListName}</h1>
           <div className="my-5 flex flex-col gap-4">
-            <AddListRating listName={ListName} />
+            <div className="flex flex-row justify-between">
+              <AddListRating listName={ListName} />
+              <EditList listName={ListName} />
+            </div>
           </div>
           <ul>
             {ratings &&
