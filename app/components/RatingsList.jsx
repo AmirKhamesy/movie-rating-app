@@ -19,9 +19,8 @@ const RatingsList = (params) => {
             next: { revalidate: 0 },
           }
         );
-
         if (!res.ok) {
-          throw new Error("Failed to get lists");
+          window.location.href = "http://localhost:3000/rate";
         }
 
         const data = await res.json();
@@ -29,7 +28,6 @@ const RatingsList = (params) => {
         setRatings(ratings);
         setLoading(false);
       } catch (error) {
-        console.error(error);
         setLoading(false);
       }
     }

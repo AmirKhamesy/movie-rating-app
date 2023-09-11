@@ -18,16 +18,35 @@ export const GET = async (req, { params }) => {
     const { name } = params;
     const userId = session.user.id;
 
-    const allListRatings = await prisma.list.findMany({
-      include: {
-        ratings: true,
-      },
+    const list = await prisma.list.findMany({
       where: {
+        name: {
+          equals: name,
+          mode: "insensitive",
+        },
         userId,
-        name,
       },
     });
-    return NextResponse.json(allListRatings[0]);
+
+    const listId = list[0]?.id;
+
+    if (listId) {
+      const allListRatings = await prisma.list.findUnique({
+        include: {
+          ratings: true,
+        },
+        where: {
+          id: listId,
+        },
+      });
+
+      return NextResponse.json(allListRatings);
+    } else {
+      return NextResponse.json(
+        { message: "Problem getting lists" },
+        { status: 404 }
+      );
+    }
   } catch (error) {
     console.log(error);
     return NextResponse.json({ message: "GET Error" }, { status: 500 });

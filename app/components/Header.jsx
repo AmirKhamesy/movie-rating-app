@@ -4,7 +4,7 @@ import { usePathname } from "next/navigation";
 
 const Header = () => {
   const pathname = usePathname();
-  const basepath = pathname.split("/")[1]; // Get the first part of the pathname
+  const basepath = pathname.split("/")[1]; 
 
   const navItems = [
     {
