@@ -18,7 +18,7 @@ const EditList = ({ listName }) => {
       .finally(() => {
         setModalDeleteOpen(false);
         setModalOpen(false);
-        // window.location.href = "/rate";
+        window.location.href = "/rate";
       });
   };
 
