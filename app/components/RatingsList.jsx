@@ -10,6 +10,15 @@ const RatingsList = (params) => {
 
   const { ListName } = params;
 
+  const setRating = (rating, idx) => {
+    setRatings((prevRatings) => {
+      return [
+        rating,
+        ...prevRatings.slice(0, idx).concat(prevRatings.slice(idx + 1)),
+      ];
+    });
+  };
+
   useEffect(() => {
     async function fetchLists() {
       try {
@@ -51,8 +60,13 @@ const RatingsList = (params) => {
           </div>
           <ul>
             {ratings &&
-              ratings.map((rating) => (
-                <Rating key={rating.id} rating={rating} />
+              ratings.map((rating, idx) => (
+                <Rating
+                  key={rating.id}
+                  idx={idx}
+                  rating={rating}
+                  setRating={setRating}
+                />
               ))}
           </ul>
         </div>
