@@ -51,7 +51,13 @@ const RatingsList = (params) => {
         <div className=" mx-auto  spinner"></div>
       ) : (
         <div>
-          <h1 className="text-3xl font-extrabold">{ListName}</h1>
+          <a
+            className="cursor-pointer text-lg text-blue-600 font-medium"
+            href="/rate"
+          >
+            &lt; BACK TO LISTS
+          </a>
+          <h1 className="text-3xl my-2 font-extrabold">{ListName}</h1>
           <div className="my-5 flex flex-col gap-4">
             <div className="flex flex-row justify-between">
               <AddListRating listName={ListName} />
