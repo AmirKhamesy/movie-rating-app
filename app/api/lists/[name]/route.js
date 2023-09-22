@@ -122,10 +122,20 @@ export const PATCH = async (req, { params }) => {
     const userId = session.user.id;
     const { newName } = body;
 
+    const list = await prisma.list.findMany({
+      where: {
+        userId,
+        name,
+      },
+    });
+
+    const listId = list[0].id;
+    const formatedName = newName.trim(); //HACK: Query params issue when loading list
+
     const updateRating = await prisma.list.update({
-      where: { name, userId },
+      where: { id: listId },
       data: {
-        name: newName,
+        name: formatedName,
       },
     });
     if (!updateRating) {
@@ -167,8 +177,6 @@ export const DELETE = async (req, { params }) => {
 
     const listId = list[0].id;
 
-    console.log("here ------------------");
-    console.log(listId);
     if (listId) {
       const deletedList = await prisma.list.delete({
         where: {

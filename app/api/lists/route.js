@@ -36,9 +36,11 @@ export const POST = async (req) => {
       );
     }
 
+    const formatedTitle = title.trim();
+
     const newList = await prisma.list.create({
       data: {
-        name: title,
+        name: formatedTitle,
         userId: session.user.id,
       },
     });
