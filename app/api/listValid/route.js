@@ -14,11 +14,13 @@ export async function POST(req) {
     }
 
     const { name } = await req.json();
+    const formatedName = name.trim();
+
     const listExists = await prisma.list.findFirst({
       where: {
         name: {
           mode: "insensitive",
-          equals: name,
+          equals: formatedName,
         },
         userId: session.user.id,
       },

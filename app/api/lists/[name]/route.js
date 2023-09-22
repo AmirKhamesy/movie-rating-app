@@ -75,7 +75,11 @@ export const POST = async (req, { params }) => {
       },
     });
 
-    const listId = list[0].id;
+    const listId = list[0]?.id;
+
+    if (!listId) {
+      return NextResponse.json({ message: "Problem getting lists" });
+    }
 
     const rating = await prisma.rating.create({
       data: {
@@ -129,7 +133,11 @@ export const PATCH = async (req, { params }) => {
       },
     });
 
-    const listId = list[0].id;
+    const listId = list[0]?.id;
+
+    if (!listId) {
+      return NextResponse.json({ message: "Problem getting lists" });
+    }
     const formatedName = newName.trim(); //HACK: Query params issue when loading list
 
     const updateRating = await prisma.list.update({
@@ -175,7 +183,7 @@ export const DELETE = async (req, { params }) => {
       },
     });
 
-    const listId = list[0].id;
+    const listId = list[0]?.id;
 
     if (listId) {
       const deletedList = await prisma.list.delete({
