@@ -5,6 +5,7 @@ import Modal from "./Modal";
 import axios from "axios";
 import Autocomplete from "./Autocomplete";
 import debounce from "lodash/debounce";
+import moment from "moment";
 
 const AddListRating = ({ listName }) => {
   const [inputs, setInputs] = useState({
@@ -12,6 +13,15 @@ const AddListRating = ({ listName }) => {
     scary: 0,
     story: 0,
     acting: 0,
+  });
+  const [editing, setEditing] = useState({
+    id: "",
+    title: "",
+    scary: 0,
+    story: 0,
+    acting: 0,
+    createdAt: "",
+    updatedAt: "",
   });
   const [modalOpen, setModalOpen] = useState(false);
   const [movieValid, setMovieValid] = useState(false);
@@ -24,6 +34,15 @@ const AddListRating = ({ listName }) => {
       story: 0,
       acting: 0,
     });
+    setEditing({
+      id: "",
+      title: "",
+      scary: 0,
+      story: 0,
+      acting: 0,
+      createdAt: "",
+      updatedAt: "",
+    });
   }, [modalOpen]);
 
   const handleChange = (e) => {
@@ -31,10 +50,17 @@ const AddListRating = ({ listName }) => {
     const value =
       name === "title" ? e.target.value : parseFloat(e.target.value);
 
-    setInputs((prevState) => ({
-      ...prevState,
-      [name]: value,
-    }));
+    if (editing.id) {
+      setEditing((prevState) => ({
+        ...prevState,
+        [name]: value,
+      }));
+    } else {
+      setInputs((prevState) => ({
+        ...prevState,
+        [name]: value,
+      }));
+    }
 
     // Cancel the previous debounce and start a new one
     if (name === "title") {
@@ -48,12 +74,31 @@ const AddListRating = ({ listName }) => {
     }
   };
 
+  // Create a debounced function to check movie validity
   const checkMovieValidDebounced = debounce(async (title) => {
     if (title) {
       try {
         const res = await axios.post("/api/movieValid", { title, listName });
         if (res.data.error) {
           setMovieValid(false);
+          if (!editing.id) {
+            setEditing({
+              id: "",
+              title: "",
+              scary: 0,
+              story: 0,
+              acting: 0,
+              createdAt: "",
+              updatedAt: "",
+            });
+          }
+          if (res.data.error === "Movie already exists") {
+            if (!editing.id) {
+              // Handle editing existing movie
+              delete res.data.error;
+              setEditing(res.data);
+            }
+          }
         } else {
           setMovieValid(true);
         }
@@ -63,6 +108,15 @@ const AddListRating = ({ listName }) => {
           err.response.data.error === "Movie not found in TMDB"
         ) {
           setMovieValid(false);
+          setEditing({
+            id: "",
+            title: "",
+            scary: 0,
+            story: 0,
+            acting: 0,
+            createdAt: "",
+            updatedAt: "",
+          });
         }
       }
     }
@@ -70,11 +124,11 @@ const AddListRating = ({ listName }) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    const apiUrl = `/api/lists/${listName}`;
-    console.log(apiUrl);
+    const apiUrl = editing.id ? `/api/ratings/${editing.id}` : "/api/ratings";
 
-    axios
-      .post(apiUrl, inputs)
+    const axiosMethod = editing.id ? axios.patch : axios.post;
+
+    axiosMethod(apiUrl, editing.id ? editing : inputs)
       .then((res) => console.log(res))
       .catch((err) => console.log(err))
       .finally(() => {
@@ -83,6 +137,15 @@ const AddListRating = ({ listName }) => {
           scary: 0,
           story: 0,
           acting: 0,
+        });
+        setEditing({
+          id: "",
+          title: "",
+          scary: 0,
+          story: 0,
+          acting: 0,
+          createdAt: "",
+          updatedAt: "",
         });
         setModalOpen(false);
         window.location.reload();
@@ -100,11 +163,23 @@ const AddListRating = ({ listName }) => {
       <Modal modalOpen={modalOpen} setModalOpen={setModalOpen}>
         <form className="w-full" onSubmit={handleSubmit}>
           <div className="flex justify-between items-center  mb-3">
-            <h1 className="text-2xl">New Rating</h1>
+            <h1 className="text-2xl">
+              {editing.id ? "Editing" : "New"} Rating
+            </h1>{" "}
+            {editing.id && (
+              <p className="text-sm text-gray-500">
+                Updated {moment(editing.updatedAt).fromNow()}
+              </p>
+            )}{" "}
           </div>
-          <Autocomplete value={inputs.title} handleChange={handleChange} />
+          <Autocomplete
+            value={editing.id ? editing.title : inputs.title}
+            handleChange={handleChange}
+          />
           <label htmlFor="scary" className="block my-2 text-lg font-medium">
-            Scary {inputs.scary !== undefined && `(${inputs.scary})`}
+            Scary{" "}
+            {(editing.id ? editing.scary : inputs.scary) !== undefined &&
+              `(${editing.id ? editing.scary : inputs.scary})`}{" "}
           </label>
           <input
             id="scary"
@@ -114,12 +189,14 @@ const AddListRating = ({ listName }) => {
             max="10"
             step="0.5"
             className="Slider"
-            value={inputs.scary}
+            value={editing.id ? editing.scary : inputs.scary}
             onChange={handleChange}
           />
 
           <label htmlFor="story" className="block my-2 text-lg font-medium">
-            Story {inputs.story !== undefined && `(${inputs.story})`}
+            Story{" "}
+            {(editing.id ? editing.story : inputs.story) !== undefined &&
+              `(${editing.id ? editing.story : inputs.story})`}
           </label>
           <input
             id="story"
@@ -129,12 +206,14 @@ const AddListRating = ({ listName }) => {
             max="10"
             step="0.5"
             className="Slider"
-            value={inputs.story}
+            value={editing.id ? editing.story : inputs.story}
             onChange={handleChange}
           />
 
           <label htmlFor="acting" className="block my-2 text-lg font-medium">
-            Acting {inputs.acting !== undefined && `(${inputs.acting})`}{" "}
+            Acting{" "}
+            {(editing.id ? editing.acting : inputs.acting) !== undefined &&
+              `(${editing.id ? editing.acting : inputs.acting})`}{" "}
           </label>
           <input
             id="acting"
@@ -144,14 +223,21 @@ const AddListRating = ({ listName }) => {
             max="10"
             step="0.5"
             className="Slider"
-            value={inputs.acting}
+            value={editing.id ? editing.acting : inputs.acting}
             onChange={handleChange}
           />
 
           <button
             type="submit"
             className="bg-blue-700 text-white px-5 py-2 mt-2 disabled:bg-blue-300"
-            disabled={inputs.title === "" || !movieValid}
+            disabled={
+              !editing.id &&
+              (inputs.story === undefined ||
+                inputs.scary === undefined ||
+                inputs.acting === undefined ||
+                inputs.title === undefined ||
+                !movieValid)
+            }
           >
             Submit
           </button>
