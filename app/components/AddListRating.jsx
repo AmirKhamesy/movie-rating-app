@@ -124,7 +124,9 @@ const AddListRating = ({ listName }) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    const apiUrl = editing.id ? `/api/ratings/${editing.id}` : "/api/ratings";
+    const apiUrl = editing.id
+      ? `/api/ratings/${editing.id}`
+      : `/api/lists/${listName}`;
 
     const axiosMethod = editing.id ? axios.patch : axios.post;
 
