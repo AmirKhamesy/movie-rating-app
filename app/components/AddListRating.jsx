@@ -3,12 +3,11 @@
 import { useEffect, useState } from "react";
 import Modal from "./Modal";
 import axios from "axios";
-import { useRouter } from "next/navigation";
 import Autocomplete from "./Autocomplete";
 import debounce from "lodash/debounce";
 import moment from "moment";
 
-const AddRating = ({ listName }) => {
+const AddListRating = ({ listName }) => {
   const [inputs, setInputs] = useState({
     title: "",
     scary: 0,
@@ -24,11 +23,9 @@ const AddRating = ({ listName }) => {
     createdAt: "",
     updatedAt: "",
   });
-  const [movieValid, setMovieValid] = useState(false);
   const [modalOpen, setModalOpen] = useState(false);
+  const [movieValid, setMovieValid] = useState(false);
   const [debounceTimer, setDebounceTimer] = useState(null);
-
-  const router = useRouter();
 
   useEffect(() => {
     setInputs({
@@ -127,7 +124,9 @@ const AddRating = ({ listName }) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    const apiUrl = editing.id ? `/api/ratings/${editing.id}` : "/api/ratings";
+    const apiUrl = editing.id
+      ? `/api/ratings/${editing.id}`
+      : `/api/lists/${listName}`;
 
     const axiosMethod = editing.id ? axios.patch : axios.post;
 
@@ -151,7 +150,7 @@ const AddRating = ({ listName }) => {
           updatedAt: "",
         });
         setModalOpen(false);
-        router.refresh();
+        window.location.reload();
       });
   };
 
@@ -168,7 +167,7 @@ const AddRating = ({ listName }) => {
           <div className="flex justify-between items-center  mb-3">
             <h1 className="text-2xl">
               {editing.id ? "Editing" : "New"} Rating
-            </h1>
+            </h1>{" "}
             {editing.id && (
               <p className="text-sm text-gray-500">
                 Updated {moment(editing.updatedAt).fromNow()}
@@ -182,7 +181,7 @@ const AddRating = ({ listName }) => {
           <label htmlFor="scary" className="block my-2 text-lg font-medium">
             Scary{" "}
             {(editing.id ? editing.scary : inputs.scary) !== undefined &&
-              `(${editing.id ? editing.scary : inputs.scary})`}
+              `(${editing.id ? editing.scary : inputs.scary})`}{" "}
           </label>
           <input
             id="scary"
@@ -250,4 +249,4 @@ const AddRating = ({ listName }) => {
   );
 };
 
-export default AddRating;
+export default AddListRating;

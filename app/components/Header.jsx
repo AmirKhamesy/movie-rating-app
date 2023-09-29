@@ -4,6 +4,8 @@ import { usePathname } from "next/navigation";
 
 const Header = () => {
   const pathname = usePathname();
+  const basepath = pathname.split("/")[1]; 
+
   const navItems = [
     {
       label: "Home",
@@ -27,7 +29,9 @@ const Header = () => {
             <Link
               href={link.href}
               className={
-                pathname === `${link.href}` ? "text-blue-500 font-bold" : ""
+                basepath === link.href.split("/")[1]
+                  ? "text-blue-500 font-bold"
+                  : ""
               }
             >
               {link.label}

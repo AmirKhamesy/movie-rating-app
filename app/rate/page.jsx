@@ -1,31 +1,31 @@
-import AddRating from "../components/AddRating";
-import RatingsList from "../components/RatingsList";
+import AddList from "../components/AddList";
 import { cookies } from "next/headers";
+import Lists from "../components/Lists";
 
-async function getRatings() {
-  const res = await fetch(`${process.env.NEXT_PUBLIC_API}/api/ratings`, {
-    next: { revalidate: 0 },
+async function fetchLists() {
+  const res = await fetch(`${process.env.NEXT_PUBLIC_API}/api/lists`, {
     credentials: "include",
+    next: { revalidate: 0 },
     headers: { Cookie: cookies().toString() }, //HACK: Send cookies to server
   });
 
   if (!res.ok) {
-    throw new Error("Failed to get ratings");
+    throw new Error("Failed to get lists");
   }
-
   return res.json();
 }
 
 const RatePage = async () => {
-  const ratings = await getRatings();
+  const lists = await fetchLists();
 
   return (
     <div className="max-w-4xl mx-auto mt-4">
-      <div className="my-5 flex flex-col gap-4">
-        <AddRating />
+      <div>
+        <div className="my-5">
+          <AddList />
+        </div>
+        <Lists lists={lists} />
       </div>
-
-      <RatingsList ratings={ratings} />
     </div>
   );
 };

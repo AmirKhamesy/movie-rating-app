@@ -9,3 +9,7 @@ input {
 input.Slider {
   @apply w-full h-1 bg-white rounded-lg  cursor-pointer py-2 px-0;
 }
+
+.spinner {
+  @apply w-16 h-16 border-2 border-t-0 border-blue-500 border-solid rounded-full animate-spin;
+}

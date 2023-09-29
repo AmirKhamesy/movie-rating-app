@@ -9,7 +9,7 @@ import Image from "next/image";
 import ProgressBar from "./ProgressBar";
 import moment from "moment";
 
-const Rating = ({ rating }) => {
+const Rating = ({ rating, setRating, idx }) => {
   const [openModalEdit, setOpenModalEdit] = useState(false);
   const [ratingToEdit, setRatingToEdit] = useState(rating);
   const [openModalDelete, setOpenModalDelete] = useState(false);
@@ -50,7 +50,12 @@ const Rating = ({ rating }) => {
     e.preventDefault();
     axios
       .patch(`/api/ratings/${rating.id}`, ratingToEdit)
-      .then((res) => console.log(res))
+      .then((res) => {
+        console.log(res);
+        console.log(rating);
+        setRating(res.data, idx);
+        console.log(rating);
+      })
       .catch((err) => console.log(err))
       .finally(() => {
         setRatingToEdit(ratingToEdit);
@@ -62,11 +67,15 @@ const Rating = ({ rating }) => {
   const handleDeleteRating = (id) => {
     axios
       .delete(`/api/ratings/${id}`)
-      .then((res) => console.log(res))
+      .then((res) => {
+        if (res.statusText == "OK") {
+          setRating(null, idx);
+        }
+      })
       .catch((err) => console.log(err))
       .finally(() => {
         setRatingToEdit(ratingToEdit);
-        setOpenModalEdit(false);
+        setOpenModalDelete(false);
         router.refresh();
       });
   };

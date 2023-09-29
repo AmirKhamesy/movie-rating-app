@@ -2,51 +2,82 @@
 import { NextResponse } from "next/server";
 import prisma from "@/app/libs/prismadb";
 import axios from "axios"; // Import axios for making HTTP requests
+import { authOptions } from "../auth/[...nextauth]/route";
+import { getServerSession } from "next-auth/next";
 
 export async function POST(req) {
   try {
-    const { title } = await req.json();
-
-    if (!title) {
-      return new NextResponse(JSON.stringify({ error: "No title provided" }), {
+    //Check if user is auth
+    const session = await getServerSession(authOptions);
+    if (!session) {
+      return new NextResponse(JSON.stringify({ error: "unauthorized" }), {
         status: 401,
       });
     }
 
-    const existingMovie = await prisma.rating.findFirst({
-      where: {
-        title: {
-          mode: "insensitive",
-          equals: title,
-        },
-      },
-    });
+    const { title, listName } = await req.json();
 
-    if (existingMovie) {
+    if (!title || !listName) {
       return new NextResponse(
-        JSON.stringify({ error: "Movie already exists", ...existingMovie })
+        JSON.stringify({
+          error: "Something went wrong when validating movie title",
+        }),
+        {
+          status: 401,
+        }
       );
     }
 
-    const tmdbApiKey = process.env.NEXT_PUBLIC_TMDB_KEY;
-    const tmdbResponse = await axios.get(
-      `https://api.themoviedb.org/3/search/movie?api_key=${tmdbApiKey}&query=${title}`
-    );
+    const userId = session.user.id;
+    const list = await prisma.list.findMany({
+      where: {
+        name: {
+          equals: listName,
+          mode: "insensitive",
+        },
+        userId,
+      },
+    });
 
-    if (
-      tmdbResponse.data.results.length > 0 &&
-      tmdbResponse.data.results[0].title === title
-    ) {
-      // Movie exists in TMDB
-      return new NextResponse(JSON.stringify(tmdbResponse.data.results[0]));
-    } else {
-      // Movie not found in TMDB
-      return new NextResponse(
-        JSON.stringify({ error: "Movie not found in TMDB" }),
-        {
-          status: 404,
-        }
+    const listId = list[0]?.id;
+
+    if (listId) {
+      const existingMovie = await prisma.rating.findFirst({
+        where: {
+          listId: listId,
+          title: {
+            mode: "insensitive",
+            equals: title,
+          },
+        },
+      });
+
+      if (existingMovie) {
+        return new NextResponse(
+          JSON.stringify({ error: "Movie already exists", ...existingMovie })
+        );
+      }
+
+      const tmdbApiKey = process.env.NEXT_PUBLIC_TMDB_KEY;
+      const tmdbResponse = await axios.get(
+        `https://api.themoviedb.org/3/search/movie?api_key=${tmdbApiKey}&query=${title}`
       );
+
+      if (
+        tmdbResponse.data.results.length > 0 &&
+        tmdbResponse.data.results[0].title === title
+      ) {
+        // Movie exists in TMDB
+        return new NextResponse(JSON.stringify(tmdbResponse.data.results[0]));
+      } else {
+        // Movie not found in TMDB
+        return new NextResponse(
+          JSON.stringify({ error: "Movie not found in TMDB" }),
+          {
+            status: 404,
+          }
+        );
+      }
     }
   } catch (error) {
     console.error(error);
