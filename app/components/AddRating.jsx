@@ -81,7 +81,7 @@ const AddRating = ({ listName }) => {
   const checkMovieValidDebounced = debounce(async (title) => {
     if (title) {
       try {
-        const res = await axios.post("/api/movieValid", { title });
+        const res = await axios.post("/api/movieValid", { title, listName });
         if (res.data.error) {
           setMovieValid(false);
           if (!editing.id) {

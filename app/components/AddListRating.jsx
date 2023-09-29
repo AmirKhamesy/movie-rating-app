@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import Modal from "./Modal";
 import axios from "axios";
 import Autocomplete from "./Autocomplete";
+import debounce from "lodash/debounce";
 
 const AddListRating = ({ listName }) => {
   const [inputs, setInputs] = useState({
@@ -13,6 +14,8 @@ const AddListRating = ({ listName }) => {
     acting: 0,
   });
   const [modalOpen, setModalOpen] = useState(false);
+  const [movieValid, setMovieValid] = useState(false);
+  const [debounceTimer, setDebounceTimer] = useState(null);
 
   useEffect(() => {
     setInputs({
@@ -32,7 +35,38 @@ const AddListRating = ({ listName }) => {
       ...prevState,
       [name]: value,
     }));
+
+    // Cancel the previous debounce and start a new one
+    if (name === "title") {
+      if (debounceTimer) {
+        clearTimeout(debounceTimer);
+      }
+      const newDebounceTimer = setTimeout(() => {
+        checkMovieValidDebounced(value);
+      }, 250);
+      setDebounceTimer(newDebounceTimer);
+    }
   };
+
+  const checkMovieValidDebounced = debounce(async (title) => {
+    if (title) {
+      try {
+        const res = await axios.post("/api/movieValid", { title, listName });
+        if (res.data.error) {
+          setMovieValid(false);
+        } else {
+          setMovieValid(true);
+        }
+      } catch (err) {
+        if (
+          err.response.data.error === "No title provided" ||
+          err.response.data.error === "Movie not found in TMDB"
+        ) {
+          setMovieValid(false);
+        }
+      }
+    }
+  }, 250); // Wait for 250ms before executing
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -117,7 +151,7 @@ const AddListRating = ({ listName }) => {
           <button
             type="submit"
             className="bg-blue-700 text-white px-5 py-2 mt-2 disabled:bg-blue-300"
-            disabled={inputs.title === ""}
+            disabled={inputs.title === "" || !movieValid}
           >
             Submit
           </button>
