@@ -5,7 +5,7 @@ import Modal from "./Modal";
 import axios from "axios";
 import { useRouter } from "next/navigation";
 import Autocomplete from "./Autocomplete";
-import debounce from "lodash/debounce"; // Import debounce from lodash
+import debounce from "lodash/debounce";
 import moment from "moment";
 
 const AddRating = ({ listName }) => {
@@ -26,7 +26,7 @@ const AddRating = ({ listName }) => {
   });
   const [movieValid, setMovieValid] = useState(false);
   const [modalOpen, setModalOpen] = useState(false);
-  const [debounceTimer, setDebounceTimer] = useState(null); // Add debounceTimer state
+  const [debounceTimer, setDebounceTimer] = useState(null);
 
   const router = useRouter();
 

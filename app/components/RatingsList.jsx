@@ -12,10 +12,13 @@ const RatingsList = (params) => {
 
   const setRating = (rating, idx) => {
     setRatings((prevRatings) => {
-      return [
-        rating,
+      const newRatings = [
         ...prevRatings.slice(0, idx).concat(prevRatings.slice(idx + 1)),
       ];
+
+      rating && newRatings.concat(rating);
+
+      return newRatings;
     });
   };
 

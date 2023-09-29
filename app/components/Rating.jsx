@@ -67,11 +67,15 @@ const Rating = ({ rating, setRating, idx }) => {
   const handleDeleteRating = (id) => {
     axios
       .delete(`/api/ratings/${id}`)
-      .then((res) => console.log(res))
+      .then((res) => {
+        if (res.statusText == "OK") {
+          setRating(null, idx);
+        }
+      })
       .catch((err) => console.log(err))
       .finally(() => {
         setRatingToEdit(ratingToEdit);
-        setOpenModalEdit(false);
+        setOpenModalDelete(false);
         router.refresh();
       });
   };
