@@ -55,7 +55,7 @@ const Autocomplete = ({ value, handleChange }) => {
   };
 
   const handleBlur = () => {
-    setInputValueInParent(inputValue);
+    // setInputValueInParent(inputValue); HACK: This line is reseting title when edting, removing for now
     setIsTyping(false);
   };
 
