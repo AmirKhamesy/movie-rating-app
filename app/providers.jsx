@@ -5,7 +5,8 @@ import Footer from "./components/Footer";
 import { usePathname } from "next/navigation";
 
 export const Providers = ({ children }) => {
-  return usePathname() == "/public-list" ? (
+  const pathname = usePathname();
+  return pathname.startsWith("/public-list/") ? (
     children
   ) : (
     <SessionProvider>
