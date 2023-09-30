@@ -76,7 +76,7 @@ const Rating = ({ rating, setRating, idx }) => {
       .finally(() => {
         setRatingToEdit(ratingToEdit);
         setOpenModalDelete(false);
-        router.refresh();
+        window.location.refresh(); //HACK: Deleting local copy doesnt show client side, refreshing page to get updated list
       });
   };
 
