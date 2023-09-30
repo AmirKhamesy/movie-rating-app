@@ -55,15 +55,23 @@ const AddListRating = ({ listName }) => {
         ...prevState,
         [name]: value,
       }));
-    } else {
-      setInputs((prevState) => ({
-        ...prevState,
-        [name]: value,
-      }));
     }
+    setInputs((prevState) => ({
+      ...prevState,
+      [name]: value,
+    }));
 
     // Cancel the previous debounce and start a new one
     if (name === "title") {
+      setEditing({
+        id: "",
+        title: "",
+        scary: 0,
+        story: 0,
+        acting: 0,
+        createdAt: "",
+        updatedAt: "",
+      });
       if (debounceTimer) {
         clearTimeout(debounceTimer);
       }
@@ -166,7 +174,7 @@ const AddListRating = ({ listName }) => {
         <form className="w-full" onSubmit={handleSubmit}>
           <div className="flex justify-between items-center  mb-3">
             <h1 className="text-2xl">
-              {editing.id ? "Editing" : "New"} Rating
+              {editing.id ? "Updating" : "New"} Rating
             </h1>{" "}
             {editing.id && (
               <p className="text-sm text-gray-500">
