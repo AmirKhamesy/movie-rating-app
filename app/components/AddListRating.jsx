@@ -6,8 +6,9 @@ import axios from "axios";
 import Autocomplete from "./Autocomplete";
 import debounce from "lodash/debounce";
 import moment from "moment";
+import { useRouter } from "next/navigation";
 
-const AddListRating = ({ listName }) => {
+const AddListRating = ({ listName, setRating }) => {
   const [inputs, setInputs] = useState({
     title: "",
     scary: 0,
@@ -26,6 +27,8 @@ const AddListRating = ({ listName }) => {
   const [modalOpen, setModalOpen] = useState(false);
   const [movieValid, setMovieValid] = useState(false);
   const [debounceTimer, setDebounceTimer] = useState(null);
+
+  const router = useRouter();
 
   useEffect(() => {
     setInputs({
@@ -139,7 +142,9 @@ const AddListRating = ({ listName }) => {
     const axiosMethod = editing.id ? axios.patch : axios.post;
 
     axiosMethod(apiUrl, editing.id ? editing : inputs)
-      .then((res) => console.log(res))
+      .then((res) => {
+        setRating(res.data, null);
+      })
       .catch((err) => console.log(err))
       .finally(() => {
         setInputs({
@@ -158,7 +163,7 @@ const AddListRating = ({ listName }) => {
           updatedAt: "",
         });
         setModalOpen(false);
-        window.location.reload();
+        router.refresh();
       });
   };
 

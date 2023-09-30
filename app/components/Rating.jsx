@@ -51,10 +51,7 @@ const Rating = ({ rating, setRating, idx }) => {
     axios
       .patch(`/api/ratings/${rating.id}`, ratingToEdit)
       .then((res) => {
-        console.log(res);
-        console.log(rating);
         setRating(res.data, idx);
-        console.log(rating);
       })
       .catch((err) => console.log(err))
       .finally(() => {
@@ -76,7 +73,7 @@ const Rating = ({ rating, setRating, idx }) => {
       .finally(() => {
         setRatingToEdit(ratingToEdit);
         setOpenModalDelete(false);
-        window.location.refresh(); //HACK: Deleting local copy doesnt show client side, refreshing page to get updated list
+        router.refresh();
       });
   };
 

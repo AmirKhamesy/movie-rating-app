@@ -12,13 +12,16 @@ const RatingsList = (params) => {
 
   const setRating = (rating, idx) => {
     setRatings((prevRatings) => {
-      const newRatings = [
-        ...prevRatings.slice(0, idx).concat(prevRatings.slice(idx + 1)),
-      ];
-
-      rating && newRatings.concat(rating);
-
-      return newRatings;
+      if (!rating) {
+        prevRatings.splice(idx, 1);
+      } else {
+        if (isNaN(idx)) {
+          prevRatings = [...prevRatings, rating];
+        } else {
+          prevRatings[idx] = rating;
+        }
+      }
+      return prevRatings;
     });
   };
 
@@ -63,7 +66,7 @@ const RatingsList = (params) => {
           <h1 className="text-3xl my-2 font-extrabold">{ListName}</h1>
           <div className="my-5 flex flex-col gap-4">
             <div className="flex flex-row justify-between">
-              <AddListRating listName={ListName} />
+              <AddListRating listName={ListName} setRating={setRating} />
               <EditList listName={ListName} />
             </div>
           </div>
