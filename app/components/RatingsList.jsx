@@ -15,7 +15,7 @@ const RatingsList = (params) => {
       if (!rating) {
         prevRatings.splice(idx, 1);
       } else {
-        if (isNaN(idx)) {
+        if (!idx) {
           prevRatings = [...prevRatings, rating];
         } else {
           prevRatings[idx] = rating;
