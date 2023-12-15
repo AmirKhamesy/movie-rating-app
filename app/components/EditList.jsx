@@ -32,12 +32,11 @@ const EditList = ({ listName }) => {
     };
     axios
       .patch(apiUrl, body)
-      .then((res) => console.log(res))
+      .then((res) => (window.location.href = encodeURI(res.data.name))) //TODO: remove old list name from browser history, so is user presses back they dont end up at the old list that no longer exists
       .catch((err) => console.log(err))
       .finally(() => {
         setListTitle(listName);
         setModalOpen(false);
-        window.location.reload();
       });
   };
 
