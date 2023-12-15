@@ -14,6 +14,7 @@
     "axios": "^1.4.0",
     "bcrypt": "^5.1.1",
     "bcryptjs": "^2.4.3",
+    "clipboard-copy": "^4.0.1",
     "debug": "^4.3.4",
     "lodash": "^4.17.21",
     "moment": "^2.29.4",

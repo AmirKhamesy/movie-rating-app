@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import Modal from "./Modal";
 import axios from "axios";
+import CopyToClipboardButton from "./CopyToClipboard";
 
 const EditList = ({ listName }) => {
   const [modalOpen, setModalOpen] = useState(false);
@@ -53,12 +54,20 @@ const EditList = ({ listName }) => {
         <div className="flex flex-col">
           <div className="flex flex-row justify-between items-center mb-1">
             <h1 className="text-2xl font-semibold">Editing List</h1>
-            <button
-              className="bg-red-500 text-white p-3 cursor-pointer"
-              onClick={() => setModalDeleteOpen(true)}
-            >
-              Delete
-            </button>
+            <div className="flex flex-row gap-1">
+              <button
+                className="bg-purple-500 text-white p-3 cursor-pointer"
+                onClick={() => console.log("hello")}
+              >
+                Make Public
+              </button>
+              <button
+                className="bg-red-500 text-white p-3 cursor-pointer"
+                onClick={() => setModalDeleteOpen(true)}
+              >
+                Delete
+              </button>
+            </div>
           </div>
           <form className="w-full" onSubmit={handleSubmit}>
             <label htmlFor="title" className="block my-2 text-lg font-medium ">
@@ -74,6 +83,12 @@ const EditList = ({ listName }) => {
               onChange={(e) => setListTitle(e.target.value)}
               autoFocus
             />
+
+            <label htmlFor="title" className="block my-2 text-lg font-medium ">
+              Public List URL
+            </label>
+            <CopyToClipboardButton textToCopy={"hello world"} />
+
             <button
               type="submit"
               className="bg-blue-700 text-white px-5 py-2 mt-2 disabled:bg-blue-300"
