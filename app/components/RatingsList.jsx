@@ -7,6 +7,7 @@ import React, { useEffect, useState } from "react";
 const RatingsList = (params) => {
   const [ratings, setRatings] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [list, setList] = useState({});
 
   const { ListName } = params;
 
@@ -40,7 +41,8 @@ const RatingsList = (params) => {
         }
 
         const data = await res.json();
-        const { ratings, ...list } = data;
+        const { ratings, ...listData } = data;
+        setList(listData);
         setRatings(ratings);
         setLoading(false);
       } catch (error) {
@@ -67,7 +69,7 @@ const RatingsList = (params) => {
           <div className="my-5 flex flex-col gap-4">
             <div className="flex flex-row justify-between">
               <AddListRating listName={ListName} setRating={setRating} />
-              <EditList listName={ListName} />
+              <EditList listName={ListName} publicHash={list.publicHash} />
             </div>
           </div>
           <ul>

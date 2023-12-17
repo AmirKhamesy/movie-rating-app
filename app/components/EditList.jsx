@@ -3,7 +3,7 @@ import Modal from "./Modal";
 import axios from "axios";
 import CopyToClipboardButton from "./CopyToClipboard";
 
-const EditList = ({ listName }) => {
+const EditList = ({ listName, PublicHash }) => {
   const [modalOpen, setModalOpen] = useState(false);
   const [modalDeleteOpen, setModalDeleteOpen] = useState(false);
   const [listTitle, setListTitle] = useState(listName);
@@ -41,6 +41,8 @@ const EditList = ({ listName }) => {
       });
   };
 
+  const publicListURL = `${process.env.NEXT_PUBLIC_API}/${PublicHash}`;
+
   return (
     <div>
       <button
@@ -59,7 +61,7 @@ const EditList = ({ listName }) => {
                 className="bg-purple-500 text-white p-3 cursor-pointer"
                 onClick={() => console.log("hello")}
               >
-                Make Public
+                Make list {PublicHash ? "Private" : "Public"}
               </button>
               <button
                 className="bg-red-500 text-white p-3 cursor-pointer"
@@ -87,7 +89,7 @@ const EditList = ({ listName }) => {
             <label htmlFor="title" className="block my-2 text-lg font-medium ">
               Public List URL
             </label>
-            <CopyToClipboardButton textToCopy={"hello world"} />
+            {PublicHash && <CopyToClipboardButton textToCopy={publicListURL} />}
 
             <button
               type="submit"
