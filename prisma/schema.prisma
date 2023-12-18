@@ -28,6 +28,8 @@ model List {
   ratings Rating[]
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  publicHash String @default("")
+  public Boolean @default(false)
 }
 
 model User {

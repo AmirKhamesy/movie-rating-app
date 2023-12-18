@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from "react";
 import Modal from "./Modal";
 import axios from "axios";
+import CopyToClipboardButton from "./CopyToClipboard";
 
-const EditList = ({ listName }) => {
+const EditList = ({ listName, publicHash, listPublic, listId, setList }) => {
   const [modalOpen, setModalOpen] = useState(false);
   const [modalDeleteOpen, setModalDeleteOpen] = useState(false);
   const [listTitle, setListTitle] = useState(listName);
@@ -24,6 +25,15 @@ const EditList = ({ listName }) => {
       });
   };
 
+  const handlePublicToggle = () => {
+    axios
+      .put("/api/toggleListPublic", { listId })
+      .then((res) => {
+        setList(res.data.updatedList);
+      })
+      .catch((err) => console.log(err));
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
     const apiUrl = `/api/lists/${listName}`;
@@ -32,14 +42,15 @@ const EditList = ({ listName }) => {
     };
     axios
       .patch(apiUrl, body)
-      .then((res) => console.log(res))
+      .then((res) => (window.location.href = encodeURI(res.data.name))) //TODO: remove old list name from browser history, so is user presses back they dont end up at the old list that no longer exists
       .catch((err) => console.log(err))
       .finally(() => {
         setListTitle(listName);
         setModalOpen(false);
-        window.location.reload();
       });
   };
+
+  const publicListURL = `${process.env.NEXT_PUBLIC_API}/public-list/${publicHash}`;
 
   return (
     <div>
@@ -54,12 +65,20 @@ const EditList = ({ listName }) => {
         <div className="flex flex-col">
           <div className="flex flex-row justify-between items-center mb-1">
             <h1 className="text-2xl font-semibold">Editing List</h1>
-            <button
-              className="bg-red-500 text-white p-3 cursor-pointer"
-              onClick={() => setModalDeleteOpen(true)}
-            >
-              Delete
-            </button>
+            <div className="flex flex-row gap-1">
+              <button
+                className="bg-purple-500 text-white p-3 cursor-pointer"
+                onClick={() => handlePublicToggle()}
+              >
+                Make list {listPublic ? "Private" : "Public"}
+              </button>
+              <button
+                className="bg-red-500 text-white p-3 cursor-pointer"
+                onClick={() => setModalDeleteOpen(true)}
+              >
+                Delete
+              </button>
+            </div>
           </div>
           <form className="w-full" onSubmit={handleSubmit}>
             <label htmlFor="title" className="block my-2 text-lg font-medium ">
@@ -75,10 +94,22 @@ const EditList = ({ listName }) => {
               onChange={(e) => setListTitle(e.target.value)}
               autoFocus
             />
+            {listPublic && publicHash && (
+              <>
+                <label
+                  htmlFor="title"
+                  className="block my-2 text-lg font-medium "
+                >
+                  Public List URL
+                </label>
+                <CopyToClipboardButton textToCopy={publicListURL} />
+              </>
+            )}
+
             <button
               type="submit"
               className="bg-blue-700 text-white px-5 py-2 mt-2 disabled:bg-blue-300"
-              disabled={listTitle === ""}
+              disabled={listTitle === "" || listName === listTitle}
             >
               Submit
             </button>
