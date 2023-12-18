@@ -85,16 +85,22 @@ const EditList = ({ listName, PublicHash }) => {
               onChange={(e) => setListTitle(e.target.value)}
               autoFocus
             />
-
-            <label htmlFor="title" className="block my-2 text-lg font-medium ">
-              Public List URL
-            </label>
-            {PublicHash && <CopyToClipboardButton textToCopy={publicListURL} />}
+            {PublicHash && (
+              <>
+                <label
+                  htmlFor="title"
+                  className="block my-2 text-lg font-medium "
+                >
+                  Public List URL
+                </label>
+                <CopyToClipboardButton textToCopy={publicListURL} />
+              </>
+            )}
 
             <button
               type="submit"
               className="bg-blue-700 text-white px-5 py-2 mt-2 disabled:bg-blue-300"
-              disabled={listTitle === ""}
+              disabled={listTitle === "" || listName === listTitle}
             >
               Submit
             </button>
