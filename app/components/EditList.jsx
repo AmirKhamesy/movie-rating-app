@@ -3,7 +3,7 @@ import Modal from "./Modal";
 import axios from "axios";
 import CopyToClipboardButton from "./CopyToClipboard";
 
-const EditList = ({ listName, PublicHash }) => {
+const EditList = ({ listName, publicHash, listPublic, listId, setList }) => {
   const [modalOpen, setModalOpen] = useState(false);
   const [modalDeleteOpen, setModalDeleteOpen] = useState(false);
   const [listTitle, setListTitle] = useState(listName);
@@ -25,6 +25,15 @@ const EditList = ({ listName, PublicHash }) => {
       });
   };
 
+  const handlePublicToggle = () => {
+    axios
+      .put("/api/toggleListPublic", { listId })
+      .then((res) => {
+        setList(res.data.updatedList);
+      })
+      .catch((err) => console.log(err));
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
     const apiUrl = `/api/lists/${listName}`;
@@ -41,7 +50,7 @@ const EditList = ({ listName, PublicHash }) => {
       });
   };
 
-  const publicListURL = `${process.env.NEXT_PUBLIC_API}/${PublicHash}`;
+  const publicListURL = `${process.env.NEXT_PUBLIC_API}/public-list/${publicHash}`;
 
   return (
     <div>
@@ -59,9 +68,9 @@ const EditList = ({ listName, PublicHash }) => {
             <div className="flex flex-row gap-1">
               <button
                 className="bg-purple-500 text-white p-3 cursor-pointer"
-                onClick={() => console.log("hello")}
+                onClick={() => handlePublicToggle()}
               >
-                Make list {PublicHash ? "Private" : "Public"}
+                Make list {listPublic ? "Private" : "Public"}
               </button>
               <button
                 className="bg-red-500 text-white p-3 cursor-pointer"
@@ -85,7 +94,7 @@ const EditList = ({ listName, PublicHash }) => {
               onChange={(e) => setListTitle(e.target.value)}
               autoFocus
             />
-            {PublicHash && (
+            {listPublic && publicHash && (
               <>
                 <label
                   htmlFor="title"

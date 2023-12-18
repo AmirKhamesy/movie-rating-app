@@ -69,7 +69,13 @@ const RatingsList = (params) => {
           <div className="my-5 flex flex-col gap-4">
             <div className="flex flex-row justify-between">
               <AddListRating listName={ListName} setRating={setRating} />
-              <EditList listName={ListName} publicHash={list.publicHash} />
+              <EditList
+                listName={ListName}
+                publicHash={list.publicHash}
+                listPublic={list.public}
+                listId={list.id}
+                setList={setList}
+              />
             </div>
           </div>
           <ul>

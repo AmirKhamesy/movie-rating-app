@@ -29,6 +29,7 @@ model List {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   publicHash String @default("")
+  public Boolean @default(false)
 }
 
 model User {

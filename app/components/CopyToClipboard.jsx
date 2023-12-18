@@ -27,7 +27,7 @@ const CopyToClipboardButton = ({ textToCopy }) => {
   } cursor-pointer`;
 
   const buttonClasses = `ml-1 flex-shrink-0 bg-${
-    isCopied ? "green-500" : "blue-500"
+    isCopied ? "green-600" : "blue-500"
   } text-white py-2 px-4 rounded-md focus:outline-none focus:shadow-outline h-full`;
 
   const CopyClipboardIcon = ({ isCopied }) =>
