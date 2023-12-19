@@ -3,39 +3,51 @@ generator client {
 }
 
 datasource db {
-  provider = "mongodb"
-  url      = env("DATABASE_URL")
+  provider     = "mongodb"
+  url          = env("DATABASE_URL")
   relationMode = "prisma"
 }
 
 model Rating {
-  id String @id @default(auto()) @map("_id") @db.ObjectId
-  title String?
-  scary Float?
-  story Float?
-  acting Float?
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  title     String?
+  scary     Float?
+  story     Float?
+  acting    Float?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  listId String @db.ObjectId
-  list List @relation(fields: [listId], references: [id], onDelete: Cascade)
+  listId    String   @db.ObjectId
+  list      List     @relation(fields: [listId], references: [id], onDelete: Cascade)
 }
 
 model List {
-  id String @id @default(auto()) @map("_id") @db.ObjectId
-  name String
-  userId String @db.ObjectId
-  user User @relation(fields: [userId], references: [id])
-  ratings Rating[]
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  publicHash String @default("")
-  public Boolean @default(false)
+  id            String         @id @default(auto()) @map("_id") @db.ObjectId
+  name          String
+  userId        String         @db.ObjectId
+  user          User           @relation(fields: [userId], references: [id])
+  ratings       Rating[]
+  collaborators Collaborator[]
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+  publicHash    String         @default("")
+  public        Boolean        @default(false)
 }
 
 model User {
-  id String @id @default(auto()) @map("_id") @db.ObjectId
-  email String @unique
-  password String
-  name String?
-  lists List[]
+  id           String         @id @default(auto()) @map("_id") @db.ObjectId
+  email        String         @unique
+  password     String
+  name         String?
+  lists        List[]
+  Collaborator Collaborator[]
+}
+
+model Collaborator {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  listId    String   @db.ObjectId
+  userId    String   @db.ObjectId
+  user      User     @relation(fields: [userId], references: [id])
+  list      List     @relation(fields: [listId], references: [id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
