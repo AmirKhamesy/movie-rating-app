@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import Modal from "./Modal";
 import axios from "axios";
 import CopyToClipboardButton from "./CopyToClipboard";
+import AddCollaborator from "./AddCollaborator";
 
 const EditList = ({ listName, publicHash, listPublic, listId, setList }) => {
   const [modalOpen, setModalOpen] = useState(false);
@@ -80,6 +81,22 @@ const EditList = ({ listName, publicHash, listPublic, listId, setList }) => {
               </button>
             </div>
           </div>
+
+          {listPublic && publicHash && (
+            <>
+              <label
+                htmlFor="title"
+                className="block my-2 text-lg font-medium "
+              >
+                Public List URL
+              </label>
+              <CopyToClipboardButton textToCopy={publicListURL} />
+            </>
+          )}
+          <label htmlFor="colab" className="block my-2 text-lg font-medium ">
+            Add Collaborator
+          </label>
+          <AddCollaborator listId={listId} />
           <form className="w-full" onSubmit={handleSubmit}>
             <label htmlFor="title" className="block my-2 text-lg font-medium ">
               Title
@@ -94,17 +111,6 @@ const EditList = ({ listName, publicHash, listPublic, listId, setList }) => {
               onChange={(e) => setListTitle(e.target.value)}
               autoFocus
             />
-            {listPublic && publicHash && (
-              <>
-                <label
-                  htmlFor="title"
-                  className="block my-2 text-lg font-medium "
-                >
-                  Public List URL
-                </label>
-                <CopyToClipboardButton textToCopy={publicListURL} />
-              </>
-            )}
 
             <button
               type="submit"

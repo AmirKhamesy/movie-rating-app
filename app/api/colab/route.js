@@ -42,7 +42,7 @@ export async function POST(req) {
       return new NextResponse(
         JSON.stringify({ error: "No user found with that email." }),
         {
-          status: 401,
+          status: 404,
         }
       );
     }
