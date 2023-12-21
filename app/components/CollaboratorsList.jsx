@@ -1,11 +1,13 @@
 import axios from "axios";
 
-const CollaboratorsList = ({ collaborators, setCollaborators }) => {
+const CollaboratorsList = ({ collaborators, setCollaborators, setLoading }) => {
   const handleRemoveCollaborator = async (id) => {
     try {
+      setLoading(true);
       await axios.delete(`${process.env.NEXT_PUBLIC_API}/api/colab/${id}`);
 
       setCollaborators(collaborators.filter((colab) => colab.id !== id));
+      setLoading(false);
     } catch (error) {
       console.error("Error removing collaborator:", error);
     }

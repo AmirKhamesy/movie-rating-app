@@ -17,6 +17,7 @@ const EditList = ({
   const [modalOpen, setModalOpen] = useState(false);
   const [modalDeleteOpen, setModalDeleteOpen] = useState(false);
   const [listTitle, setListTitle] = useState(listName);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     setModalDeleteOpen(false);
@@ -24,24 +25,30 @@ const EditList = ({
   }, [modalOpen]);
 
   const handleDeleteListing = () => {
+    setModalDeleteOpen(false);
+    setLoading(true);
     axios
       .delete(`/api/lists/${listName}`)
       .then((res) => console.log(res))
       .catch((err) => console.log(err))
       .finally(() => {
-        setModalDeleteOpen(false);
+        setLoading(false);
         setModalOpen(false);
         window.location.href = "/rate";
       });
   };
 
   const handlePublicToggle = () => {
+    setLoading(true);
     axios
       .put("/api/toggleListPublic", { listId })
       .then((res) => {
         setList(res.data.updatedList);
       })
-      .catch((err) => console.log(err));
+      .catch((err) => console.log(err))
+      .finally(() => {
+        setLoading(false);
+      });
   };
 
   const handleSubmit = (e) => {
@@ -72,7 +79,12 @@ const EditList = ({
       </button>
 
       <Modal modalOpen={modalOpen} setModalOpen={setModalOpen}>
-        <div className="flex flex-col">
+        <div className="flex flex-col relative">
+          {loading && (
+            <div className="fixed top-0 left-0 w-[100vw] h-[100vh] bg-gray-800 bg-opacity-50 flex items-center justify-center">
+              <div className="w-16 h-16 border-2 border-t-0 border-white border-solid rounded-full animate-spin"></div>
+            </div>
+          )}
           <div className="flex flex-row justify-between items-center mb-1">
             <h1 className="text-2xl font-semibold">Editing List</h1>
             <div className="flex flex-row gap-1">
@@ -108,11 +120,13 @@ const EditList = ({
           <AddCollaborator
             listId={listId}
             setCollaborators={setCollaborators}
+            setLoading={setLoading}
           />
 
           <CollaboratorsList
             collaborators={collaborators}
             setCollaborators={setCollaborators}
+            setLoading={setLoading}
           />
 
           <form className="w-full" onSubmit={handleSubmit}>
@@ -139,7 +153,7 @@ const EditList = ({
             </button>
           </form>
           <Modal modalOpen={modalDeleteOpen} setModalOpen={setModalDeleteOpen}>
-            <div className="flex justify-between items-center  mb-3">
+            <div className="flex justify-between items-center mb-3">
               <h1 className="text-2xl">
                 Are you sure you want to delete{" "}
                 <span className="font-bold">"{listName}"</span> ?

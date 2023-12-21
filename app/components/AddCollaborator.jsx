@@ -2,15 +2,19 @@ import React, { useState } from "react";
 import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-const AddCollaborator = ({ listId, setCollaborators }) => {
+
+const AddCollaborator = ({ listId, setCollaborators, setLoading }) => {
   const [colabEmail, setColabEmail] = useState("");
-  const [isAdded, setIsAdded] = useState(false);
   const [isValidEmail, setIsValidEmail] = useState(true);
 
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
+  const addButtonDisabled = colabEmail === "" || !isValidEmail;
+
   const handleAddClick = async () => {
     if (isValidEmail) {
+      setLoading(true);
+
       try {
         const response = await axios.post(
           `${process.env.NEXT_PUBLIC_API}/api/colab`,
@@ -20,16 +24,12 @@ const AddCollaborator = ({ listId, setCollaborators }) => {
           }
         );
 
-        setIsAdded(true);
         setCollaborators((prev) => [...prev, response.data]);
         setColabEmail("");
-
-        setTimeout(() => {
-          setIsAdded(false);
-        }, 1500);
+        setLoading(false);
       } catch (error) {
+        setLoading(false);
         if (error.response) {
-          //TODO: better error handling
           const status = error.response.status;
           const message = error.response.data.error;
 
@@ -66,14 +66,10 @@ const AddCollaborator = ({ listId, setCollaborators }) => {
 
   const containerClasses = "flex items-center";
 
-  const inputClasses = `flex-grow bg-${
-    isAdded ? "green-100" : ""
-  } border py-1 px-4 w-100% focus:outline-none focus:shadow-outline ${
-    isAdded ? "border-green-500 text-green-700 green-100" : ""
-  }`;
+  const inputClasses = `flex-grow  border py-1 px-4 w-100% focus:outline-none focus:shadow-outline `;
 
   const buttonClasses = `ml-1 flex-shrink-0 bg-${
-    isAdded || !isValidEmail ? "blue-300" : isAdded ? "green-600" : "blue-500"
+    addButtonDisabled ? "blue-300" : "blue-500"
   } text-white py-2 px-4 focus:outline-none focus:shadow-outline h-full`;
 
   return (
@@ -90,19 +86,18 @@ const AddCollaborator = ({ listId, setCollaborators }) => {
             validateEmail(e.target.value);
           }}
           onKeyDown={(e) => {
-            if (e.key === "Enter") {
+            if (e.key === "Enter" && !addButtonDisabled) {
               handleAddClick();
             }
           }}
-          readOnly={isAdded}
         />
         <button
           onClick={handleAddClick}
           type="button"
           className={buttonClasses}
-          disabled={isAdded || !isValidEmail}
+          disabled={addButtonDisabled}
         >
-          {isAdded ? "Added" : "Add"}
+          Add
         </button>
         <ToastContainer />
       </div>
