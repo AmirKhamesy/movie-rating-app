@@ -8,6 +8,7 @@ const RatingsList = (params) => {
   const [ratings, setRatings] = useState([]);
   const [loading, setLoading] = useState(true);
   const [list, setList] = useState({});
+  const [collaborators, setCollaborators] = useState([]);
 
   const { ListName } = params;
 
@@ -41,7 +42,8 @@ const RatingsList = (params) => {
         }
 
         const data = await res.json();
-        const { ratings, ...listData } = data;
+        const { ratings, collaborators, ...listData } = data;
+        setCollaborators(collaborators);
         setList(listData);
         setRatings(ratings);
         setLoading(false);
@@ -75,6 +77,7 @@ const RatingsList = (params) => {
                 listPublic={list.public}
                 listId={list.id}
                 setList={setList}
+                collaborators={collaborators}
               />
             </div>
           </div>

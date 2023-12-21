@@ -4,7 +4,14 @@ import axios from "axios";
 import CopyToClipboardButton from "./CopyToClipboard";
 import AddCollaborator from "./AddCollaborator";
 
-const EditList = ({ listName, publicHash, listPublic, listId, setList }) => {
+const EditList = ({
+  listName,
+  publicHash,
+  listPublic,
+  listId,
+  setList,
+  collaborators,
+}) => {
   const [modalOpen, setModalOpen] = useState(false);
   const [modalDeleteOpen, setModalDeleteOpen] = useState(false);
   const [listTitle, setListTitle] = useState(listName);
@@ -97,6 +104,19 @@ const EditList = ({ listName, publicHash, listPublic, listId, setList }) => {
             Add Collaborator
           </label>
           <AddCollaborator listId={listId} />
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 mt-2">
+            {collaborators.map((collaborator) => (
+              <div class="p-4 border rounded-md flex items-center justify-between">
+                <div>
+                  <p class="text-lg font-semibold">{collaborator.user.name}</p>
+                  <p class="text-gray-600">{collaborator.user.email}</p>
+                </div>
+                <button class="ml-2 px-4 py-2 bg-red-500 text-white rounded-md">
+                  X
+                </button>
+              </div>
+            ))}
+          </div>
           <form className="w-full" onSubmit={handleSubmit}>
             <label htmlFor="title" className="block my-2 text-lg font-medium ">
               Title
