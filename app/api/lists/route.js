@@ -14,7 +14,8 @@ export const GET = async () => {
       });
     }
 
-    const lists = await prisma.list.findMany({
+    // Get lists owned by the user
+    const userLists = await prisma.list.findMany({
       where: {
         userId: session.user.id,
       },
@@ -23,9 +24,30 @@ export const GET = async () => {
       },
     });
 
+    // Get lists where the user is a collaborator
+    const collaboratorLists = await prisma.collaborator.findMany({
+      where: {
+        userId: session.user.id,
+      },
+      include: {
+        list: true,
+      },
+      orderBy: {
+        list: {
+          updatedAt: "desc",
+        },
+      },
+    });
+
+    // Merge and deduplicate the lists
+    const allLists = [
+      ...userLists,
+      ...collaboratorLists.map((collaborator) => collaborator.list),
+    ];
+
     // Append the number of ratings per list to each list object
     const listsWithRatingsCount = await Promise.all(
-      lists.map(async (list) => {
+      allLists.map(async (list) => {
         const RatingsCount = await prisma.rating.count({
           where: {
             listId: list.id,
