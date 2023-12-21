@@ -90,6 +90,11 @@ const AddCollaborator = ({ listId }) => {
             setColabEmail(e.target.value);
             validateEmail(e.target.value);
           }}
+          onKeyDown={(e) => {
+            if (e.key === "Enter") {
+              handleAddClick();
+            }
+          }}
           readOnly={isAdded}
         />
         <button
