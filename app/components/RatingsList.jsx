@@ -78,6 +78,7 @@ const RatingsList = (params) => {
                 listId={list.id}
                 setList={setList}
                 collaborators={collaborators}
+                setCollaborators={setCollaborators}
               />
             </div>
           </div>
