@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-const AddCollaborator = ({ listId }) => {
+const AddCollaborator = ({ listId, setCollaborators }) => {
   const [colabEmail, setColabEmail] = useState("");
   const [isAdded, setIsAdded] = useState(false);
   const [isValidEmail, setIsValidEmail] = useState(true);
@@ -20,10 +20,9 @@ const AddCollaborator = ({ listId }) => {
           }
         );
 
-        console.log(response);
-
         setIsAdded(true);
-        toast.success("Collaborator added successfully!");
+        setCollaborators((prev) => [...prev, response.data]);
+        setColabEmail("");
 
         setTimeout(() => {
           setIsAdded(false);

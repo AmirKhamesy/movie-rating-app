@@ -63,14 +63,24 @@ export async function POST(req) {
       );
     }
 
-    const newCollaberation = await prisma.collaborator.create({
+    const userDetails = await prisma.user.findUnique({
+      where: {
+        id: user.id,
+      },
+      select: {
+        name: true,
+        email: true,
+      },
+    });
+
+    const newCollaboration = await prisma.collaborator.create({
       data: {
         listId,
         userId: user.id,
       },
     });
 
-    return NextResponse.json({ newCollaberation });
+    return NextResponse.json({ ...newCollaboration, user: { ...userDetails } });
   } catch (error) {
     console.log(error);
   }

@@ -105,7 +105,10 @@ const EditList = ({
           <label htmlFor="colab" className="block my-2 text-lg font-medium ">
             Add Collaborator
           </label>
-          <AddCollaborator listId={listId} />
+          <AddCollaborator
+            listId={listId}
+            setCollaborators={setCollaborators}
+          />
 
           <CollaboratorsList
             collaborators={collaborators}
