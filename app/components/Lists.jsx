@@ -46,7 +46,7 @@ const Lists = async ({ lists, userId }) => {
             <div
               key={list.id}
               className="bg-white shadow-md rounded-lg p-4 mb-4 hover:cursor-pointer hover:shadow-lg"
-              onClick={() => navigateToList(list.name)}
+              onClick={() => navigateToList(`${list.name}/${list.userId}`)}
             >
               <div className="flex justify-between">
                 <h3 className=" font-semibold text-gray-800">{list.name}</h3>

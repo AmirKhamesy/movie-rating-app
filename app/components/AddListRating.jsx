@@ -8,7 +8,7 @@ import debounce from "lodash/debounce";
 import moment from "moment";
 import { useRouter } from "next/navigation";
 
-const AddListRating = ({ listName, setRating }) => {
+const AddListRating = ({ listName, setRating, userId }) => {
   const [inputs, setInputs] = useState({
     title: "",
     scary: 0,
@@ -89,7 +89,11 @@ const AddListRating = ({ listName, setRating }) => {
   const checkMovieValidDebounced = debounce(async (title) => {
     if (title) {
       try {
-        const res = await axios.post("/api/movieValid", { title, listName });
+        const res = await axios.post("/api/movieValid", {
+          title,
+          listName,
+          userId,
+        });
         if (res.data.error) {
           setMovieValid(false);
           if (!editing.id) {
@@ -136,7 +140,11 @@ const AddListRating = ({ listName, setRating }) => {
   const handleSubmit = (e) => {
     e.preventDefault();
     const apiUrl = editing.id
-      ? `/api/ratings/${editing.id}`
+      ? userId
+        ? `/api/colab/${userId}/${listName}/${editing.id}`
+        : `/api/ratings/${editing.id}`
+      : userId
+      ? `/api/colab/${userId}/${listName}`
       : `/api/lists/${listName}`;
 
     const axiosMethod = editing.id ? axios.patch : axios.post;
