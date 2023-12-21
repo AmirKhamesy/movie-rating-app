@@ -2,11 +2,22 @@ import React, { useState, useEffect } from "react";
 import Modal from "./Modal";
 import axios from "axios";
 import CopyToClipboardButton from "./CopyToClipboard";
+import AddCollaborator from "./AddCollaborator";
+import CollaboratorsList from "./CollaboratorsList";
 
-const EditList = ({ listName, publicHash, listPublic, listId, setList }) => {
+const EditList = ({
+  listName,
+  publicHash,
+  listPublic,
+  listId,
+  setList,
+  collaborators,
+  setCollaborators,
+}) => {
   const [modalOpen, setModalOpen] = useState(false);
   const [modalDeleteOpen, setModalDeleteOpen] = useState(false);
   const [listTitle, setListTitle] = useState(listName);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     setModalDeleteOpen(false);
@@ -14,24 +25,30 @@ const EditList = ({ listName, publicHash, listPublic, listId, setList }) => {
   }, [modalOpen]);
 
   const handleDeleteListing = () => {
+    setModalDeleteOpen(false);
+    setLoading(true);
     axios
       .delete(`/api/lists/${listName}`)
       .then((res) => console.log(res))
       .catch((err) => console.log(err))
       .finally(() => {
-        setModalDeleteOpen(false);
+        setLoading(false);
         setModalOpen(false);
         window.location.href = "/rate";
       });
   };
 
   const handlePublicToggle = () => {
+    setLoading(true);
     axios
       .put("/api/toggleListPublic", { listId })
       .then((res) => {
         setList(res.data.updatedList);
       })
-      .catch((err) => console.log(err));
+      .catch((err) => console.log(err))
+      .finally(() => {
+        setLoading(false);
+      });
   };
 
   const handleSubmit = (e) => {
@@ -62,7 +79,12 @@ const EditList = ({ listName, publicHash, listPublic, listId, setList }) => {
       </button>
 
       <Modal modalOpen={modalOpen} setModalOpen={setModalOpen}>
-        <div className="flex flex-col">
+        <div className="flex flex-col relative">
+          {loading && (
+            <div className="fixed top-0 left-0 w-[100vw] h-[100vh] bg-gray-800 bg-opacity-50 flex items-center justify-center">
+              <div className="w-16 h-16 border-2 border-t-0 border-white border-solid rounded-full animate-spin"></div>
+            </div>
+          )}
           <div className="flex flex-row justify-between items-center mb-1">
             <h1 className="text-2xl font-semibold">Editing List</h1>
             <div className="flex flex-row gap-1">
@@ -80,6 +102,33 @@ const EditList = ({ listName, publicHash, listPublic, listId, setList }) => {
               </button>
             </div>
           </div>
+
+          {listPublic && publicHash && (
+            <>
+              <label
+                htmlFor="title"
+                className="block my-2 text-lg font-medium "
+              >
+                Public List URL
+              </label>
+              <CopyToClipboardButton textToCopy={publicListURL} />
+            </>
+          )}
+          <label htmlFor="colab" className="block my-2 text-lg font-medium ">
+            Add Collaborator
+          </label>
+          <AddCollaborator
+            listId={listId}
+            setCollaborators={setCollaborators}
+            setLoading={setLoading}
+          />
+
+          <CollaboratorsList
+            collaborators={collaborators}
+            setCollaborators={setCollaborators}
+            setLoading={setLoading}
+          />
+
           <form className="w-full" onSubmit={handleSubmit}>
             <label htmlFor="title" className="block my-2 text-lg font-medium ">
               Title
@@ -94,17 +143,6 @@ const EditList = ({ listName, publicHash, listPublic, listId, setList }) => {
               onChange={(e) => setListTitle(e.target.value)}
               autoFocus
             />
-            {listPublic && publicHash && (
-              <>
-                <label
-                  htmlFor="title"
-                  className="block my-2 text-lg font-medium "
-                >
-                  Public List URL
-                </label>
-                <CopyToClipboardButton textToCopy={publicListURL} />
-              </>
-            )}
 
             <button
               type="submit"
@@ -115,7 +153,7 @@ const EditList = ({ listName, publicHash, listPublic, listId, setList }) => {
             </button>
           </form>
           <Modal modalOpen={modalDeleteOpen} setModalOpen={setModalDeleteOpen}>
-            <div className="flex justify-between items-center  mb-3">
+            <div className="flex justify-between items-center mb-3">
               <h1 className="text-2xl">
                 Are you sure you want to delete{" "}
                 <span className="font-bold">"{listName}"</span> ?

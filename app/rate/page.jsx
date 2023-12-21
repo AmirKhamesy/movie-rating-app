@@ -1,6 +1,8 @@
 import AddList from "../components/AddList";
 import { cookies } from "next/headers";
 import Lists from "../components/Lists";
+import { getServerSession } from "next-auth";
+import { authOptions } from "../api/auth/[...nextauth]/route";
 
 async function fetchLists() {
   const res = await fetch(`${process.env.NEXT_PUBLIC_API}/api/lists`, {
@@ -16,6 +18,8 @@ async function fetchLists() {
 }
 
 const RatePage = async () => {
+  const session = await getServerSession(authOptions);
+
   const lists = await fetchLists();
 
   return (
@@ -24,7 +28,7 @@ const RatePage = async () => {
         <div className="my-5">
           <AddList />
         </div>
-        <Lists lists={lists} />
+        <Lists lists={lists} userId={session.user.id} />
       </div>
     </div>
   );

@@ -4,13 +4,10 @@ import EditList from "./EditList";
 import Rating from "./Rating";
 import React, { useEffect, useState } from "react";
 
-const RatingsList = (params) => {
+const ColabRatingsList = ({ ListName, userId }) => {
   const [ratings, setRatings] = useState([]);
   const [loading, setLoading] = useState(true);
   const [list, setList] = useState({});
-  const [collaborators, setCollaborators] = useState([]);
-
-  const { ListName } = params;
 
   const setRating = (rating, idx) => {
     setRatings((prevRatings) => {
@@ -41,7 +38,7 @@ const RatingsList = (params) => {
     async function fetchLists() {
       try {
         const res = await fetch(
-          `${process.env.NEXT_PUBLIC_API}/api/lists/${ListName}`,
+          `${process.env.NEXT_PUBLIC_API}/api/colab/${userId}/${ListName}`,
           {
             credentials: "include",
             next: { revalidate: 0 },
@@ -52,8 +49,7 @@ const RatingsList = (params) => {
         }
 
         const data = await res.json();
-        const { ratings, collaborators, ...listData } = data;
-        setCollaborators(collaborators);
+        const { ratings, ...listData } = data;
         setList(listData);
         setRatings(ratings);
         setLoading(false);
@@ -80,15 +76,10 @@ const RatingsList = (params) => {
           <h1 className="text-3xl my-2 font-extrabold">{ListName}</h1>
           <div className="my-5 flex flex-col gap-4">
             <div className="flex flex-row justify-between">
-              <AddListRating listName={ListName} setRating={setRating} />
-              <EditList
+              <AddListRating
                 listName={ListName}
-                publicHash={list.publicHash}
-                listPublic={list.public}
-                listId={list.id}
-                setList={setList}
-                collaborators={collaborators}
-                setCollaborators={setCollaborators}
+                setRating={setRating}
+                userId={userId}
               />
             </div>
           </div>
@@ -109,4 +100,4 @@ const RatingsList = (params) => {
   );
 };
 
-export default RatingsList;
+export default ColabRatingsList;

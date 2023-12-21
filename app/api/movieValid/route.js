@@ -15,7 +15,7 @@ export async function POST(req) {
       });
     }
 
-    const { title, listName } = await req.json();
+    const { title, listName, userId } = await req.json();
 
     if (!title || !listName) {
       return new NextResponse(
@@ -28,14 +28,14 @@ export async function POST(req) {
       );
     }
 
-    const userId = session.user.id;
+    const listOwnerId = userId ? userId : session.user.id;
     const list = await prisma.list.findMany({
       where: {
         name: {
           equals: listName,
           mode: "insensitive",
         },
-        userId,
+        userId: listOwnerId,
       },
     });
 

@@ -34,6 +34,16 @@ export const GET = async (req, { params }) => {
       const allListRatings = await prisma.list.findUnique({
         include: {
           ratings: true,
+          collaborators: {
+            include: {
+              user: {
+                select: {
+                  name: true,
+                  email: true,
+                },
+              },
+            },
+          },
         },
         where: {
           id: listId,
