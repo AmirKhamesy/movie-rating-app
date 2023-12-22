@@ -65,9 +65,7 @@ const Rating = ({ rating, setRating, idx }) => {
     axios
       .delete(`/api/ratings/${id}`)
       .then((res) => {
-        if (res.statusText == "OK") {
-          setRating(null, idx);
-        }
+        setRating(null, idx);
       })
       .catch((err) => console.log(err))
       .finally(() => {
