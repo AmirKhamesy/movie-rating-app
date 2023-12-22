@@ -14,8 +14,8 @@ const RatingsList = (params) => {
 
   const setRating = (rating, idx) => {
     setRatings((prevRatings) => {
-      if (!rating) {
-        prevRatings.splice(idx, 1);
+      if (rating === null) {
+        delete prevRatings[idx];
       } else {
         if (idx === undefined || idx === null) {
           const existingIndex = prevRatings.findIndex(
