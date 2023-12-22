@@ -14,7 +14,7 @@ const RatingsList = (params) => {
 
   const setRating = (rating, idx) => {
     setRatings((prevRatings) => {
-      if (!rating) {
+      if (rating === null) {
         prevRatings.splice(idx, 1);
       } else {
         if (idx === undefined || idx === null) {
