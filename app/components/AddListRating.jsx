@@ -199,7 +199,7 @@ const AddListRating = ({ listName, setRating, userId }) => {
             value={editing.id ? editing.title : inputs.title}
             handleChange={handleChange}
           />
-          <label htmlFor="scary" className="block my-2 text-lg font-medium">
+          <label htmlFor="scary" className="block my-4 text-lg font-medium">
             Scary{" "}
             {(editing.id ? editing.scary : inputs.scary) !== undefined &&
               `(${editing.id ? editing.scary : inputs.scary})`}{" "}
@@ -211,12 +211,12 @@ const AddListRating = ({ listName, setRating, userId }) => {
             min="0"
             max="10"
             step="0.5"
-            className="Slider"
+            className="slider"
             value={editing.id ? editing.scary : inputs.scary}
             onChange={handleChange}
           />
 
-          <label htmlFor="story" className="block my-2 text-lg font-medium">
+          <label htmlFor="story" className="block my-4 text-lg font-medium">
             Story{" "}
             {(editing.id ? editing.story : inputs.story) !== undefined &&
               `(${editing.id ? editing.story : inputs.story})`}
@@ -228,12 +228,12 @@ const AddListRating = ({ listName, setRating, userId }) => {
             min="0"
             max="10"
             step="0.5"
-            className="Slider"
+            className="slider"
             value={editing.id ? editing.story : inputs.story}
             onChange={handleChange}
           />
 
-          <label htmlFor="acting" className="block my-2 text-lg font-medium">
+          <label htmlFor="acting" className="block my-4 text-lg font-medium">
             Acting{" "}
             {(editing.id ? editing.acting : inputs.acting) !== undefined &&
               `(${editing.id ? editing.acting : inputs.acting})`}{" "}
@@ -245,14 +245,14 @@ const AddListRating = ({ listName, setRating, userId }) => {
             min="0"
             max="10"
             step="0.5"
-            className="Slider"
+            className="slider"
             value={editing.id ? editing.acting : inputs.acting}
             onChange={handleChange}
           />
 
           <button
             type="submit"
-            className="bg-blue-700 text-white px-5 py-2 mt-2 disabled:bg-blue-300"
+            className="bg-blue-700 text-white px-5 py-2 mt-4 disabled:bg-blue-300"
             disabled={
               !editing.id &&
               (inputs.story === undefined ||

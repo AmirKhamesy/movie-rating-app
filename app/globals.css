@@ -6,8 +6,12 @@ input {
   @apply border border-gray-200 py-2 px-3 bg-zinc-100/40;
 }
 
-input.Slider {
-  @apply w-full h-1 bg-white rounded-lg  cursor-pointer py-2 px-0;
+input.slider {
+  @apply w-full  bg-white rounded-lg cursor-pointer py-1 px-0 appearance-none h-1 rounded outline-none mb-2;
+}
+
+.slider::-webkit-slider-thumb {
+  @apply appearance-none w-8 h-8 rounded-full bg-blue-600 cursor-pointer;
 }
 
 .spinner {
