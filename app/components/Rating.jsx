@@ -130,7 +130,7 @@ const Rating = ({ rating, setRating, idx }) => {
               handleChange={handleChange}
             />
 
-            <label htmlFor="scary" className="block my-2 text-lg font-medium ">
+            <label htmlFor="scary" className="block my-4 text-lg font-medium ">
               Scary{" "}
               {ratingToEdit.scary !== undefined && `(${ratingToEdit.scary})`}
             </label>
@@ -141,12 +141,12 @@ const Rating = ({ rating, setRating, idx }) => {
               min="0"
               max="10"
               step="0.5"
-              className="Slider"
+              className="slider"
               value={ratingToEdit.scary}
               onChange={handleChange}
             />
 
-            <label htmlFor="story" className="block my-2 text-lg font-medium ">
+            <label htmlFor="story" className="block my-4 text-lg font-medium ">
               Story{" "}
               {ratingToEdit.story !== undefined && `(${ratingToEdit.story})`}
             </label>
@@ -157,12 +157,12 @@ const Rating = ({ rating, setRating, idx }) => {
               min="0"
               max="10"
               step="0.5"
-              className="Slider"
+              className="slider"
               value={ratingToEdit.story}
               onChange={handleChange}
             />
 
-            <label htmlFor="acting" className="block my-2 text-lg font-medium ">
+            <label htmlFor="acting" className="block my-4 text-lg font-medium ">
               Acting{" "}
               {ratingToEdit.acting !== undefined && `(${ratingToEdit.acting})`}
             </label>
@@ -173,14 +173,14 @@ const Rating = ({ rating, setRating, idx }) => {
               min="0"
               max="10"
               step="0.5"
-              className="Slider"
+              className="slider"
               value={ratingToEdit.acting}
               onChange={handleChange}
             />
 
             <button
               type="submit"
-              className="bg-blue-700 text-white px-5 py-2 mt-2"
+              className="bg-blue-700 text-white px-5 py-2 mt-4"
             >
               Submit
             </button>
