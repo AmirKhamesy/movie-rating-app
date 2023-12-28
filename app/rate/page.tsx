@@ -3,6 +3,7 @@ import { cookies } from "next/headers";
 import Lists from "../components/Lists";
 import { getServerSession } from "next-auth";
 import { authOptions } from "../api/auth/[...nextauth]/route";
+import { Prisma } from "@prisma/client";
 
 async function fetchLists() {
   const res = await fetch(`${process.env.NEXT_PUBLIC_API}/api/lists`, {
@@ -20,7 +21,7 @@ async function fetchLists() {
 const RatePage = async () => {
   const session = await getServerSession(authOptions);
 
-  const lists = await fetchLists();
+  const lists: Prisma.ListSelect = await fetchLists();
 
   return (
     <div className="max-w-4xl mx-auto mt-4">

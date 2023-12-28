@@ -1,11 +1,13 @@
-import prisma from "@/app/libs/prismadb";
+import prisma from "../../../../app/libs/prismadb";
 import { compare } from "bcrypt";
 import NextAuth from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
+import { SessionStrategy } from "next-auth";
+import { Prisma } from "@prisma/client";
 
 export const authOptions = {
   session: {
-    strategy: "jwt",
+    strategy: "jwt" as SessionStrategy,
   },
   secret: process.env.NEXTAUTH_SECRET,
   pages: {
@@ -26,7 +28,7 @@ export const authOptions = {
           return null;
         }
 
-        const user = await prisma.user.findFirst({
+        const user: Prisma.UserCreateInput = await prisma.user.findFirst({
           where: {
             email: {
               mode: "insensitive",
@@ -39,7 +41,7 @@ export const authOptions = {
           return null;
         }
 
-        const isPasswordValid = await compare(
+        const isPasswordValid: boolean = await compare(
           credentials.password,
           user.password
         );
