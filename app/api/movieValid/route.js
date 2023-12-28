@@ -62,13 +62,13 @@ export async function POST(req) {
       const tmdbResponse = await axios.get(
         `https://api.themoviedb.org/3/search/movie?api_key=${tmdbApiKey}&query=${title}`
       );
+      const tmdbMovie = tmdbResponse.data.results.filter(
+        (movie) => movie.title === title
+      );
 
-      if (
-        tmdbResponse.data.results.length > 0 &&
-        tmdbResponse.data.results[0].title === title
-      ) {
+      if (tmdbMovie.length > 0) {
         // Movie exists in TMDB
-        return new NextResponse(JSON.stringify(tmdbResponse.data.results[0]));
+        return new NextResponse(JSON.stringify(tmdbMovie[0]));
       } else {
         // Movie not found in TMDB
         return new NextResponse(
