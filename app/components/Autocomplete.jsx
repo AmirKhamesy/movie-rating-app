@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import Image from "next/image";
+import axios from "axios";
 
 const API_KEY = process.env.NEXT_PUBLIC_TMDB_KEY;
 
@@ -23,9 +24,33 @@ const Autocomplete = ({ value, handleChange }) => {
 
   useEffect(() => {
     if (value) {
-      getMoviePoster(value);
+      //get movie id from title and use the id to get movie poster
+
+      const fetchMovieDetails = async (title) => {
+        try {
+          const response = await axios.get(
+            `https://api.themoviedb.org/3/search/movie`,
+            {
+              params: {
+                api_key: process.env.NEXT_PUBLIC_TMDB_KEY,
+                query: title,
+              },
+            }
+          );
+
+          if (response.data.results && response.data.results.length > 0) {
+            const movie = response.data.results.filter(
+              (movie) => movie.title == title
+            )[0];
+            if (movie) getMoviePoster(movie.id);
+          }
+        } catch (error) {
+          console.error("Error fetching movie details:", error);
+        }
+      };
+      fetchMovieDetails(value);
     }
-  }, []);
+  }, [value]);
 
   useEffect(() => {
     const timeoutId = setTimeout(() => {
@@ -49,9 +74,13 @@ const Autocomplete = ({ value, handleChange }) => {
     };
   }, [inputValue, isTyping]);
 
-  const getMoviePoster = async (title) => {
-    const movie_details = await fetchMovieSuggestions(title);
-    setSelectedMoviePoster(movie_details[0].poster_path);
+  const getMoviePoster = async (id) => {
+    if (!id) return;
+    const response = await fetch(
+      `https://api.themoviedb.org/3/movie/${id}?api_key=${API_KEY}`
+    );
+    const movieDetails = await response.json();
+    setSelectedMoviePoster(movieDetails.poster_path);
   };
 
   const handleBlur = () => {
@@ -72,11 +101,17 @@ const Autocomplete = ({ value, handleChange }) => {
     });
   };
 
-  const selectMovieSuggestion = (title, poster = "") => {
+  const selectMovieSuggestion = (title, id) => {
     setInputValue(title);
     setInputValueInParent(title);
     setSuggestions([]);
-    setSelectedMoviePoster(poster);
+    getMoviePoster(id);
+    handleChange({
+      target: {
+        name: "tmdbId",
+        value: id || 0,
+      },
+    });
   };
 
   const handleKeyDown = (e) => {
@@ -93,10 +128,7 @@ const Autocomplete = ({ value, handleChange }) => {
     } else if (e.key === "Enter" && highlightedSuggestionIndex >= 0) {
       e.preventDefault();
       const selectedSuggestion = suggestions[highlightedSuggestionIndex];
-      selectMovieSuggestion(
-        selectedSuggestion.title,
-        selectedSuggestion.poster_path
-      );
+      selectMovieSuggestion(selectedSuggestion.title, selectedSuggestion.id);
     }
     // Scroll to the selected suggestion
     if (suggestionListRef.current && highlightedSuggestionIndex >= 0) {
@@ -160,9 +192,7 @@ const Autocomplete = ({ value, handleChange }) => {
                 index === highlightedSuggestionIndex ? "bg-blue-300" : ""
               }`}
               onMouseEnter={() => setHighlightedSuggestionIndex(index)}
-              onClick={() =>
-                selectMovieSuggestion(movie.title, movie.poster_path)
-              }
+              onClick={() => selectMovieSuggestion(movie.title, movie.id)}
             >
               <Image
                 src={`https://image.tmdb.org/t/p/w92/${movie.poster_path}`}

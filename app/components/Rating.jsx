@@ -17,20 +17,19 @@ const Rating = ({ rating, setRating, idx }) => {
 
   const router = useRouter();
 
-  const fetchMovieDetails = async (title) => {
+  const fetchMovieDetails = async () => {
     try {
       const response = await axios.get(
-        `https://api.themoviedb.org/3/search/movie`,
+        `https://api.themoviedb.org/3/movie/${rating.tmdbId}`,
         {
           params: {
             api_key: process.env.NEXT_PUBLIC_TMDB_KEY,
-            query: title,
           },
         }
       );
 
-      if (response.data.results && response.data.results.length > 0) {
-        const movie = response.data.results[0];
+      if (response.data) {
+        const movie = response.data;
         setMovieDetails(movie);
       }
     } catch (error) {
@@ -43,7 +42,7 @@ const Rating = ({ rating, setRating, idx }) => {
   }, [openModalEdit]);
 
   useEffect(() => {
-    fetchMovieDetails(rating.title);
+    fetchMovieDetails();
   }, [rating]);
 
   const handleEditSubmit = (e) => {
@@ -122,7 +121,7 @@ const Rating = ({ rating, setRating, idx }) => {
             <div className="flex justify-between items-center  mb-3">
               <h1 className="text-2xl">Edit Rating</h1>
               <p className="text-sm text-gray-500">
-                Updated {moment(ratingToEdit.updatedAt).fromNow()}
+                Updated {moment(ratingToEdit.updatedAt).fromNow()}{" "}
               </p>
             </div>
             <Autocomplete

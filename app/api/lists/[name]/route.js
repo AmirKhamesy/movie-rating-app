@@ -76,7 +76,7 @@ export const POST = async (req, { params }) => {
     const body = await req.json();
     const { name } = params;
     const userId = session.user.id;
-    const { title, scary, story, acting } = body;
+    const { title, scary, story, acting, tmdbId } = body;
 
     const list = await prisma.list.findMany({
       where: {
@@ -98,6 +98,7 @@ export const POST = async (req, { params }) => {
         story,
         acting,
         listId: listId,
+        tmdbId,
       },
     });
 

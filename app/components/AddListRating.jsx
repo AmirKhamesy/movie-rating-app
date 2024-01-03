@@ -36,6 +36,7 @@ const AddListRating = ({ listName, setRating, userId }) => {
       scary: 0,
       story: 0,
       acting: 0,
+      tmdbId: 0,
     });
     setEditing({
       id: "",
@@ -45,6 +46,7 @@ const AddListRating = ({ listName, setRating, userId }) => {
       acting: 0,
       createdAt: "",
       updatedAt: "",
+      tmdbId: 0,
     });
   }, [modalOpen]);
 
@@ -74,6 +76,7 @@ const AddListRating = ({ listName, setRating, userId }) => {
         acting: 0,
         createdAt: "",
         updatedAt: "",
+        tmdbId: 0,
       });
       if (debounceTimer) {
         clearTimeout(debounceTimer);
@@ -105,6 +108,7 @@ const AddListRating = ({ listName, setRating, userId }) => {
               acting: 0,
               createdAt: "",
               updatedAt: "",
+              tmdbId: 0,
             });
           }
           if (res.data.error === "Movie already exists") {
@@ -131,6 +135,7 @@ const AddListRating = ({ listName, setRating, userId }) => {
             acting: 0,
             createdAt: "",
             updatedAt: "",
+            tmdbId: 0,
           });
         }
       }
@@ -160,6 +165,7 @@ const AddListRating = ({ listName, setRating, userId }) => {
           scary: 0,
           story: 0,
           acting: 0,
+          tmdbId: 0,
         });
         setEditing({
           id: "",
@@ -169,6 +175,7 @@ const AddListRating = ({ listName, setRating, userId }) => {
           acting: 0,
           createdAt: "",
           updatedAt: "",
+          tmdbId: 0,
         });
         setModalOpen(false);
         router.refresh();
