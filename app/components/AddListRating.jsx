@@ -14,6 +14,7 @@ const AddListRating = ({ listName, setRating, userId }) => {
     scary: 0,
     story: 0,
     acting: 0,
+    tmdbId: 0,
   });
   const [editing, setEditing] = useState({
     id: "",
@@ -23,6 +24,7 @@ const AddListRating = ({ listName, setRating, userId }) => {
     acting: 0,
     createdAt: "",
     updatedAt: "",
+    tmdbId: 0,
   });
   const [modalOpen, setModalOpen] = useState(false);
   const [movieValid, setMovieValid] = useState(false);
@@ -266,6 +268,7 @@ const AddListRating = ({ listName, setRating, userId }) => {
                 inputs.scary === undefined ||
                 inputs.acting === undefined ||
                 inputs.title === undefined ||
+                inputs.tmdbId === 0 ||
                 !movieValid)
             }
           >
