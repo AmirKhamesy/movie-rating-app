@@ -19,13 +19,13 @@ const Autocomplete = ({ value, handleChange }) => {
   const [selectedMoviePoster, setSelectedMoviePoster] = useState("");
   const [highlightedSuggestionIndex, setHighlightedSuggestionIndex] =
     useState(-1);
+  const [movieSelected, setMovieSelected] = useState(false); // HACK: pressing enter (clicking was fine) on a movie would keep suggesting
   const autocompleteRef = useRef(null); // Ref for autocomplete element
   const suggestionListRef = useRef(null); // Ref for suggestion list element
 
   useEffect(() => {
     if (value) {
-      //get movie id from title and use the id to get movie poster
-
+      // Fetch movie details only if a movie is not selected
       const fetchMovieDetails = async (title) => {
         try {
           const response = await axios.get(
@@ -40,7 +40,7 @@ const Autocomplete = ({ value, handleChange }) => {
 
           if (response.data.results && response.data.results.length > 0) {
             const movie = response.data.results.filter(
-              (movie) => movie.title == title
+              (movie) => movie.title === title
             )[0];
             if (movie) getMoviePoster(movie.id);
           }
@@ -54,11 +54,12 @@ const Autocomplete = ({ value, handleChange }) => {
 
   useEffect(() => {
     const timeoutId = setTimeout(() => {
-      if (isTyping) {
+      if (isTyping && !movieSelected) {
         const fetchSuggestions = async () => {
           if (inputValue) {
             const movies = await fetchMovieSuggestions(inputValue);
-            //If user has clicked on a title, dont suggest that same title to them
+
+            // If user has clicked on a title, don't suggest that same title to them
             if (!(movies.length === 1 && value === movies[0].title))
               setSuggestions(movies);
           } else {
@@ -84,11 +85,11 @@ const Autocomplete = ({ value, handleChange }) => {
   };
 
   const handleBlur = () => {
-    // setInputValueInParent(inputValue); HACK: This line is reseting title when edting, removing for now
     setIsTyping(false);
   };
 
   const handleFocus = () => {
+    setMovieSelected(false);
     setIsTyping(true);
   };
 
@@ -102,9 +103,10 @@ const Autocomplete = ({ value, handleChange }) => {
   };
 
   const selectMovieSuggestion = (title, id) => {
+    setMovieSelected(false);
+    setSuggestions([]);
     setInputValue(title);
     setInputValueInParent(title);
-    setSuggestions([]);
     getMoviePoster(id);
     handleChange({
       target: {
@@ -129,12 +131,15 @@ const Autocomplete = ({ value, handleChange }) => {
       e.preventDefault();
       const selectedSuggestion = suggestions[highlightedSuggestionIndex];
       selectMovieSuggestion(selectedSuggestion.title, selectedSuggestion.id);
+      setMovieSelected(true);
     }
     // Scroll to the selected suggestion
     if (suggestionListRef.current && highlightedSuggestionIndex >= 0) {
       const listItem =
         suggestionListRef.current.children[highlightedSuggestionIndex];
-      listItem.scrollIntoView({ behavior: "smooth", block: "center" });
+      if (listItem) {
+        listItem.scrollIntoView({ behavior: "smooth", block: "center" });
+      }
     }
   };
 
@@ -154,11 +159,11 @@ const Autocomplete = ({ value, handleChange }) => {
       document.removeEventListener("click", handleClickOutside);
     };
   }, []);
-
   return (
     <div className="w-full relative pb-1" ref={autocompleteRef}>
       <div className="flex justify-between gap-2">
-        {selectedMoviePoster && (
+        {((selectedMoviePoster && suggestions.length === 0) ||
+          movieSelected) && (
           <Image
             src={`https://image.tmdb.org/t/p/w92/${selectedMoviePoster}`}
             alt={`${selectedMoviePoster} Poster`}
