@@ -128,7 +128,6 @@ const Rating = ({ rating, setRating, idx }) => {
               value={ratingToEdit.title}
               handleChange={handleChange}
             />
-
             <label htmlFor="scary" className="block my-4 text-lg font-medium ">
               Scary{" "}
               {ratingToEdit.scary !== undefined && `(${ratingToEdit.scary})`}
@@ -144,7 +143,6 @@ const Rating = ({ rating, setRating, idx }) => {
               value={ratingToEdit.scary}
               onChange={handleChange}
             />
-
             <label htmlFor="story" className="block my-4 text-lg font-medium ">
               Story{" "}
               {ratingToEdit.story !== undefined && `(${ratingToEdit.story})`}
@@ -160,7 +158,6 @@ const Rating = ({ rating, setRating, idx }) => {
               value={ratingToEdit.story}
               onChange={handleChange}
             />
-
             <label htmlFor="acting" className="block my-4 text-lg font-medium ">
               Acting{" "}
               {ratingToEdit.acting !== undefined && `(${ratingToEdit.acting})`}
@@ -176,10 +173,17 @@ const Rating = ({ rating, setRating, idx }) => {
               value={ratingToEdit.acting}
               onChange={handleChange}
             />
-
             <button
               type="submit"
-              className="bg-blue-700 text-white px-5 py-2 mt-4"
+              className="bg-blue-700 text-white px-5 py-2 mt-4  disabled:bg-blue-300"
+              disabled={
+                // Disable submit button if no changes have been made
+                ratingToEdit.title === rating.title
+                  ? ratingToEdit.scary === rating.scary &&
+                    ratingToEdit.story === rating.story &&
+                    ratingToEdit.acting === rating.acting
+                  : false
+              }
             >
               Submit
             </button>
