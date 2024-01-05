@@ -167,7 +167,6 @@ const Autocomplete = ({ value, handleChange }) => {
   }, []);
   return (
     <div className="w-full relative pb-1" ref={autocompleteRef}>
-      {JSON.stringify(movieSelected)}
       <div className="flex justify-between gap-2">
         {selectedMoviePoster && suggestions.length === 0 && movieSelected && (
           <Image
