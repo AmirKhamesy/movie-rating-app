@@ -41,7 +41,6 @@ const AddListRating = ({ listName, setRating, userId }) => {
 
   const [modalOpen, setModalOpen] = useState(false);
   const [movieValid, setMovieValid] = useState(false);
-  const [debounceTimer, setDebounceTimer] = useState(null);
 
   const router = useRouter();
 
@@ -51,6 +50,26 @@ const AddListRating = ({ listName, setRating, userId }) => {
       scary: 0,
       story: 0,
       acting: 0,
+      tmdbId: 0,
+    });
+    setEditing({
+      id: "",
+      title: "",
+      scary: 0,
+      story: 0,
+      acting: 0,
+      createdAt: "",
+      updatedAt: "",
+      tmdbId: 0,
+    });
+    setInitialEditingState({
+      id: "",
+      title: "",
+      scary: 0,
+      story: 0,
+      acting: 0,
+      createdAt: "",
+      updatedAt: "",
       tmdbId: 0,
     });
   }, [modalOpen]);
@@ -83,54 +102,35 @@ const AddListRating = ({ listName, setRating, userId }) => {
         updatedAt: "",
         tmdbId: 0,
       });
-
-      if (debounceTimer) {
-        clearTimeout(debounceTimer);
-      }
-
-      const newDebounceTimer = setTimeout(() => {
-        checkMovieValidDebounced(value);
-      }, 250);
-      setDebounceTimer(newDebounceTimer);
+      setInitialEditingState({
+        id: "",
+        title: "",
+        scary: 0,
+        story: 0,
+        acting: 0,
+        createdAt: "",
+        updatedAt: "",
+        tmdbId: 0,
+      });
     }
   };
 
   // Create a debounced function to check movie validity
-  const checkMovieValidDebounced = debounce(async (title) => {
-    if (title) {
+  const checkMovieValidDebounced = async (id) => {
+    if (id) {
       try {
         const res = await axios.post("/api/movieValid", {
-          title,
+          id,
           listName,
           userId,
         });
+
         if (res.data.error) {
           setMovieValid(false);
-          if (!editing.id) {
-            setEditing({
-              id: "",
-              title: "",
-              scary: 0,
-              story: 0,
-              acting: 0,
-              createdAt: "",
-              updatedAt: "",
-              tmdbId: 0,
-            });
-            setInitialEditingState({
-              id: "",
-              title: "",
-              scary: 0,
-              story: 0,
-              acting: 0,
-              createdAt: "",
-              updatedAt: "",
-              tmdbId: 0,
-            });
-          }
+
           if (res.data.error === "Movie already exists") {
             if (!editing.id) {
-              // Handle editing existing movie
+              setMovieValid(true);
               delete res.data.error;
               setEditing(res.data);
               setInitialEditingState(res.data);
@@ -168,7 +168,7 @@ const AddListRating = ({ listName, setRating, userId }) => {
         }
       }
     }
-  }, 250); // Wait for 250ms before executing
+  };
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -205,6 +205,16 @@ const AddListRating = ({ listName, setRating, userId }) => {
           updatedAt: "",
           tmdbId: 0,
         });
+        setInitialEditingState({
+          id: "",
+          title: "",
+          scary: 0,
+          story: 0,
+          acting: 0,
+          createdAt: "",
+          updatedAt: "",
+          tmdbId: 0,
+        });
         setModalOpen(false);
         router.refresh();
       });
@@ -230,9 +240,24 @@ const AddListRating = ({ listName, setRating, userId }) => {
               </p>
             )}{" "}
           </div>
+          {inputs.tmdbId +
+            " " +
+            editing.tmdbId +
+            " " +
+            initialEditingState.tmdbId +
+            " " +
+            movieValid}
+          <br />
+          {JSON.stringify(editing)}
+          {JSON.stringify(initialEditingState)}
+          {JSON.stringify(editing) === JSON.stringify(initialEditingState) && (
+            <p>no changes</p>
+          )}
           <Autocomplete
             value={editing.id ? editing.title : inputs.title}
             handleChange={handleChange}
+            edit={false}
+            checkMovieValid={checkMovieValidDebounced}
           />
           <label htmlFor="scary" className="block my-4 text-lg font-medium">
             Scary{" "}

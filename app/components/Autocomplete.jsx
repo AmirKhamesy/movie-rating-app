@@ -12,14 +12,19 @@ const fetchMovieSuggestions = async (query) => {
   return data.results;
 };
 
-const Autocomplete = ({ value, handleChange }) => {
+const Autocomplete = ({
+  value,
+  handleChange,
+  edit,
+  checkMovieValid = null,
+}) => {
   const [inputValue, setInputValue] = useState("");
   const [suggestions, setSuggestions] = useState([]);
   const [isTyping, setIsTyping] = useState(false);
   const [selectedMoviePoster, setSelectedMoviePoster] = useState("");
   const [highlightedSuggestionIndex, setHighlightedSuggestionIndex] =
     useState(-1);
-  const [movieSelected, setMovieSelected] = useState(false); // HACK: pressing enter (clicking was fine) on a movie would keep suggesting
+  const [movieSelected, setMovieSelected] = useState(edit); // HACK: pressing enter (clicking was fine) on a movie would keep suggesting, also passing in edit as a prop to the component so that editing rating has movie selected by default
   const autocompleteRef = useRef(null); // Ref for autocomplete element
   const suggestionListRef = useRef(null); // Ref for suggestion list element
 
@@ -111,6 +116,7 @@ const Autocomplete = ({ value, handleChange }) => {
     setInputValue(title);
     setInputValueInParent(title);
     getMoviePoster(id);
+    if (checkMovieValid) checkMovieValid(id);
     handleChange({
       target: {
         name: "tmdbId",
@@ -134,7 +140,6 @@ const Autocomplete = ({ value, handleChange }) => {
       e.preventDefault();
       const selectedSuggestion = suggestions[highlightedSuggestionIndex];
       if (selectedSuggestion) {
-        console.log(selectedSuggestion);
         selectMovieSuggestion(selectedSuggestion.title, selectedSuggestion.id);
         setMovieSelected(true);
       }

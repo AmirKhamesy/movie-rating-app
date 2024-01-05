@@ -127,6 +127,7 @@ const Rating = ({ rating, setRating, idx }) => {
             <Autocomplete
               value={ratingToEdit.title}
               handleChange={handleChange}
+              edit={true}
             />
             <label htmlFor="scary" className="block my-4 text-lg font-medium ">
               Scary{" "}
