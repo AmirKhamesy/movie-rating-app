@@ -89,7 +89,6 @@ const Autocomplete = ({ value, handleChange }) => {
   };
 
   const handleFocus = () => {
-    setMovieSelected(false);
     setIsTyping(true);
   };
 
@@ -102,8 +101,12 @@ const Autocomplete = ({ value, handleChange }) => {
     });
   };
 
-  const selectMovieSuggestion = (title, id) => {
-    setMovieSelected(false);
+  const selectMovieSuggestion = (title, id, click = false) => {
+    if (click) {
+      setMovieSelected(true);
+    } else {
+      setMovieSelected(false);
+    }
     setSuggestions([]);
     setInputValue(title);
     setInputValueInParent(title);
@@ -130,8 +133,11 @@ const Autocomplete = ({ value, handleChange }) => {
     } else if (e.key === "Enter" && highlightedSuggestionIndex >= 0) {
       e.preventDefault();
       const selectedSuggestion = suggestions[highlightedSuggestionIndex];
-      selectMovieSuggestion(selectedSuggestion.title, selectedSuggestion.id);
-      setMovieSelected(true);
+      if (selectedSuggestion) {
+        console.log(selectedSuggestion);
+        selectMovieSuggestion(selectedSuggestion.title, selectedSuggestion.id);
+        setMovieSelected(true);
+      }
     }
     // Scroll to the selected suggestion
     if (suggestionListRef.current && highlightedSuggestionIndex >= 0) {
@@ -161,9 +167,9 @@ const Autocomplete = ({ value, handleChange }) => {
   }, []);
   return (
     <div className="w-full relative pb-1" ref={autocompleteRef}>
+      {JSON.stringify(movieSelected)}
       <div className="flex justify-between gap-2">
-        {((selectedMoviePoster && suggestions.length === 0) ||
-          movieSelected) && (
+        {selectedMoviePoster && suggestions.length === 0 && movieSelected && (
           <Image
             src={`https://image.tmdb.org/t/p/w92/${selectedMoviePoster}`}
             alt={`${selectedMoviePoster} Poster`}
@@ -197,7 +203,7 @@ const Autocomplete = ({ value, handleChange }) => {
                 index === highlightedSuggestionIndex ? "bg-blue-300" : ""
               }`}
               onMouseEnter={() => setHighlightedSuggestionIndex(index)}
-              onClick={() => selectMovieSuggestion(movie.title, movie.id)}
+              onClick={() => selectMovieSuggestion(movie.title, movie.id, true)}
             >
               <Image
                 src={`https://image.tmdb.org/t/p/w92/${movie.poster_path}`}
