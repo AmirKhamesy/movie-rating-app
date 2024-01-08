@@ -240,19 +240,7 @@ const AddListRating = ({ listName, setRating, userId }) => {
               </p>
             )}{" "}
           </div>
-          {inputs.tmdbId +
-            " " +
-            editing.tmdbId +
-            " " +
-            initialEditingState.tmdbId +
-            " " +
-            movieValid}
-          <br />
-          {JSON.stringify(editing)}
-          {JSON.stringify(initialEditingState)}
-          {JSON.stringify(editing) === JSON.stringify(initialEditingState) && (
-            <p>no changes</p>
-          )}
+
           <Autocomplete
             value={editing.id ? editing.title : inputs.title}
             handleChange={handleChange}
