@@ -19,14 +19,14 @@ const RatingsList = (params) => {
       } else {
         if (idx === undefined || idx === null) {
           const existingIndex = prevRatings.findIndex(
-            (oldRating) => oldRating.title === rating.title
+            (oldRating) => oldRating.id === rating.id
           );
 
           if (existingIndex === -1) {
             prevRatings.push(rating);
           } else {
             prevRatings = prevRatings.map((oldRating) =>
-              oldRating.title === rating.title ? rating : oldRating
+              oldRating.id === rating.id ? rating : oldRating
             );
           }
         } else {
