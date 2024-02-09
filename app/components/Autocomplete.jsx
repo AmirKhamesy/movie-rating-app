@@ -22,6 +22,7 @@ const Autocomplete = ({
   const [suggestions, setSuggestions] = useState([]);
   const [isTyping, setIsTyping] = useState(false);
   const [selectedMoviePoster, setSelectedMoviePoster] = useState("");
+  const [movieId, setMovieId] = useState(0); // [TODO] Remove this state and use the one in the parent
   const [highlightedSuggestionIndex, setHighlightedSuggestionIndex] =
     useState(-1);
   const [movieSelected, setMovieSelected] = useState(edit); // HACK: pressing enter (clicking was fine) on a movie would keep suggesting, also passing in edit as a prop to the component so that editing rating has movie selected by default
@@ -45,7 +46,7 @@ const Autocomplete = ({
 
           if (response.data.results && response.data.results.length > 0) {
             const movie = response.data.results.filter(
-              (movie) => movie.title === title
+              (movie) => movie.id === movieId
             )[0];
             if (movie) getMoviePoster(movie.id);
           }
@@ -107,11 +108,8 @@ const Autocomplete = ({
   };
 
   const selectMovieSuggestion = (title, id, click = false) => {
-    if (click) {
-      setMovieSelected(true);
-    } else {
-      setMovieSelected(false);
-    }
+    setMovieId(id);
+    setMovieSelected(click);
     setSuggestions([]);
     setInputValue(title);
     setInputValueInParent(title);
@@ -219,6 +217,7 @@ const Autocomplete = ({
               <div className="flex flex-col justify-between">
                 <span className="font-semibold text-md">{movie.title}</span>
                 <span className="text-xs text-gray-600">
+                  {movie.id}
                   {new Date(movie.release_date).toLocaleDateString("en-US", {
                     year: "numeric",
                     month: "long",

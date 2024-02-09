@@ -240,7 +240,6 @@ const AddListRating = ({ listName, setRating, userId }) => {
               </p>
             )}{" "}
           </div>
-
           <Autocomplete
             value={editing.id ? editing.title : inputs.title}
             handleChange={handleChange}
