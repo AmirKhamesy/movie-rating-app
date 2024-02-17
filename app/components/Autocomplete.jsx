@@ -217,7 +217,6 @@ const Autocomplete = ({
               <div className="flex flex-col justify-between">
                 <span className="font-semibold text-md">{movie.title}</span>
                 <span className="text-xs text-gray-600">
-                  {movie.id}
                   {new Date(movie.release_date).toLocaleDateString("en-US", {
                     year: "numeric",
                     month: "long",
