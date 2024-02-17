@@ -41,7 +41,7 @@ export const POST = async (req, { params }) => {
 
       if (collaboration) {
         const body = await req.json();
-        const { title, scary, story, acting } = body;
+        const { title, scary, story, acting, tmdbId } = body;
 
         const updateRating = await prisma.rating.update({
           where: { id: ratingId },
@@ -50,6 +50,7 @@ export const POST = async (req, { params }) => {
             scary,
             story,
             acting,
+            tmdbId,
           },
         });
 

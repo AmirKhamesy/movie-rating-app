@@ -8,20 +8,19 @@ import ProgressBar from "./ProgressBar";
 const PublicRating = ({ rating }) => {
   const [movieDetails, setMovieDetails] = useState({});
 
-  const fetchMovieDetails = async (title) => {
+  const fetchMovieDetails = async () => {
     try {
       const response = await axios.get(
-        `https://api.themoviedb.org/3/search/movie`,
+        `https://api.themoviedb.org/3/movie/${rating.tmdbId}`,
         {
           params: {
             api_key: process.env.NEXT_PUBLIC_TMDB_KEY,
-            query: title,
           },
         }
       );
 
-      if (response.data.results && response.data.results.length > 0) {
-        const movie = response.data.results[0];
+      if (response.data) {
+        const movie = response.data;
         setMovieDetails(movie);
       }
     } catch (error) {
@@ -30,7 +29,7 @@ const PublicRating = ({ rating }) => {
   };
 
   useEffect(() => {
-    fetchMovieDetails(rating.title);
+    fetchMovieDetails();
   }, [rating]);
 
   return (

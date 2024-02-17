@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import Image from "next/image";
+import axios from "axios";
 
 const API_KEY = process.env.NEXT_PUBLIC_TMDB_KEY;
 
@@ -11,29 +12,60 @@ const fetchMovieSuggestions = async (query) => {
   return data.results;
 };
 
-const Autocomplete = ({ value, handleChange }) => {
+const Autocomplete = ({
+  value,
+  handleChange,
+  edit,
+  checkMovieValid = null,
+}) => {
   const [inputValue, setInputValue] = useState("");
   const [suggestions, setSuggestions] = useState([]);
   const [isTyping, setIsTyping] = useState(false);
   const [selectedMoviePoster, setSelectedMoviePoster] = useState("");
+  const [movieId, setMovieId] = useState(0); // [TODO] Remove this state and use the one in the parent
   const [highlightedSuggestionIndex, setHighlightedSuggestionIndex] =
     useState(-1);
+  const [movieSelected, setMovieSelected] = useState(edit); // HACK: pressing enter (clicking was fine) on a movie would keep suggesting, also passing in edit as a prop to the component so that editing rating has movie selected by default
   const autocompleteRef = useRef(null); // Ref for autocomplete element
   const suggestionListRef = useRef(null); // Ref for suggestion list element
 
   useEffect(() => {
     if (value) {
-      getMoviePoster(value);
+      // Fetch movie details only if a movie is not selected
+      const fetchMovieDetails = async (title) => {
+        try {
+          const response = await axios.get(
+            `https://api.themoviedb.org/3/search/movie`,
+            {
+              params: {
+                api_key: process.env.NEXT_PUBLIC_TMDB_KEY,
+                query: title,
+              },
+            }
+          );
+
+          if (response.data.results && response.data.results.length > 0) {
+            const movie = response.data.results.filter(
+              (movie) => movie.id === movieId
+            )[0];
+            if (movie) getMoviePoster(movie.id);
+          }
+        } catch (error) {
+          console.error("Error fetching movie details:", error);
+        }
+      };
+      fetchMovieDetails(value);
     }
-  }, []);
+  }, [value]);
 
   useEffect(() => {
     const timeoutId = setTimeout(() => {
-      if (isTyping) {
+      if (isTyping && !movieSelected) {
         const fetchSuggestions = async () => {
           if (inputValue) {
             const movies = await fetchMovieSuggestions(inputValue);
-            //If user has clicked on a title, dont suggest that same title to them
+
+            // If user has clicked on a title, don't suggest that same title to them
             if (!(movies.length === 1 && value === movies[0].title))
               setSuggestions(movies);
           } else {
@@ -49,13 +81,16 @@ const Autocomplete = ({ value, handleChange }) => {
     };
   }, [inputValue, isTyping]);
 
-  const getMoviePoster = async (title) => {
-    const movie_details = await fetchMovieSuggestions(title);
-    setSelectedMoviePoster(movie_details[0].poster_path);
+  const getMoviePoster = async (id) => {
+    if (!id) return;
+    const response = await fetch(
+      `https://api.themoviedb.org/3/movie/${id}?api_key=${API_KEY}`
+    );
+    const movieDetails = await response.json();
+    setSelectedMoviePoster(movieDetails.poster_path);
   };
 
   const handleBlur = () => {
-    // setInputValueInParent(inputValue); HACK: This line is reseting title when edting, removing for now
     setIsTyping(false);
   };
 
@@ -72,11 +107,20 @@ const Autocomplete = ({ value, handleChange }) => {
     });
   };
 
-  const selectMovieSuggestion = (title, poster = "") => {
+  const selectMovieSuggestion = (title, id, click = false) => {
+    setMovieId(id);
+    setMovieSelected(click);
+    setSuggestions([]);
     setInputValue(title);
     setInputValueInParent(title);
-    setSuggestions([]);
-    setSelectedMoviePoster(poster);
+    getMoviePoster(id);
+    if (checkMovieValid) checkMovieValid(id);
+    handleChange({
+      target: {
+        name: "tmdbId",
+        value: id || 0,
+      },
+    });
   };
 
   const handleKeyDown = (e) => {
@@ -93,16 +137,18 @@ const Autocomplete = ({ value, handleChange }) => {
     } else if (e.key === "Enter" && highlightedSuggestionIndex >= 0) {
       e.preventDefault();
       const selectedSuggestion = suggestions[highlightedSuggestionIndex];
-      selectMovieSuggestion(
-        selectedSuggestion.title,
-        selectedSuggestion.poster_path
-      );
+      if (selectedSuggestion) {
+        selectMovieSuggestion(selectedSuggestion.title, selectedSuggestion.id);
+        setMovieSelected(true);
+      }
     }
     // Scroll to the selected suggestion
     if (suggestionListRef.current && highlightedSuggestionIndex >= 0) {
       const listItem =
         suggestionListRef.current.children[highlightedSuggestionIndex];
-      listItem.scrollIntoView({ behavior: "smooth", block: "center" });
+      if (listItem) {
+        listItem.scrollIntoView({ behavior: "smooth", block: "center" });
+      }
     }
   };
 
@@ -122,11 +168,10 @@ const Autocomplete = ({ value, handleChange }) => {
       document.removeEventListener("click", handleClickOutside);
     };
   }, []);
-
   return (
     <div className="w-full relative pb-1" ref={autocompleteRef}>
       <div className="flex justify-between gap-2">
-        {selectedMoviePoster && (
+        {selectedMoviePoster && suggestions.length === 0 && movieSelected && (
           <Image
             src={`https://image.tmdb.org/t/p/w92/${selectedMoviePoster}`}
             alt={`${selectedMoviePoster} Poster`}
@@ -160,9 +205,7 @@ const Autocomplete = ({ value, handleChange }) => {
                 index === highlightedSuggestionIndex ? "bg-blue-300" : ""
               }`}
               onMouseEnter={() => setHighlightedSuggestionIndex(index)}
-              onClick={() =>
-                selectMovieSuggestion(movie.title, movie.poster_path)
-              }
+              onClick={() => selectMovieSuggestion(movie.title, movie.id, true)}
             >
               <Image
                 src={`https://image.tmdb.org/t/p/w92/${movie.poster_path}`}

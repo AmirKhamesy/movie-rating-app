@@ -18,6 +18,7 @@ model Rating {
   updatedAt DateTime @updatedAt
   listId    String   @db.ObjectId
   list      List     @relation(fields: [listId], references: [id], onDelete: Cascade)
+  tmdbId    Int?
 }
 
 model List {

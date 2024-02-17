@@ -84,7 +84,7 @@ export const PATCH = async (req, { params }) => {
 
     const body = await req.json();
     const { id } = params;
-    const { title, scary, story, acting } = body;
+    const { title, scary, story, acting, tmdbId } = body;
 
     const updateRating = await prisma.rating.update({
       where: { id },
@@ -93,6 +93,7 @@ export const PATCH = async (req, { params }) => {
         scary,
         story,
         acting,
+        tmdbId,
       },
     });
 

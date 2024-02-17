@@ -99,7 +99,7 @@ export const POST = async (req, { params }) => {
 
       if (collaboration) {
         const body = await req.json();
-        const { title, scary, story, acting } = body;
+        const { title, scary, story, acting, tmdbId } = body;
 
         const newRating = await prisma.rating.create({
           data: {
@@ -108,6 +108,7 @@ export const POST = async (req, { params }) => {
             story,
             acting,
             listId,
+            tmdbId,
           },
         });
 

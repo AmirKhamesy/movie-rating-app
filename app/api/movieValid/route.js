@@ -15,9 +15,9 @@ export async function POST(req) {
       });
     }
 
-    const { title, listName, userId } = await req.json();
+    const { id, listName, userId } = await req.json();
 
-    if (!title || !listName) {
+    if (!id || !listName) {
       return new NextResponse(
         JSON.stringify({
           error: "Something went wrong when validating movie title",
@@ -45,10 +45,7 @@ export async function POST(req) {
       const existingMovie = await prisma.rating.findFirst({
         where: {
           listId: listId,
-          title: {
-            mode: "insensitive",
-            equals: title,
-          },
+          tmdbId: id,
         },
       });
 
@@ -60,15 +57,13 @@ export async function POST(req) {
 
       const tmdbApiKey = process.env.NEXT_PUBLIC_TMDB_KEY;
       const tmdbResponse = await axios.get(
-        `https://api.themoviedb.org/3/search/movie?api_key=${tmdbApiKey}&query=${title}`
+        `https://api.themoviedb.org/3/movie/${id}?api_key=${tmdbApiKey}`
       );
-      const tmdbMovie = tmdbResponse.data.results.filter(
-        (movie) => movie.title === title
-      );
+      const tmdbMovie = tmdbResponse.data;
 
-      if (tmdbMovie.length > 0) {
+      if (tmdbMovie) {
         // Movie exists in TMDB
-        return new NextResponse(JSON.stringify(tmdbMovie[0]));
+        return new NextResponse(JSON.stringify(tmdbMovie));
       } else {
         // Movie not found in TMDB
         return new NextResponse(
