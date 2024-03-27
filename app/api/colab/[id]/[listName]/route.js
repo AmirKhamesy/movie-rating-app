@@ -16,6 +16,12 @@ export const GET = async (req, { params }) => {
 
     const userId = session.user.id;
 
+    const { searchParams } = new URL(req.url);
+    const { page = 1 } = Object.fromEntries(searchParams.entries());
+
+    const perPage = 10;
+    const offset = (page - 1) * perPage;
+
     const list = await prisma.list.findMany({
       where: {
         name: {
@@ -29,6 +35,15 @@ export const GET = async (req, { params }) => {
     const listId = list[0]?.id;
 
     if (listId) {
+      const totalCount = await prisma.rating.count({
+        where: {
+          listId,
+        },
+      });
+
+      const totalPages = Math.ceil(totalCount / perPage);
+      const remainingPages = totalPages - page;
+
       const collaboration = await prisma.collaborator.findFirst({
         where: {
           listId,
@@ -39,7 +54,10 @@ export const GET = async (req, { params }) => {
       if (collaboration) {
         const allListRatings = await prisma.list.findUnique({
           include: {
-            ratings: true,
+            ratings: {
+              take: perPage,
+              skip: offset,
+            },
             user: {
               select: {
                 name: true,
@@ -51,7 +69,7 @@ export const GET = async (req, { params }) => {
           },
         });
 
-        return NextResponse.json(allListRatings);
+        return NextResponse.json({ ratings: allListRatings, remainingPages });
       } else {
         return NextResponse.json(
           { message: "Collaboration does not exist" },
