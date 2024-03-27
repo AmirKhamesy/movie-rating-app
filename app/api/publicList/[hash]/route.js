@@ -20,7 +20,7 @@ export const GET = async (req, { params }) => {
     const { searchParams } = new URL(req.url);
     const { page = 1 } = Object.fromEntries(searchParams.entries());
 
-    const perPage = 2;
+    const perPage = 10;
     const offset = (page - 1) * perPage;
 
     if (listId) {

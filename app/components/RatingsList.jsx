@@ -23,9 +23,11 @@ const RatingsList = (params) => {
           const existingIndex = prevRatings.findIndex(
             (oldRating) => oldRating.id === rating.id
           );
-
           if (existingIndex === -1) {
-            // prevRatings.push(rating);
+            //Add rating to list if has more if there is no more pages to fetch
+            if (!hasMore) {
+              prevRatings.push(rating);
+            }
           } else {
             prevRatings = prevRatings.map((oldRating) =>
               oldRating.id === rating.id ? rating : oldRating
