@@ -55,9 +55,7 @@ const Lists = async ({ lists, userId }) => {
                     {list.RatingsCount ? list.RatingsCount : "No"} Rating
                     {list.RatingsCount !== 1 && "s"}
                   </p>
-                  <p className="text-xs text-gray-500">
-                    Last updated {moment(list.updatedAt).fromNow()}
-                  </p>
+                  <p className="text-xs text-gray-500">By: {list.user.name}</p>
                 </div>
               </div>
             </div>
