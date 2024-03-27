@@ -22,13 +22,13 @@ const CopyToClipboardButton = ({ textToCopy }) => {
 
   const inputClasses = `flex-grow bg-${
     isCopied ? "green-100" : ""
-  } border py-2 px-4 rounded-md focus:outline-none focus:shadow-outline ${
+  } border py-2 px-4  focus:outline-none focus:shadow-outline ${
     isCopied ? "border-green-500 text-green-700 green-100" : ""
   } cursor-pointer`;
 
   const buttonClasses = `ml-1 flex-shrink-0 bg-${
     isCopied ? "green-600" : "blue-500"
-  } text-white py-2 px-4 rounded-md focus:outline-none focus:shadow-outline h-full`;
+  } text-white py-2 px-4  focus:outline-none focus:shadow-outline h-full`;
 
   const CopyClipboardIcon = ({ isCopied }) =>
     isCopied ? (

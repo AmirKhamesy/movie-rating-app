@@ -17,7 +17,7 @@ const Lists = async ({ lists, userId }) => {
         {userLists.map((list) => (
           <div
             key={list.id}
-            className="bg-white shadow-md rounded-lg p-4 mb-4 hover:cursor-pointer hover:shadow-lg"
+            className="bg-white shadow-md p-4 mb-4 hover:cursor-pointer hover:shadow-lg"
             onClick={() => navigateToList(list.name)}
           >
             <div className="flex justify-between">
@@ -45,7 +45,7 @@ const Lists = async ({ lists, userId }) => {
           {collaboratedLists.map((list) => (
             <div
               key={list.id}
-              className="bg-white shadow-md rounded-lg p-4 mb-4 hover:cursor-pointer hover:shadow-lg"
+              className="bg-white shadow-md p-4 mb-4 hover:cursor-pointer hover:shadow-lg"
               onClick={() => navigateToList(`${list.name}/${list.userId}`)}
             >
               <div className="flex justify-between">

@@ -18,7 +18,7 @@ const CollaboratorsList = ({ collaborators, setCollaborators, setLoading }) => {
       {collaborators.map((collaborator) => (
         <div
           key={collaborator.id}
-          className="p-4 border rounded-md flex items-center justify-between"
+          className="p-4 border  flex items-center justify-between"
         >
           <div>
             <p className="text-lg font-semibold">{collaborator.user.name}</p>
@@ -26,7 +26,7 @@ const CollaboratorsList = ({ collaborators, setCollaborators, setLoading }) => {
           </div>
           <button
             onClick={() => handleRemoveCollaborator(collaborator.id)}
-            className="ml-2 px-4 py-2 bg-red-500 text-white rounded-md"
+            className="ml-2 px-4 py-2 bg-red-500 text-white "
           >
             X
           </button>
