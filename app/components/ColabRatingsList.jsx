@@ -1,6 +1,5 @@
 "use client";
 import AddListRating from "./AddListRating";
-import EditList from "./EditList";
 import Rating from "./Rating";
 import React, { useEffect, useState } from "react";
 
@@ -74,6 +73,8 @@ const ColabRatingsList = ({ ListName, userId }) => {
             &lt; BACK TO LISTS
           </a>
           <h1 className="text-3xl my-2 font-extrabold">{ListName}</h1>
+
+          <p className="text-sm text-gray-600">List owner: {list.user.name}</p>
           <div className="my-5 flex flex-col gap-4">
             <div className="flex flex-row justify-between">
               <AddListRating
