@@ -68,7 +68,7 @@ const AddList = () => {
             <input
               type="text"
               name="title"
-              className="border rounded p-2 w-full"
+              className="border p-2 w-full"
               placeholder="List name"
               value={title}
               onChange={handleInputChange}

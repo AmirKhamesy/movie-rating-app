@@ -30,7 +30,15 @@ export const GET = async () => {
         userId: session.user.id,
       },
       include: {
-        list: true,
+        list: {
+          include: {
+            user: {
+              select: {
+                name: true,
+              },
+            },
+          },
+        },
       },
       orderBy: {
         list: {

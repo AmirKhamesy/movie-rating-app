@@ -9,3 +9,4 @@ const RatePage = () => {
 };
 
 export default RatePage;
+
