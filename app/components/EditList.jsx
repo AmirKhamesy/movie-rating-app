@@ -72,113 +72,132 @@ const EditList = ({
   return (
     <div>
       <button
-        className="bg-blue-500 text-white p-3 cursor-pointer"
+        className="bg-indigo-600 text-white px-4 py-2 rounded-md hover:bg-indigo-700 transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
         onClick={() => setModalOpen(true)}
       >
-        Edit
+        Edit List
       </button>
 
       <Modal modalOpen={modalOpen} setModalOpen={setModalOpen}>
-        <div className="flex flex-col relative">
-          {loading && (
-            <div className="fixed top-0 left-0 w-[100vw] h-[100vh] bg-gray-800 bg-opacity-50 flex items-center justify-center">
-              <div className="w-16 h-16 border-2 border-t-0 border-white border-solid rounded-full animate-spin"></div>
-            </div>
-          )}
-          <div className="flex flex-row justify-between items-center mb-1">
-            <h1 className="text-2xl font-semibold">Editing List</h1>
-            <div className="flex flex-row gap-1">
+        <div className="w-full max-w-2xl mx-auto">
+          <h2 className="text-2xl font-bold text-gray-900 mb-6">Edit List</h2>
+          <div className="space-y-6">
+            <div className="flex items-center justify-between">
+              <span className="text-sm font-medium text-gray-700">
+                Public List
+              </span>
               <button
-                className="bg-purple-500 text-white p-3 cursor-pointer"
-                onClick={() => handlePublicToggle()}
+                onClick={handlePublicToggle}
+                className={`${
+                  listPublic ? "bg-indigo-600" : "bg-gray-200"
+                } relative inline-flex flex-shrink-0 h-6 w-11 border-2 border-transparent rounded-full cursor-pointer transition-colors ease-in-out duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500`}
               >
-                Make list {listPublic ? "Private" : "Public"}
+                <span
+                  className={`${
+                    listPublic ? "translate-x-5" : "translate-x-0"
+                  } pointer-events-none inline-block h-5 w-5 rounded-full bg-white shadow transform ring-0 transition ease-in-out duration-200`}
+                />
+              </button>
+            </div>
+
+            {listPublic && (
+              <>
+                <div>
+                  <label
+                    htmlFor="publicUrl"
+                    className="block text-sm font-medium text-gray-700"
+                  >
+                    Public List URL
+                  </label>
+                  <div className="mt-1 flex rounded-md shadow-sm">
+                    <input
+                      type="text"
+                      name="publicUrl"
+                      id="publicUrl"
+                      className="flex-1 min-w-0 block w-full px-3 py-2 rounded-none rounded-l-md focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm border-gray-300"
+                      value={publicListURL}
+                      readOnly
+                    />
+                    <CopyToClipboardButton textToCopy={publicListURL} />
+                  </div>
+                </div>
+              </>
+            )}
+
+            <div>
+              <label
+                htmlFor="title"
+                className="block text-sm font-medium text-gray-700"
+              >
+                List Title
+              </label>
+              <input
+                type="text"
+                name="title"
+                id="title"
+                className="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
+                value={listTitle}
+                onChange={(e) => setListTitle(e.target.value)}
+              />
+            </div>
+
+            <div>
+              <h3 className="text-lg font-medium text-gray-900 mb-2">
+                Collaborators
+              </h3>
+              <AddCollaborator
+                listId={listId}
+                setCollaborators={setCollaborators}
+                setLoading={setLoading}
+              />
+              <CollaboratorsList
+                collaborators={collaborators}
+                setCollaborators={setCollaborators}
+                setLoading={setLoading}
+              />
+            </div>
+
+            <div className="flex justify-between">
+              <button
+                type="button"
+                onClick={() => setModalDeleteOpen(true)}
+                className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
+              >
+                Delete List
               </button>
               <button
-                className="bg-red-500 text-white p-3 cursor-pointer"
-                onClick={() => setModalDeleteOpen(true)}
+                type="submit"
+                onClick={handleSubmit}
+                className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
               >
-                Delete
+                Save Changes
               </button>
             </div>
           </div>
+        </div>
+      </Modal>
 
-          {listPublic && publicHash && (
-            <>
-              <label
-                htmlFor="title"
-                className="block my-2 text-lg font-medium "
-              >
-                Public List URL
-              </label>
-              <CopyToClipboardButton textToCopy={publicListURL} />
-            </>
-          )}
-          <label htmlFor="colab" className="block my-2 text-lg font-medium ">
-            Add Collaborator
-          </label>
-          <AddCollaborator
-            listId={listId}
-            setCollaborators={setCollaborators}
-            setLoading={setLoading}
-          />
-
-          <CollaboratorsList
-            collaborators={collaborators}
-            setCollaborators={setCollaborators}
-            setLoading={setLoading}
-          />
-
-          <form className="w-full" onSubmit={handleSubmit}>
-            <label htmlFor="title" className="block my-2 text-lg font-medium ">
-              Title
-            </label>
-            <input
-              id="title"
-              type="text"
-              name="title"
-              placeholder="Movie list title"
-              className="w-full"
-              value={listTitle}
-              onChange={(e) => setListTitle(e.target.value)}
-              autoFocus
-            />
-
+      <Modal modalOpen={modalDeleteOpen} setModalOpen={setModalDeleteOpen}>
+        <div className="w-full max-w-md mx-auto">
+          <h2 className="text-2xl font-bold text-gray-900 mb-6">Delete List</h2>
+          <p className="text-sm text-gray-500 mb-4">
+            Are you sure you want to delete "{listName}"? This action cannot be
+            undone.
+          </p>
+          <div className="flex justify-end space-x-3">
             <button
-              type="submit"
-              className="bg-blue-700 text-white px-5 py-2 mt-2 disabled:bg-blue-300"
-              disabled={listTitle === "" || listName === listTitle}
+              onClick={() => setModalDeleteOpen(false)}
+              className="px-4 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
             >
-              Submit
+              Cancel
             </button>
-          </form>
-          <Modal modalOpen={modalDeleteOpen} setModalOpen={setModalDeleteOpen}>
-            <div className="flex justify-between items-center mb-3">
-              <h1 className="text-2xl">
-                Are you sure you want to delete{" "}
-                <span className="font-bold">"{listName}"</span> ?
-                <br />
-                <span className="text-sm">
-                  This action will also delete ratings from this list and you
-                  wont be able to undo it.
-                </span>
-              </h1>
-            </div>
-            <div>
-              <button
-                onClick={() => handleDeleteListing()}
-                className="text-red-700 font-bold mr-5"
-              >
-                YES
-              </button>
-              <button
-                onClick={() => setModalDeleteOpen(false)}
-                className="text-blue-700 font-bold mr-5"
-              >
-                NO
-              </button>
-            </div>
-          </Modal>
+            <button
+              onClick={handleDeleteListing}
+              className="px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
+            >
+              Delete
+            </button>
+          </div>
         </div>
       </Modal>
     </div>
