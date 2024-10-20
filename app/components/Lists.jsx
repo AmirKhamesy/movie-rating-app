@@ -1,65 +1,108 @@
 "use client";
 
+import { useState } from "react";
 import moment from "moment";
+import Link from "next/link";
+import { motion, AnimatePresence } from "framer-motion";
 
-const navigateToList = (listName) => {
-  window.location.href = `/rate/${listName}`;
-};
-
-const Lists = async ({ lists, userId }) => {
+const Lists = ({ lists, userId }) => {
   const userLists = lists.filter((list) => list.userId === userId);
   const collaboratedLists = lists.filter((list) => list.userId !== userId);
 
-  return (
-    <div>
-      <div>
-        <h2 className="text-xl font-bold text-gray-700 mb-2">Your Lists</h2>
-        {userLists.map((list) => (
-          <div
-            key={list.id}
-            className="bg-white shadow-md p-4 mb-4 hover:cursor-pointer hover:shadow-lg"
-            onClick={() => navigateToList(list.name)}
+  const ListItem = ({ list, isCollaborated = false }) => {
+    const [isHovered, setIsHovered] = useState(false);
+
+    return (
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        exit={{ opacity: 0, y: -20 }}
+        transition={{ duration: 0.3 }}
+        className="w-full"
+      >
+        <Link
+          href={
+            isCollaborated
+              ? `/rate/${list.name}/${list.userId}`
+              : `/rate/${list.name}`
+          }
+          className="block w-full"
+        >
+          <motion.div
+            className="py-4 px-4 sm:py-6 sm:px-6 border-b border-gray-200 last:border-b-0"
+            whileHover={{ backgroundColor: "rgba(0, 0, 0, 0.02)" }}
+            onHoverStart={() => setIsHovered(true)}
+            onHoverEnd={() => setIsHovered(false)}
           >
-            <div className="flex justify-between">
-              <h3 className=" font-semibold text-gray-800">{list.name}</h3>
-              <div className="flex flex-col items-end">
-                <p className="text-sm text-gray-600">
+            <div className="flex items-center">
+              <div className="flex-grow pr-4">
+                <h3 className="text-lg font-semibold text-gray-900 mb-1">
+                  {list.name}
+                </h3>
+                <p className="text-sm text-gray-500">
                   {list.RatingsCount ? list.RatingsCount : "No"} Rating
                   {list.RatingsCount !== 1 && "s"}
                 </p>
-                <p className="text-xs text-gray-500">
-                  Last updated {moment(list.updatedAt).fromNow()}
+                <p className="text-xs text-gray-400 mt-1">
+                  {isCollaborated
+                    ? `By: ${list.user.name}`
+                    : `Updated ${moment(list.updatedAt).fromNow()}`}
                 </p>
               </div>
+              <motion.div
+                className="w-10 h-10 rounded-full bg-indigo-100 flex items-center justify-center flex-shrink-0"
+                whileHover={{ scale: 1.1 }}
+                animate={{
+                  backgroundColor: isHovered ? "#4F46E5" : "#E0E7FF",
+                }}
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="h-6 w-6"
+                  viewBox="0 0 20 20"
+                  fill={isHovered ? "#FFFFFF" : "#4F46E5"}
+                >
+                  <path
+                    fillRule="evenodd"
+                    d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
+                    clipRule="evenodd"
+                  />
+                </svg>
+              </motion.div>
             </div>
-          </div>
-        ))}
+          </motion.div>
+        </Link>
+      </motion.div>
+    );
+  };
+
+  return (
+    <div className="space-y-8">
+      <div>
+        <h2 className="text-xl sm:text-2xl font-bold text-gray-900 mb-4">
+          Your Lists
+        </h2>
+        <div className="bg-white rounded-lg shadow-sm overflow-hidden">
+          <AnimatePresence>
+            {userLists.map((list) => (
+              <ListItem key={list.id} list={list} />
+            ))}
+          </AnimatePresence>
+        </div>
       </div>
 
       {collaboratedLists.length > 0 && (
         <div>
-          <hr className="my-8" />
-          <h2 className="text-xl font-bold text-gray-700 mb-2">
+          <h2 className="text-xl sm:text-2xl font-bold text-gray-900 mb-4">
             Collaborated Lists
           </h2>
-          {collaboratedLists.map((list) => (
-            <div
-              key={list.id}
-              className="bg-white shadow-md p-4 mb-4 hover:cursor-pointer hover:shadow-lg"
-              onClick={() => navigateToList(`${list.name}/${list.userId}`)}
-            >
-              <div className="flex justify-between">
-                <h3 className=" font-semibold text-gray-800">{list.name}</h3>
-                <div className="flex flex-col items-end">
-                  <p className="text-sm text-gray-600">
-                    {list.RatingsCount ? list.RatingsCount : "No"} Rating
-                    {list.RatingsCount !== 1 && "s"}
-                  </p>
-                  <p className="text-xs text-gray-500">By: {list.user.name}</p>
-                </div>
-              </div>
-            </div>
-          ))}
+          <div className="bg-white rounded-lg shadow-sm overflow-hidden">
+            <AnimatePresence>
+              {collaboratedLists.map((list) => (
+                <ListItem key={list.id} list={list} isCollaborated />
+              ))}
+            </AnimatePresence>
+          </div>
         </div>
       )}
     </div>

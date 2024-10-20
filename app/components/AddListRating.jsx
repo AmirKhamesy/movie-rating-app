@@ -224,101 +224,85 @@ const AddListRating = ({ listName, setRating, userId }) => {
     <div>
       <button
         onClick={() => setModalOpen(true)}
-        className="bg-green-700 text-white p-3 cursor-pointer"
+        className="bg-indigo-600 text-white px-4 py-2 rounded-md hover:bg-indigo-700 transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
       >
         + New Rating
       </button>
       <Modal modalOpen={modalOpen} setModalOpen={setModalOpen}>
-        <form className="w-full" onSubmit={handleSubmit}>
-          <div className="flex justify-between items-center  mb-3">
-            <h1 className="text-2xl">
-              {editing.id ? "Updating" : "New"} Rating
-            </h1>{" "}
-            {editing.id && (
-              <p className="text-sm text-gray-500">
-                Updated {moment(editing.updatedAt).fromNow()}
-              </p>
-            )}{" "}
-          </div>
-          <Autocomplete
-            value={editing.id ? editing.title : inputs.title}
-            handleChange={handleChange}
-            edit={false}
-            checkMovieValid={checkMovieValidDebounced}
-          />
-          <label htmlFor="scary" className="block my-4 text-lg font-medium">
-            Scary{" "}
-            {(editing.id ? editing.scary : inputs.scary) !== undefined &&
-              `(${editing.id ? editing.scary : inputs.scary})`}{" "}
-          </label>
-          <input
-            id="scary"
-            type="range"
-            name="scary"
-            min="0"
-            max="10"
-            step="0.5"
-            className="slider"
-            value={editing.id ? editing.scary : inputs.scary}
-            onChange={handleChange}
-          />
+        <div className="w-full max-w-md mx-auto">
+          <h2 className="text-2xl font-bold text-gray-900 mb-6">
+            {editing.id ? "Update" : "New"} Rating
+          </h2>
+          <form onSubmit={handleSubmit} className="space-y-6">
+            <div>
+              <label
+                htmlFor="title"
+                className="block text-sm font-medium text-gray-700"
+              >
+                Movie Title
+              </label>
+              <Autocomplete
+                value={editing.id ? editing.title : inputs.title}
+                handleChange={handleChange}
+                edit={false}
+                checkMovieValid={checkMovieValidDebounced}
+              />
+            </div>
 
-          <label htmlFor="story" className="block my-4 text-lg font-medium">
-            Story{" "}
-            {(editing.id ? editing.story : inputs.story) !== undefined &&
-              `(${editing.id ? editing.story : inputs.story})`}
-          </label>
-          <input
-            id="story"
-            type="range"
-            name="story"
-            min="0"
-            max="10"
-            step="0.5"
-            className="slider"
-            value={editing.id ? editing.story : inputs.story}
-            onChange={handleChange}
-          />
+            {["scary", "story", "acting"].map((category) => (
+              <div key={category}>
+                <label
+                  htmlFor={category}
+                  className="block text-sm font-medium text-gray-700"
+                >
+                  {category.charAt(0).toUpperCase() + category.slice(1)} Rating:{" "}
+                  {editing.id ? editing[category] : inputs[category]}
+                </label>
+                <input
+                  type="range"
+                  id={category}
+                  name={category}
+                  min="0"
+                  max="10"
+                  step="0.5"
+                  value={editing.id ? editing[category] : inputs[category]}
+                  onChange={handleChange}
+                  className="mt-1 block w-full"
+                />
+              </div>
+            ))}
 
-          <label htmlFor="acting" className="block my-4 text-lg font-medium">
-            Acting{" "}
-            {(editing.id ? editing.acting : inputs.acting) !== undefined &&
-              `(${editing.id ? editing.acting : inputs.acting})`}{" "}
-          </label>
-          <input
-            id="acting"
-            type="range"
-            name="acting"
-            min="0"
-            max="10"
-            step="0.5"
-            className="slider"
-            value={editing.id ? editing.acting : inputs.acting}
-            onChange={handleChange}
-          />
-
-          <button
-            type="submit"
-            className="bg-blue-700 text-white px-5 py-2 mt-4 disabled:bg-blue-300"
-            disabled={
-              (!editing.id &&
-                (inputs.story === undefined ||
-                  inputs.scary === undefined ||
-                  inputs.acting === undefined ||
-                  inputs.title === undefined ||
-                  inputs.tmdbId === 0 ||
-                  !movieValid)) ||
-              // if editing, disable submit button if no changes have been made
-              (editing.id
-                ? editing.scary === initialEditingState.scary &&
-                  editing.story === initialEditingState.story &&
-                  editing.acting === initialEditingState.acting
-                : false)
-            }
-          >
-            Submit
-          </button>
-        </form>
+            <div className="flex justify-end space-x-3">
+              <button
+                type="button"
+                onClick={() => setModalOpen(false)}
+                className="px-4 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+              >
+                Cancel
+              </button>
+              <button
+                type="submit"
+                className="px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                disabled={
+                  (!editing.id &&
+                    (inputs.story === undefined ||
+                      inputs.scary === undefined ||
+                      inputs.acting === undefined ||
+                      inputs.title === undefined ||
+                      inputs.tmdbId === 0 ||
+                      !movieValid)) ||
+                  (editing.id
+                    ? editing.scary === initialEditingState.scary &&
+                      editing.story === initialEditingState.story &&
+                      editing.acting === initialEditingState.acting
+                    : false)
+                }
+              >
+                {editing.id ? "Update" : "Submit"}
+              </button>
+            </div>
+          </form>
+        </div>
       </Modal>
     </div>
   );

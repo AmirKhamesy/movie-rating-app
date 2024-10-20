@@ -59,7 +59,6 @@ const AddCollaborator = ({ listId, setCollaborators, setLoading }) => {
       }
     }
   };
-
   const validateEmail = (email) => {
     setIsValidEmail(emailRegex.test(email));
   };

@@ -14,30 +14,32 @@ const CollaboratorsList = ({ collaborators, setCollaborators, setLoading }) => {
   };
 
   return (
-    <div className="mt-4">
-      <h3 className="text-lg font-semibold mb-2">Collaborators</h3>
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+    <div className="mt-6">
+      <h3 className="text-lg font-semibold mb-4 text-gray-800">
+        Collaborators
+      </h3>
+      <ul className="bg-white rounded-lg shadow-sm divide-y divide-gray-200">
         {collaborators.map((collaborator) => (
-          <div
+          <li
             key={collaborator.id}
-            className="bg-white shadow-md rounded-lg p-3 flex items-center justify-between transition-all hover:shadow-lg"
+            className="flex items-center justify-between py-4 px-6 hover:bg-gray-50 transition-colors duration-150 ease-in-out"
           >
-            <div className="flex items-center min-w-0 flex-grow">
-              <div className="w-10 h-10 bg-indigo-500 rounded-full flex-shrink-0 flex items-center justify-center text-white font-semibold text-lg mr-3">
+            <div className="flex items-center">
+              <div className="w-10 h-10 bg-gradient-to-br from-blue-400 to-indigo-600 rounded-full flex-shrink-0 flex items-center justify-center text-white font-semibold text-lg">
                 {collaborator.user.name.charAt(0).toUpperCase()}
               </div>
-              <div className="min-w-0 flex-grow">
-                <p className="font-semibold text-sm sm:text-base truncate">
+              <div className="ml-4">
+                <p className="text-sm font-medium text-gray-900">
                   {collaborator.user.name}
                 </p>
-                <p className="text-xs sm:text-sm text-gray-600 truncate">
+                <p className="text-xs text-gray-500">
                   {collaborator.user.email}
                 </p>
               </div>
             </div>
             <button
               onClick={() => handleRemoveCollaborator(collaborator.id)}
-              className="text-red-500 hover:text-red-700 transition-colors focus:outline-none flex-shrink-0 ml-2"
+              className="text-gray-400 hover:text-red-500 transition-colors duration-150 ease-in-out focus:outline-none"
               aria-label="Remove collaborator"
             >
               <svg
@@ -53,9 +55,9 @@ const CollaboratorsList = ({ collaborators, setCollaborators, setLoading }) => {
                 />
               </svg>
             </button>
-          </div>
+          </li>
         ))}
-      </div>
+      </ul>
     </div>
   );
 };

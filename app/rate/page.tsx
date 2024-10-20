@@ -9,7 +9,7 @@ async function fetchLists() {
   const res = await fetch(`${process.env.NEXT_PUBLIC_API}/api/lists`, {
     credentials: "include",
     next: { revalidate: 0 },
-    headers: { Cookie: cookies().toString() }, //HACK: Send cookies to server
+    headers: { Cookie: cookies().toString() },
   });
 
   if (!res.ok) {
@@ -20,17 +20,15 @@ async function fetchLists() {
 
 const RatePage = async () => {
   const session = await getServerSession(authOptions);
-
   const lists: Prisma.ListSelect = await fetchLists();
 
   return (
-    <div className="max-w-4xl mx-auto mt-4">
-      <div>
-        <div className="my-5">
-          <AddList />
-        </div>
-        <Lists lists={lists} userId={session.user.id} />
+    <div>
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 sm:mb-8">
+        <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-4 sm:mb-0">Your Movie Lists</h1>
+        <AddList />
       </div>
+      <Lists lists={lists} userId={session.user.id} />
     </div>
   );
 };

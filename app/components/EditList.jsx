@@ -79,7 +79,7 @@ const EditList = ({
       </button>
 
       <Modal modalOpen={modalOpen} setModalOpen={setModalOpen}>
-        <div className="w-full max-w-2xl mx-auto">
+        <div className="w-full max-w-3xl mx-auto">
           <h2 className="text-2xl font-bold text-gray-900 mb-6">Edit List</h2>
           <div className="space-y-6">
             <div className="flex items-center justify-between">

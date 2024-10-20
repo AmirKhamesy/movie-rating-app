@@ -16,6 +16,7 @@
     "bcryptjs": "^2.4.3",
     "clipboard-copy": "^4.0.1",
     "debug": "^4.3.4",
+    "framer-motion": "^11.11.9",
     "lodash": "^4.17.21",
     "moment": "^2.29.4",
     "next": "13.4.19",

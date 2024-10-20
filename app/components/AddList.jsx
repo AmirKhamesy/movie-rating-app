@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import Modal from "./Modal";
 import axios from "axios";
-import debounce from "lodash/debounce"; // Import lodash debounce
+import debounce from "lodash/debounce";
 
 const AddList = () => {
   const [title, setTitle] = useState("");
@@ -31,7 +31,6 @@ const AddList = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    // Cancel the debounce timer if a submit is triggered
     debouncedInputChange.cancel();
     axios
       .post("/api/lists", { title })
@@ -48,7 +47,6 @@ const AddList = () => {
     setListExists(true);
     const newTitle = e.target.value;
     setTitle(newTitle);
-    // Call the debouncedInputChange function with the new title
     debouncedInputChange(newTitle);
   };
 
@@ -56,34 +54,52 @@ const AddList = () => {
     <div>
       <button
         onClick={() => setModalOpen(true)}
-        className="bg-green-700 text-white p-3 cursor-pointer"
+        className="bg-indigo-600 text-white px-4 py-2 rounded-md hover:bg-indigo-700 transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
       >
         + New List
       </button>
       <Modal modalOpen={modalOpen} setModalOpen={setModalOpen}>
-        <form className="w-full" onSubmit={handleSubmit}>
-          <div className="flex flex-col gap-3">
-            <h1 className="text-2xl">New List</h1>
-
-            <input
-              type="text"
-              name="title"
-              className="border p-2 w-full"
-              placeholder="List name"
-              value={title}
-              onChange={handleInputChange}
-              autoFocus
-            />
-
-            <button
-              type="submit"
-              className="bg-blue-700 text-white px-5 py-2 mt-2 disabled:bg-blue-300"
-              disabled={listExists || title === ""}
-            >
-              Submit
-            </button>
-          </div>
-        </form>
+        <div className="w-full max-w-md mx-auto">
+          <h2 className="text-2xl font-bold text-gray-900 mb-6">
+            Create New List
+          </h2>
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <div>
+              <label
+                htmlFor="title"
+                className="block text-sm font-medium text-gray-700"
+              >
+                List Name
+              </label>
+              <input
+                type="text"
+                id="title"
+                name="title"
+                className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                placeholder="Enter list name"
+                value={title}
+                onChange={handleInputChange}
+                autoFocus
+              />
+            </div>
+            <div className="flex justify-end space-x-3">
+              <button
+                type="button"
+                onClick={() => setModalOpen(false)}
+                className="px-4 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+              >
+                Cancel
+              </button>
+              <button
+                type="submit"
+                className="px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:bg-gray-300 disabled:cursor-not-allowed"
+                disabled={listExists || title === ""}
+              >
+                Create List
+              </button>
+            </div>
+          </form>
+        </div>
       </Modal>
     </div>
   );
