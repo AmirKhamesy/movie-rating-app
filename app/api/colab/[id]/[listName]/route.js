@@ -17,7 +17,14 @@ export const GET = async (req, { params }) => {
     const userId = session.user.id;
 
     const { searchParams } = new URL(req.url);
-    const { page = 1 } = Object.fromEntries(searchParams.entries());
+    const {
+      page = 1,
+      scary,
+      story,
+      acting,
+      sort = "newest",
+      search,
+    } = Object.fromEntries(searchParams.entries());
 
     const perPage = 10;
     const offset = (page - 1) * perPage;
@@ -35,15 +42,6 @@ export const GET = async (req, { params }) => {
     const listId = list[0]?.id;
 
     if (listId) {
-      const totalCount = await prisma.rating.count({
-        where: {
-          listId,
-        },
-      });
-
-      const totalPages = Math.ceil(totalCount / perPage);
-      const remainingPages = totalPages - page;
-
       const collaboration = await prisma.collaborator.findFirst({
         where: {
           listId,
@@ -52,11 +50,28 @@ export const GET = async (req, { params }) => {
       });
 
       if (collaboration) {
+        const where = {
+          listId,
+          ...(scary && { scary: { gte: parseInt(scary) } }),
+          ...(story && { story: { gte: parseInt(story) } }),
+          ...(acting && { acting: { gte: parseInt(acting) } }),
+          ...(search && { title: { contains: search, mode: "insensitive" } }),
+        };
+
+        const totalCount = await prisma.rating.count({ where });
+
+        const totalPages = Math.ceil(totalCount / perPage);
+        const remainingPages = totalPages - page;
+
         const allListRatings = await prisma.list.findUnique({
           include: {
             ratings: {
+              where,
               take: perPage,
               skip: offset,
+              orderBy: {
+                updatedAt: sort === "newest" ? "desc" : "asc",
+              },
             },
             user: {
               select: {
@@ -87,6 +102,7 @@ export const GET = async (req, { params }) => {
     return NextResponse.json({ message: "GET Error" }, { status: 500 });
   }
 };
+
 export const POST = async (req, { params }) => {
   try {
     const session = await getServerSession(authOptions);

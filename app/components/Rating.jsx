@@ -99,9 +99,9 @@ const Rating = ({ rating, setRating, idx }) => {
       >
         {movieDetails.poster_path && (
           <div
-            className="absolute inset-0 bg-cover bg-center md:hidden"
+            className="absolute inset-0 bg-cover bg-center md:hidden opacity-30"
             style={{
-              backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url(https://image.tmdb.org/t/p/w500${movieDetails.poster_path})`,
+              backgroundImage: `url(https://image.tmdb.org/t/p/w500${movieDetails.poster_path})`,
             }}
           />
         )}
@@ -112,22 +112,24 @@ const Rating = ({ rating, setRating, idx }) => {
                 <Image
                   src={`https://image.tmdb.org/t/p/w200${movieDetails.poster_path}`}
                   alt={rating.title}
-                  layout="fill"
-                  objectFit="cover"
+                  fill
+                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                  style={{ objectFit: "cover" }}
+                  priority
                 />
               </div>
             </div>
           )}
           <div className="flex-grow flex flex-col justify-between">
             <div className="flex flex-col md:flex-row justify-between items-start mb-4">
-              <h1 className="text-2xl font-bold text-white md:text-gray-900 mb-2 md:mb-0">
+              <h1 className="text-2xl font-bold text-gray-900 mb-2 md:mb-0">
                 {rating.title}
               </h1>
-              <p className="text-xs text-gray-300 md:text-gray-500">
+              <p className="text-xs text-gray-500">
                 Updated {moment(rating.updatedAt).fromNow()}
               </p>
             </div>
-            <div className="space-y-4">
+            <div className="space-y-3">
               <ProgressBar
                 title="Scary"
                 score={rating.scary}
@@ -158,8 +160,9 @@ const Rating = ({ rating, setRating, idx }) => {
                   <Image
                     src={`https://image.tmdb.org/t/p/w300${movieDetails.poster_path}`}
                     alt={rating.title}
-                    layout="fill"
-                    objectFit="cover"
+                    fill
+                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                    style={{ objectFit: "cover" }}
                   />
                 </div>
               </div>
@@ -169,6 +172,7 @@ const Rating = ({ rating, setRating, idx }) => {
                 value={ratingToEdit.title}
                 handleChange={handleChange}
                 edit={true}
+                checkMovieValid={() => {}}
               />
               {["scary", "story", "acting"].map((category) => (
                 <div key={category}>
