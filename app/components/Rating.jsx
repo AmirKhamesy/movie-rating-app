@@ -153,10 +153,10 @@ const Rating = ({ rating, setRating, idx }) => {
       <Modal modalOpen={openModal} setModalOpen={setOpenModal}>
         <div className="w-full max-w-lg mx-auto">
           <h2 className="text-2xl font-bold text-white mb-6">Edit Rating</h2>
-          <div className="flex flex-col md:flex-row md:space-x-6">
+          <div className="flex flex-col items-center md:flex-row md:items-start md:space-x-6">
             {movieDetails.poster_path && (
-              <div className="w-full md:w-1/3 mb-6 md:mb-0">
-                <div className="relative aspect-[2/3] rounded-lg overflow-hidden max-h-[200px] md:max-h-[300px]">
+              <div className="w-full md:w-1/3 mb-6 md:mb-0 flex justify-center">
+                <div className="relative aspect-[2/3] max-w-[160px] rounded-lg overflow-hidden w-48 md:w-full ">
                   <Image
                     src={`https://image.tmdb.org/t/p/w300${movieDetails.poster_path}`}
                     alt={rating.title}
@@ -167,7 +167,10 @@ const Rating = ({ rating, setRating, idx }) => {
                 </div>
               </div>
             )}
-            <form onSubmit={handleEditSubmit} className="flex-grow space-y-4">
+            <form
+              onSubmit={handleEditSubmit}
+              className="flex-grow space-y-4 w-full md:w-2/3"
+            >
               <Autocomplete
                 value={ratingToEdit.title}
                 handleChange={handleChange}
