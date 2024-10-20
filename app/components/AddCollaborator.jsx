@@ -65,11 +65,13 @@ const AddCollaborator = ({ listId, setCollaborators, setLoading }) => {
 
   const containerClasses = "flex items-center";
 
-  const inputClasses = `flex-grow  border py-1 px-4 w-100% focus:outline-none focus:shadow-outline `;
+  const inputClasses = `flex-grow border py-1 px-4 w-100% focus:outline-none focus:shadow-outline`;
 
-  const buttonClasses = `ml-1 flex-shrink-0 bg-${
-    addButtonDisabled ? "blue-300" : "blue-500"
-  } text-white py-2 px-4 focus:outline-none focus:shadow-outline h-full`;
+  const buttonClasses = `ml-1 flex-shrink-0 text-white py-2 px-4 focus:outline-none focus:shadow-outline h-full ${
+    addButtonDisabled
+      ? "bg-blue-300 cursor-not-allowed"
+      : "bg-blue-500 hover:bg-blue-600"
+  }`;
 
   return (
     <div className={containerClasses}>
