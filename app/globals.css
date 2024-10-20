@@ -15,7 +15,31 @@ input.slider {
 }
 
 .spinner {
-  @apply w-16 h-16 border-2 border-t-0 border-blue-500 border-solid rounded-full animate-spin;
+  @apply relative w-12 h-12;
+}
+
+.spinner::before,
+.spinner::after {
+  content: "";
+  @apply absolute top-0 left-0 w-full h-full rounded-full;
+}
+
+.spinner::before {
+  @apply border-4 border-indigo-200;
+}
+
+.spinner::after {
+  @apply border-4 border-indigo-600 border-t-transparent;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
 @layer components {
