@@ -7,20 +7,8 @@ const ProgressBar = ({ title, score, mobileView = false }) => {
   return (
     <div className="flex flex-col gap-1">
       <div className="flex justify-between items-center">
-        <p
-          className={`text-sm font-semibold ${
-            mobileView ? "text-white md:text-gray-700" : "text-gray-700"
-          }`}
-        >
-          {title}
-        </p>
-        <p
-          className={`text-sm font-medium ${
-            mobileView ? "text-white md:text-gray-700" : "text-gray-700"
-          }`}
-        >
-          {score}
-        </p>
+        <p className="text-sm font-semibold text-gray-900">{title}</p>
+        <p className="text-sm font-medium text-gray-900">{score}</p>
       </div>
       <div className="w-full bg-gray-200 h-3 rounded-full overflow-hidden">
         <motion.div

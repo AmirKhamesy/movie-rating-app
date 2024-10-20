@@ -27,6 +27,7 @@ const AddCollaborator = ({ listId, setCollaborators, setLoading }) => {
         setCollaborators((prev) => [...prev, response.data]);
         setColabEmail("");
         setLoading(false);
+        toast.success("Collaborator added successfully");
       } catch (error) {
         setLoading(false);
         if (error.response) {
@@ -59,28 +60,26 @@ const AddCollaborator = ({ listId, setCollaborators, setLoading }) => {
       }
     }
   };
+
   const validateEmail = (email) => {
     setIsValidEmail(emailRegex.test(email));
   };
 
-  const containerClasses = "flex items-center";
-
-  const inputClasses = `flex-grow border py-1 px-4 w-100% focus:outline-none focus:shadow-outline`;
-
-  const buttonClasses = `ml-1 flex-shrink-0 text-white py-2 px-4 focus:outline-none focus:shadow-outline h-full ${
-    addButtonDisabled
-      ? "bg-blue-300 cursor-not-allowed"
-      : "bg-blue-500 hover:bg-blue-600"
-  }`;
-
   return (
-    <div className={containerClasses}>
-      <div className="flex flex-row justify w-full">
+    <div className="mb-4">
+      <label
+        htmlFor="colab"
+        className="block text-sm font-medium text-gray-700 mb-1"
+      >
+        Add Collaborator
+      </label>
+      <div className="mt-1 flex rounded-md shadow-sm">
         <input
           id="colab"
           name="colab"
+          type="email"
           placeholder="user@email.com"
-          className={inputClasses}
+          className="flex-grow focus:ring-indigo-500 focus:border-indigo-500 block w-full min-w-0 rounded-none rounded-l-md sm:text-sm border-gray-300"
           value={colabEmail}
           onChange={(e) => {
             setColabEmail(e.target.value);
@@ -95,13 +94,22 @@ const AddCollaborator = ({ listId, setCollaborators, setLoading }) => {
         <button
           onClick={handleAddClick}
           type="button"
-          className={buttonClasses}
+          className={`inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-r-md text-white ${
+            addButtonDisabled
+              ? "bg-indigo-300 cursor-not-allowed"
+              : "bg-indigo-600 hover:bg-indigo-700"
+          } focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500`}
           disabled={addButtonDisabled}
         >
           Add
         </button>
-        <ToastContainer />
       </div>
+      {!isValidEmail && colabEmail !== "" && (
+        <p className="mt-1 text-sm text-red-600">
+          Please enter a valid email address.
+        </p>
+      )}
+      <ToastContainer />
     </div>
   );
 };

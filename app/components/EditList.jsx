@@ -69,6 +69,10 @@ const EditList = ({
 
   const publicListURL = `${process.env.NEXT_PUBLIC_API}/public-list/${publicHash}`;
 
+  const handleOpenPublicList = () => {
+    window.open(publicListURL, "_blank");
+  };
+
   return (
     <div>
       <button
@@ -101,27 +105,34 @@ const EditList = ({
             </div>
 
             {listPublic && (
-              <>
-                <div>
-                  <label
-                    htmlFor="publicUrl"
-                    className="block text-sm font-medium text-gray-700"
-                  >
-                    Public List URL
-                  </label>
-                  <div className="mt-1 flex rounded-md shadow-sm">
+              <div>
+                <label
+                  htmlFor="publicUrl"
+                  className="block text-sm font-medium text-gray-700 mb-1"
+                >
+                  Public List URL
+                </label>
+                <div className="mt-1 flex rounded-md shadow-sm">
+                  <div className="relative flex items-stretch flex-grow focus-within:z-10">
                     <input
                       type="text"
                       name="publicUrl"
                       id="publicUrl"
-                      className="flex-1 min-w-0 block w-full px-3 py-2 rounded-none rounded-l-md focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm border-gray-300"
+                      className="block w-full rounded-none rounded-l-md border-gray-300 pl-3 pr-12 focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
                       value={publicListURL}
                       readOnly
                     />
                     <CopyToClipboardButton textToCopy={publicListURL} />
                   </div>
+                  <button
+                    type="button"
+                    onClick={handleOpenPublicList}
+                    className="relative -ml-px inline-flex items-center space-x-2 rounded-r-md border border-gray-300 bg-gray-50 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100 focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+                  >
+                    Open
+                  </button>
                 </div>
-              </>
+              </div>
             )}
 
             <div>
@@ -142,9 +153,6 @@ const EditList = ({
             </div>
 
             <div>
-              <h3 className="text-lg font-medium text-gray-900 mb-2">
-                Collaborators
-              </h3>
               <AddCollaborator
                 listId={listId}
                 setCollaborators={setCollaborators}
@@ -157,7 +165,7 @@ const EditList = ({
               />
             </div>
 
-            <div className="flex justify-between">
+            <div className="flex justify-between pt-4 border-t border-gray-200">
               <button
                 type="button"
                 onClick={() => setModalDeleteOpen(true)}

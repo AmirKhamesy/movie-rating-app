@@ -15,9 +15,7 @@ const CollaboratorsList = ({ collaborators, setCollaborators, setLoading }) => {
 
   return (
     <div className="mt-6">
-      <h3 className="text-lg font-semibold mb-4 text-gray-800">
-        Collaborators
-      </h3>
+      <h3 className="text-lg  mb-4">Collaborators</h3>
       <ul className="bg-white rounded-lg shadow-sm divide-y divide-gray-200">
         {collaborators.map((collaborator) => (
           <li

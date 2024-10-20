@@ -4,6 +4,8 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import Image from "next/image";
 import ProgressBar from "./ProgressBar";
+import moment from "moment";
+import { motion } from "framer-motion";
 
 const PublicRating = ({ rating }) => {
   const [movieDetails, setMovieDetails] = useState({});
@@ -33,29 +35,56 @@ const PublicRating = ({ rating }) => {
   }, [rating]);
 
   return (
-    <li className="p-3 my-5 bg-slate-200" key={rating.id}>
-      <h1 className="text-2xl font-bold">{rating.title}</h1>
-
-      {/* Display Movie Image */}
-      <div className="flex flex-row gap-3">
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.3 }}
+      className="relative bg-white shadow-md rounded-lg overflow-hidden mb-4 md:h-auto h-[450px]"
+    >
+      {movieDetails.poster_path && (
+        <div
+          className="absolute inset-0 bg-cover bg-center md:hidden opacity-30"
+          style={{
+            backgroundImage: `url(https://image.tmdb.org/t/p/w500${movieDetails.poster_path})`,
+          }}
+        />
+      )}
+      <div className="relative flex flex-col justify-between md:flex-row p-4 md:p-6 h-full">
         {movieDetails.poster_path && (
-          <div className="my-auto">
-            <Image
-              src={`https://image.tmdb.org/t/p/w300${movieDetails.poster_path}`}
-              alt={rating.title}
-              width="150"
-              height="200"
-            />
+          <div className="hidden md:block md:w-1/4 lg:w-1/5 flex-shrink-0 mr-6">
+            <div className="relative aspect-[2/3] rounded-lg overflow-hidden">
+              <Image
+                src={`https://image.tmdb.org/t/p/w200${movieDetails.poster_path}`}
+                alt={rating.title}
+                fill
+                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                style={{ objectFit: "cover" }}
+                priority
+              />
+            </div>
           </div>
         )}
-
-        <div className="w-full">
-          <ProgressBar title={"Scary"} score={rating.scary} />
-          <ProgressBar title={"Story"} score={rating.story} />
-          <ProgressBar title={"Acting"} score={rating.acting} />
+        <div className="flex-grow flex flex-col justify-between">
+          <div className="flex flex-col md:flex-row justify-between items-start mb-4">
+            <h1 className="text-2xl font-bold text-gray-900 mb-2 md:mb-0">
+              {rating.title}
+            </h1>
+            <p className="text-xs text-gray-500">
+              Updated {moment(rating.updatedAt).fromNow()}
+            </p>
+          </div>
+          <div className="space-y-3">
+            <ProgressBar title="Scary" score={rating.scary} mobileView={true} />
+            <ProgressBar title="Story" score={rating.story} mobileView={true} />
+            <ProgressBar
+              title="Acting"
+              score={rating.acting}
+              mobileView={true}
+            />
+          </div>
         </div>
       </div>
-    </li>
+    </motion.div>
   );
 };
 

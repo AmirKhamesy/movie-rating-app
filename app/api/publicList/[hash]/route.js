@@ -6,52 +6,62 @@ export const GET = async (req, { params }) => {
   try {
     const { hash } = params;
 
-    const list = await prisma.list.findMany({
-      where: {
-        publicHash: {
-          equals: hash,
-        },
-        public: true,
-      },
-    });
-
-    const listId = list[0]?.id;
-
     const { searchParams } = new URL(req.url);
-    const { page = 1 } = Object.fromEntries(searchParams.entries());
+    const {
+      page = 1,
+      scary,
+      story,
+      acting,
+      sort = "newest",
+      search,
+    } = Object.fromEntries(searchParams.entries());
 
     const perPage = 10;
     const offset = (page - 1) * perPage;
 
-    if (listId) {
-      const totalCount = await prisma.rating.count({
-        where: {
-          listId,
-        },
-      });
+    const list = await prisma.list.findFirst({
+      where: {
+        publicHash: hash,
+        public: true,
+      },
+    });
 
-      const totalPages = Math.ceil(totalCount / perPage);
-      const remainingPages = totalPages - page;
-
-      const allListRatings = await prisma.list.findUnique({
-        include: {
-          ratings: {
-            take: perPage,
-            skip: offset,
-          },
-        },
-        where: {
-          id: listId,
-        },
-      });
-
-      return NextResponse.json({ ratings: allListRatings, remainingPages });
-    } else {
+    if (!list) {
       return NextResponse.json(
-        { message: "Problem getting public list data" },
+        { message: "Public list not found" },
         { status: 404 }
       );
     }
+
+    const where = {
+      listId: list.id,
+      ...(scary && { scary: { gte: parseFloat(scary) } }),
+      ...(story && { story: { gte: parseFloat(story) } }),
+      ...(acting && { acting: { gte: parseFloat(acting) } }),
+      ...(search && { title: { contains: search, mode: "insensitive" } }),
+    };
+
+    const [totalCount, allListRatings] = await prisma.$transaction([
+      prisma.rating.count({ where }),
+      prisma.list.findUnique({
+        where: { id: list.id },
+        include: {
+          ratings: {
+            where,
+            take: perPage,
+            skip: offset,
+            orderBy: {
+              updatedAt: sort === "newest" ? "desc" : "asc",
+            },
+          },
+        },
+      }),
+    ]);
+
+    const totalPages = Math.ceil(totalCount / perPage);
+    const remainingPages = totalPages - page;
+
+    return NextResponse.json({ ratings: allListRatings, remainingPages });
   } catch (error) {
     console.log(error);
     return NextResponse.json({ message: "GET Error" }, { status: 500 });
