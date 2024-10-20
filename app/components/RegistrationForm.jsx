@@ -3,6 +3,8 @@
 import { signIn } from "next-auth/react";
 import Link from "next/link";
 import { useState } from "react";
+import { motion } from "framer-motion";
+import { FaUser, FaEnvelope, FaLock, FaUserPlus } from "react-icons/fa";
 
 export default function RegisterForm() {
   const [name, setName] = useState("");
@@ -11,7 +13,6 @@ export default function RegisterForm() {
   const [error, setError] = useState("");
 
   const isEmailValid = (email) => {
-    // Regular expression for basic email validation
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return emailRegex.test(email);
   };
@@ -77,41 +78,79 @@ export default function RegisterForm() {
   };
 
   return (
-    <div className="absolute h-screen w-screen bg-white top-0 left-0 flex items-center justify-center ">
-      <div className="max-w-md w-full p-6 sm:shadow-lg rounded-lg sm:border-t-4 border-green-400">
-        <h1 className="text-xl font-bold my-4">Register</h1>
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      className="min-h-screen w-full flex items-center justify-center p-4"
+    >
+      <motion.div
+        initial={{ y: -50, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        transition={{ delay: 0.2 }}
+        className="bg-white p-8 rounded-lg shadow-2xl w-full max-w-md"
+      >
+        <h1 className="text-3xl font-bold mb-8 text-center text-gray-800">
+          Create Account
+        </h1>
 
-        <form onSubmit={handleSubmit} className="flex flex-col gap-3">
-          <input
-            onChange={(e) => setName(e.target.value)}
-            type="text"
-            placeholder="Full Name"
-          />
-          <input
-            onChange={(e) => setEmail(e.target.value)}
-            type="text"
-            placeholder="Email"
-          />
-          <input
-            onChange={(e) => setPassword(e.target.value)}
-            type="password"
-            placeholder="Password"
-          />
-          <button className="bg-green-600 text-white font-bold cursor-pointer px-6 py-2">
+        <form onSubmit={handleSubmit} className="space-y-6">
+          <div className="relative">
+            <FaUser className="absolute top-3 left-3 text-gray-400" />
+            <input
+              onChange={(e) => setName(e.target.value)}
+              type="text"
+              placeholder="Full Name"
+              className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              required
+            />
+          </div>
+          <div className="relative">
+            <FaEnvelope className="absolute top-3 left-3 text-gray-400" />
+            <input
+              onChange={(e) => setEmail(e.target.value)}
+              type="email"
+              placeholder="Email"
+              className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              required
+            />
+          </div>
+          <div className="relative">
+            <FaLock className="absolute top-3 left-3 text-gray-400" />
+            <input
+              onChange={(e) => setPassword(e.target.value)}
+              type="password"
+              placeholder="Password"
+              className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              required
+            />
+          </div>
+          <motion.button
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            className="w-full bg-indigo-600 text-white font-bold py-2 px-4 rounded-md hover:bg-indigo-700 transition duration-300 flex items-center justify-center"
+          >
+            <FaUserPlus className="mr-2" />
             Register
-          </button>
-
+          </motion.button>
           {error && (
-            <div className="bg-red-500 text-white w-fit text-sm py-1 px-3 rounded-md mt-2">
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              className="bg-red-500 text-white text-sm py-2 px-3 rounded-md mt-2 text-center"
+            >
               {error}
-            </div>
+            </motion.div>
           )}
-
-          <Link className="text-sm mt-3 text-right" href={"/"}>
-            Already have an account? <span className="underline">Login</span>
-          </Link>
         </form>
-      </div>
-    </div>
+
+        <p className="mt-6 text-center text-gray-600">
+          Already have an account?{" "}
+          <Link href="/" className="text-indigo-600 hover:underline">
+            Login
+          </Link>
+        </p>
+      </motion.div>
+    </motion.div>
   );
 }
