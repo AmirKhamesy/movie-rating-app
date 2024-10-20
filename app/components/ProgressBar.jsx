@@ -1,29 +1,40 @@
 import React from "react";
+import { motion } from "framer-motion";
 
-const ProgressBar = ({ title, score }) => {
+const ProgressBar = ({ title, score, mobileView = false }) => {
   const progressPercentage = (score / 10) * 100;
 
   return (
-    <div className="flex flex-col gap-1 mt-1">
-      <p className="text-md font-semibold">{title}</p>
-      <div className="w-full flex items-center text-white">
-        <div className="w-full bg-gray-300 h-8 relative">
-          <div
-            style={{ width: `${progressPercentage}%` }}
-            className={`h-full ${
-              progressPercentage > 70
-                ? "bg-green-400"
-                : progressPercentage > 30
-                ? "bg-yellow-400"
-                : "bg-red-400"
-            }
-            `}
-          >
-            <div className={`flex justify-start ml-2 items-center h-full`}>
-              <div className="text-sm text-center">{score}</div>
-            </div>
-          </div>
-        </div>
+    <div className="flex flex-col gap-1">
+      <div className="flex justify-between items-center">
+        <p
+          className={`text-sm font-semibold ${
+            mobileView ? "text-white md:text-gray-700" : "text-gray-700"
+          }`}
+        >
+          {title}
+        </p>
+        <p
+          className={`text-sm font-medium ${
+            mobileView ? "text-white md:text-gray-700" : "text-gray-700"
+          }`}
+        >
+          {score}
+        </p>
+      </div>
+      <div className="w-full bg-gray-200 h-3 rounded-full overflow-hidden">
+        <motion.div
+          initial={{ width: 0 }}
+          animate={{ width: `${progressPercentage}%` }}
+          transition={{ duration: 0.8, ease: "easeOut" }}
+          className={`h-full rounded-full ${
+            progressPercentage > 70
+              ? "bg-green-500"
+              : progressPercentage > 30
+              ? "bg-yellow-500"
+              : "bg-red-500"
+          }`}
+        />
       </div>
     </div>
   );
