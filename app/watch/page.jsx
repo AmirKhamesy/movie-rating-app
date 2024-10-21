@@ -4,6 +4,7 @@ import React, { useState, useEffect, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Image from "next/image";
 import { FaStar, FaInfoCircle, FaTimes, FaCalendar } from "react-icons/fa";
+import Autocomplete from "../components/Autocomplete";
 
 const MovieCard = React.memo(({ movie, onClick }) => (
   <motion.div
@@ -104,32 +105,59 @@ const MovieModal = ({ movie, onClose }) => (
 
 const WatchPage = () => {
   const [recommendations, setRecommendations] = useState([]);
-  const [baseMovie, setBaseMovie] = useState(null);
+  const [baseMovies, setBaseMovies] = useState([]);
   const [error, setError] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [notEnoughRatings, setNotEnoughRatings] = useState(false);
   const [selectedMovie, setSelectedMovie] = useState(null);
+  const [customMovieId, setCustomMovieId] = useState(null);
+  const [baseMovie, setBaseMovie] = useState(null);
+  const [previousMovieId, setPreviousMovieId] = useState(null);
+  const [selectedFavorite, setSelectedFavorite] = useState(null);
 
-  const fetchRecommendations = useCallback(async () => {
-    try {
-      const response = await fetch("/api/watch");
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
+  const fetchRecommendations = useCallback(
+    async (movieId = null) => {
+      setIsLoading(true);
+      setError(null);
+      try {
+        let response;
+        if (movieId) {
+          response = await fetch("/api/watch", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ movieId, previousMovieId }),
+          });
+        } else {
+          response = await fetch("/api/watch");
+        }
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        const data = await response.json();
+        if (data.notEnoughRatings) {
+          setNotEnoughRatings(true);
+        } else {
+          setRecommendations(data.recommendations);
+          if (data.baseMovies) {
+            setBaseMovies(data.baseMovies);
+          }
+          if (data.baseMovie) {
+            setBaseMovie(data.baseMovie);
+            setSelectedFavorite(data.baseMovie.id);
+          }
+        }
+        if (movieId) {
+          setPreviousMovieId(movieId);
+        }
+      } catch (e) {
+        console.error("Failed to fetch recommendations:", e);
+        setError("Failed to load recommendations. Please try again later.");
+      } finally {
+        setIsLoading(false);
       }
-      const data = await response.json();
-      if (data.notEnoughRatings) {
-        setNotEnoughRatings(true);
-      } else {
-        setRecommendations(data.recommendations);
-        setBaseMovie(data.baseMovie);
-      }
-    } catch (e) {
-      console.error("Failed to fetch recommendations:", e);
-      setError("Failed to load recommendations. Please try again later.");
-    } finally {
-      setIsLoading(false);
-    }
-  }, []);
+    },
+    [previousMovieId]
+  );
 
   useEffect(() => {
     fetchRecommendations();
@@ -142,6 +170,24 @@ const WatchPage = () => {
   const handleCloseModal = useCallback(() => {
     setSelectedMovie(null);
   }, []);
+
+  const handleBaseMovieClick = useCallback(
+    (movie) => {
+      setSelectedFavorite(movie.tmdbId);
+      fetchRecommendations(movie.tmdbId);
+    },
+    [fetchRecommendations]
+  );
+
+  const handleCustomMovieSelect = useCallback((movieId) => {
+    setCustomMovieId(movieId);
+  }, []);
+
+  const handleCustomMovieSubmit = useCallback(() => {
+    if (customMovieId) {
+      fetchRecommendations(customMovieId);
+    }
+  }, [customMovieId, fetchRecommendations]);
 
   if (error) {
     return (
@@ -168,6 +214,17 @@ const WatchPage = () => {
         >
           Movie Recommendations
         </motion.h1>
+
+        {error && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.5 }}
+            className="mb-8 text-center text-red-500"
+          >
+            <p>{error}</p>
+          </motion.div>
+        )}
 
         {isLoading ? (
           <div
@@ -200,15 +257,37 @@ const WatchPage = () => {
                 transition={{ duration: 0.5 }}
                 className="mb-8 text-center"
               >
-                <p className="text-xl text-white">
-                  Based on your enjoyment of{" "}
-                  <strong className="text-cinema-gold">
-                    {baseMovie.title}
-                  </strong>
-                  , we recommend:
-                </p>
+                <h2 className="text-2xl font-bold mb-4 text-cinema-gold">
+                  Recommendations based on:{" "}
+                  <span className="text-white">{baseMovie.title}</span>
+                </h2>
               </motion.div>
             )}
+
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.5 }}
+              className="mb-8"
+            >
+              <h2 className="text-2xl font-bold mb-4 text-cinema-gold">
+                Your Favorites:
+              </h2>
+              <div className="flex flex-wrap gap-4">
+                {baseMovies
+                  .filter((movie) => movie.tmdbId !== selectedFavorite)
+                  .map((movie) => (
+                    <button
+                      key={movie.tmdbId}
+                      onClick={() => handleBaseMovieClick(movie)}
+                      className="bg-cinema-gold text-cinema-blue font-semibold py-2 px-4 rounded-md hover:bg-cinema-gold-dark transition-colors duration-200"
+                    >
+                      {movie.title}
+                    </button>
+                  ))}
+              </div>
+            </motion.div>
+
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
