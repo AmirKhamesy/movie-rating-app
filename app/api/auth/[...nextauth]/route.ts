@@ -28,7 +28,7 @@ export const authOptions = {
           return null;
         }
 
-        const user: Prisma.UserCreateInput = await prisma.user.findFirst({
+        const user = await prisma.user.findFirst({
           where: {
             email: {
               mode: "insensitive",
