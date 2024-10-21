@@ -2,35 +2,71 @@
 @tailwind components;
 @tailwind utilities;
 
-input {
-  @apply border border-gray-200 py-2 px-3 bg-zinc-100/40;
+@layer base {
+  body {
+    @apply bg-gray-100 text-gray-900 dark:bg-cinema-blue dark:text-white transition-colors duration-300;
+  }
 }
 
-input.slider {
-  @apply w-full  bg-white rounded-lg cursor-pointer py-1 px-0 appearance-none h-1 rounded outline-none mb-2;
-}
+@layer components {
+  .movie-card {
+    @apply bg-white dark:bg-cinema-blue-light rounded-lg shadow-md overflow-hidden transition-transform duration-300 hover:scale-105;
+  }
 
-.slider::-webkit-slider-thumb {
-  @apply appearance-none w-8 h-8 rounded-full bg-blue-600 cursor-pointer;
-}
+  .btn-primary {
+    @apply bg-cinema-gold text-cinema-blue hover:bg-cinema-gold-dark px-4 py-2 rounded-md transition-colors duration-300;
+  }
 
-.spinner {
-  @apply relative w-12 h-12;
-}
+  .btn-secondary {
+    @apply bg-cinema-blue text-white hover:bg-cinema-blue-light px-4 py-2 rounded-md transition-colors duration-300;
+  }
 
-.spinner::before,
-.spinner::after {
-  content: "";
-  @apply absolute top-0 left-0 w-full h-full rounded-full;
-}
+  input {
+    @apply border border-gray-300 dark:border-cinema-blue-light bg-white dark:bg-cinema-blue text-gray-900 dark:text-white py-2 px-3 rounded-md focus:outline-none focus:ring-2 focus:ring-cinema-blue dark:focus:ring-cinema-gold transition-colors duration-300;
+  }
 
-.spinner::before {
-  @apply border-4 border-indigo-200;
-}
+  .slider {
+    @apply w-full appearance-none bg-cinema-blue-light h-2 rounded-lg outline-none opacity-70 transition-opacity duration-300 hover:opacity-100;
+  }
 
-.spinner::after {
-  @apply border-4 border-indigo-600 border-t-transparent;
-  animation: spin 1s linear infinite;
+  .slider::-webkit-slider-thumb {
+    @apply appearance-none w-6 h-6 rounded-full bg-cinema-gold cursor-pointer;
+    -webkit-appearance: none;
+    margin-top: -8px; /* Adjust the vertical position */
+    border: 2px solid #0d253f; /* Add a border for better visibility */
+  }
+
+  .slider::-moz-range-thumb {
+    @apply w-6 h-6 rounded-full bg-cinema-gold cursor-pointer border-0;
+    border: 2px solid #0d253f; /* Add a border for better visibility */
+  }
+
+  .slider::-webkit-slider-runnable-track {
+    @apply bg-cinema-blue-light h-2 rounded-lg;
+  }
+
+  .slider::-moz-range-track {
+    @apply bg-cinema-blue-light h-2 rounded-lg;
+  }
+
+  .spinner {
+    @apply relative w-12 h-12;
+  }
+
+  .spinner::before,
+  .spinner::after {
+    content: "";
+    @apply absolute top-0 left-0 w-full h-full rounded-full;
+  }
+
+  .spinner::before {
+    @apply border-4 border-gray-200 dark:border-cinema-blue-light;
+  }
+
+  .spinner::after {
+    @apply border-4 border-cinema-blue dark:border-cinema-gold border-t-transparent;
+    animation: spin 1s linear infinite;
+  }
 }
 
 @keyframes spin {
@@ -39,17 +75,5 @@ input.slider {
   }
   100% {
     transform: rotate(360deg);
-  }
-}
-
-@layer components {
-  input[type="range"] {
-    @apply appearance-none bg-gray-200 h-2 rounded-lg;
-  }
-  input[type="range"]::-webkit-slider-thumb {
-    @apply appearance-none w-4 h-4 bg-indigo-600 rounded-full cursor-pointer;
-  }
-  input[type="range"]::-moz-range-thumb {
-    @apply w-4 h-4 bg-indigo-600 rounded-full cursor-pointer border-0;
   }
 }

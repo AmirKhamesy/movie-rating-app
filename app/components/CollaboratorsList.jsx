@@ -15,22 +15,24 @@ const CollaboratorsList = ({ collaborators, setCollaborators, setLoading }) => {
 
   return (
     <div className="mt-6">
-      <h3 className="text-lg  mb-4">Collaborators</h3>
-      <ul className="bg-white rounded-lg shadow-sm divide-y divide-gray-200">
+      <h3 className="text-lg text-cinema-gold mb-4">Collaborators</h3>
+      <ul className="bg-cinema-blue-light rounded-lg shadow-sm divide-y divide-gray-600">
         {collaborators.map((collaborator) => (
           <li
             key={collaborator.id}
-            className="flex items-center justify-between py-4 px-6 hover:bg-gray-50 transition-colors duration-150 ease-in-out"
+            className="flex items-center justify-between py-4 px-6 
+hover:bg-cinema-blue transition-colors duration-200 ease-in-out bg-gray-700 rounded-lg
+            "
           >
             <div className="flex items-center">
-              <div className="w-10 h-10 bg-gradient-to-br from-blue-400 to-indigo-600 rounded-full flex-shrink-0 flex items-center justify-center text-white font-semibold text-lg">
+              <div className="w-10 h-10 bg-gradient-to-br from-cinema-gold to-cinema-gold-dark rounded-full flex-shrink-0 flex items-center justify-center text-cinema-blue font-semibold text-lg">
                 {collaborator.user.name.charAt(0).toUpperCase()}
               </div>
               <div className="ml-4">
-                <p className="text-sm font-medium text-gray-900">
+                <p className="text-sm font-medium text-white">
                   {collaborator.user.name}
                 </p>
-                <p className="text-xs text-gray-500">
+                <p className="text-xs text-gray-400">
                   {collaborator.user.email}
                 </p>
               </div>

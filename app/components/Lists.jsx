@@ -29,17 +29,17 @@ const Lists = ({ lists, userId }) => {
           className="block w-full"
         >
           <motion.div
-            className="py-4 px-4 sm:py-6 sm:px-6 border-b border-gray-200 last:border-b-0"
-            whileHover={{ backgroundColor: "rgba(0, 0, 0, 0.02)" }}
+            className="py-4 px-4 sm:py-6 sm:px-6 border-b border-gray-700 last:border-b-0"
+            whileHover={{ backgroundColor: "rgba(255, 255, 255, 0.05)" }}
             onHoverStart={() => setIsHovered(true)}
             onHoverEnd={() => setIsHovered(false)}
           >
             <div className="flex items-center">
               <div className="flex-grow pr-4">
-                <h3 className="text-lg font-semibold text-gray-900 mb-1">
+                <h3 className="text-lg font-semibold text-white mb-1">
                   {list.name}
                 </h3>
-                <p className="text-sm text-gray-500">
+                <p className="text-sm text-gray-300">
                   {list.RatingsCount ? list.RatingsCount : "No"} Rating
                   {list.RatingsCount !== 1 && "s"}
                 </p>
@@ -50,17 +50,17 @@ const Lists = ({ lists, userId }) => {
                 </p>
               </div>
               <motion.div
-                className="w-10 h-10 rounded-full bg-indigo-100 flex items-center justify-center flex-shrink-0"
+                className="w-10 h-10 rounded-full bg-cinema-gold flex items-center justify-center flex-shrink-0"
                 whileHover={{ scale: 1.1 }}
                 animate={{
-                  backgroundColor: isHovered ? "#4F46E5" : "#E0E7FF",
+                  backgroundColor: isHovered ? "#e6ac00" : "#ffc107",
                 }}
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   className="h-6 w-6"
                   viewBox="0 0 20 20"
-                  fill={isHovered ? "#FFFFFF" : "#4F46E5"}
+                  fill={isHovered ? "#0d253f" : "#0d253f"}
                 >
                   <path
                     fillRule="evenodd"
@@ -79,10 +79,10 @@ const Lists = ({ lists, userId }) => {
   return (
     <div className="space-y-8">
       <div>
-        <h2 className="text-xl sm:text-2xl font-bold text-gray-900 mb-4">
+        <h2 className="text-xl sm:text-2xl font-bold text-white mb-4">
           Your Lists
         </h2>
-        <div className="bg-white rounded-lg shadow-sm overflow-hidden">
+        <div className="bg-cinema-blue-light rounded-lg shadow-sm overflow-hidden">
           <AnimatePresence>
             {userLists.map((list) => (
               <ListItem key={list.id} list={list} />
@@ -93,10 +93,10 @@ const Lists = ({ lists, userId }) => {
 
       {collaboratedLists.length > 0 && (
         <div>
-          <h2 className="text-xl sm:text-2xl font-bold text-gray-900 mb-4">
+          <h2 className="text-xl sm:text-2xl font-bold text-white mb-4">
             Collaborated Lists
           </h2>
-          <div className="bg-white rounded-lg shadow-sm overflow-hidden">
+          <div className="bg-cinema-blue-light rounded-lg shadow-sm overflow-hidden">
             <AnimatePresence>
               {collaboratedLists.map((list) => (
                 <ListItem key={list.id} list={list} isCollaborated />

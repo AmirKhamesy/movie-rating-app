@@ -69,7 +69,7 @@ const AddCollaborator = ({ listId, setCollaborators, setLoading }) => {
     <div className="mb-4">
       <label
         htmlFor="colab"
-        className="block text-sm font-medium text-gray-700 mb-1"
+        className="block text-sm font-medium text-white mb-1"
       >
         Add Collaborator
       </label>
@@ -79,7 +79,7 @@ const AddCollaborator = ({ listId, setCollaborators, setLoading }) => {
           name="colab"
           type="email"
           placeholder="user@email.com"
-          className="flex-grow focus:ring-indigo-500 focus:border-indigo-500 block w-full min-w-0 rounded-none rounded-l-md sm:text-sm border-gray-300"
+          className="flex-grow focus:ring-cinema-gold focus:border-cinema-gold block w-full min-w-0 rounded-none rounded-l-md sm:text-sm border-gray-600 bg-cinema-blue-light text-white"
           value={colabEmail}
           onChange={(e) => {
             setColabEmail(e.target.value);
@@ -94,18 +94,18 @@ const AddCollaborator = ({ listId, setCollaborators, setLoading }) => {
         <button
           onClick={handleAddClick}
           type="button"
-          className={`inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-r-md text-white ${
+          className={`inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-r-md text-cinema-blue ${
             addButtonDisabled
-              ? "bg-indigo-300 cursor-not-allowed"
-              : "bg-indigo-600 hover:bg-indigo-700"
-          } focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500`}
+              ? "bg-cinema-gold-dark cursor-not-allowed"
+              : "bg-cinema-gold hover:bg-cinema-gold-dark"
+          } focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-cinema-gold`}
           disabled={addButtonDisabled}
         >
           Add
         </button>
       </div>
       {!isValidEmail && colabEmail !== "" && (
-        <p className="mt-1 text-sm text-red-600">
+        <p className="mt-1 text-sm text-red-400">
           Please enter a valid email address.
         </p>
       )}

@@ -7,10 +7,10 @@ const ProgressBar = ({ title, score, mobileView = false }) => {
   return (
     <div className="flex flex-col gap-1">
       <div className="flex justify-between items-center">
-        <p className="text-sm font-semibold text-gray-900">{title}</p>
-        <p className="text-sm font-medium text-gray-900">{score}</p>
+        <p className="text-sm font-semibold text-cinema-gold">{title}</p>
+        <p className="text-sm font-medium text-cinema-gold">{score}</p>
       </div>
-      <div className="w-full bg-gray-200 h-3 rounded-full overflow-hidden">
+      <div className="w-full bg-cinema-blue-light h-3 rounded-full overflow-hidden">
         <motion.div
           initial={{ width: 0 }}
           animate={{ width: `${progressPercentage}%` }}

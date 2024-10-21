@@ -38,7 +38,7 @@ const FilterModal = ({ filters, setFilters }) => {
   return (
     <>
       <button
-        className="bg-indigo-600 text-white px-4 py-2 rounded-md hover:bg-indigo-700 transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+        className="bg-cinema-gold text-cinema-blue px-4 py-2 rounded-md hover:bg-cinema-gold-dark transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-cinema-gold"
         onClick={() => setModalOpen(true)}
       >
         Filters
@@ -46,14 +46,14 @@ const FilterModal = ({ filters, setFilters }) => {
 
       <Modal modalOpen={modalOpen} setModalOpen={setModalOpen}>
         <div className="w-full max-w-md mx-auto">
-          <h2 className="text-2xl font-bold text-gray-900 mb-6">
+          <h2 className="text-2xl font-bold text-cinema-gold mb-6">
             Filter Ratings
           </h2>
           <form onSubmit={handleSubmit} className="space-y-6">
             <div>
               <label
                 htmlFor="search"
-                className="block text-sm font-medium text-gray-700"
+                className="block text-sm font-medium text-white"
               >
                 Search
               </label>
@@ -63,7 +63,7 @@ const FilterModal = ({ filters, setFilters }) => {
                 name="search"
                 value={localFilters.search}
                 onChange={handleInputChange}
-                className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                className="mt-1 block w-full border-gray-600 rounded-md shadow-sm focus:ring-cinema-gold focus:border-cinema-gold sm:text-sm bg-cinema-blue-light text-white"
                 placeholder="Search by title"
               />
             </div>
@@ -71,7 +71,7 @@ const FilterModal = ({ filters, setFilters }) => {
               <div key={filter}>
                 <label
                   htmlFor={filter}
-                  className="block text-sm font-medium text-gray-700"
+                  className="block text-sm font-medium text-white"
                 >
                   Minimum {filter.charAt(0).toUpperCase() + filter.slice(1)}{" "}
                   Rating: {localFilters[filter]}
@@ -84,14 +84,14 @@ const FilterModal = ({ filters, setFilters }) => {
                   max="10"
                   value={localFilters[filter]}
                   onChange={handleInputChange}
-                  className="mt-1 block w-full"
+                  className="mt-1 block w-full accent-cinema-gold"
                 />
               </div>
             ))}
             <div>
               <label
                 htmlFor="sort"
-                className="block text-sm font-medium text-gray-700"
+                className="block text-sm font-medium text-white"
               >
                 Sort By
               </label>
@@ -100,7 +100,7 @@ const FilterModal = ({ filters, setFilters }) => {
                 name="sort"
                 value={localFilters.sort}
                 onChange={handleInputChange}
-                className="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"
+                className="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-600 focus:outline-none focus:ring-cinema-gold focus:border-cinema-gold sm:text-sm rounded-md bg-cinema-blue-light text-white"
               >
                 <option value="newest">Newest</option>
                 <option value="oldest">Oldest</option>
@@ -110,20 +110,20 @@ const FilterModal = ({ filters, setFilters }) => {
               <button
                 type="button"
                 onClick={handleReset}
-                className="px-4 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                className="px-4 py-2 border border-gray-600 rounded-md text-sm font-medium text-white hover:bg-cinema-blue-light focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-cinema-gold"
               >
                 Reset
               </button>
               <button
                 type="button"
                 onClick={() => setModalOpen(false)}
-                className="px-4 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                className="px-4 py-2 border border-gray-600 rounded-md text-sm font-medium text-white hover:bg-cinema-blue-light focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-cinema-gold"
               >
                 Cancel
               </button>
               <button
                 type="submit"
-                className="px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                className="px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-cinema-blue bg-cinema-gold hover:bg-cinema-gold-dark focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-cinema-gold"
               >
                 Apply
               </button>

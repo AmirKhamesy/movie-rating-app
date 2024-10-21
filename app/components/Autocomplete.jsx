@@ -183,7 +183,7 @@ const Autocomplete = ({
         <input
           type="text"
           name="title"
-          className="border rounded p-2 w-full"
+          className="border border-cinema-blue-light rounded p-2 w-full bg-cinema-blue-lighter text-white placeholder-gray-400"
           placeholder="Search for a movie..."
           value={inputValue || value}
           onChange={(e) => selectMovieSuggestion(e.target.value)}
@@ -195,14 +195,14 @@ const Autocomplete = ({
       </div>
       {suggestions?.length > 0 && (
         <ul
-          className="absolute left-0 mt-2 w-full bg-white border rounded shadow max-h-64 overflow-y-scroll"
+          className="absolute left-0 mt-2 w-full bg-cinema-blue-lighter border border-cinema-blue-light rounded shadow-lg max-h-64 overflow-y-auto z-50"
           ref={suggestionListRef}
         >
           {suggestions.map((movie, index) => (
             <li
               key={movie.id}
-              className={`flex items-center gap-2 p-1 hover:bg-blue-300 cursor-pointer ${
-                index === highlightedSuggestionIndex ? "bg-blue-300" : ""
+              className={`flex items-center gap-2 p-2 hover:bg-cinema-blue cursor-pointer ${
+                index === highlightedSuggestionIndex ? "bg-cinema-blue" : ""
               }`}
               onMouseEnter={() => setHighlightedSuggestionIndex(index)}
               onClick={() => selectMovieSuggestion(movie.title, movie.id, true)}
@@ -215,8 +215,10 @@ const Autocomplete = ({
                 className="w-12"
               />
               <div className="flex flex-col justify-between">
-                <span className="font-semibold text-md">{movie.title}</span>
-                <span className="text-xs text-gray-600">
+                <span className="font-semibold text-md text-white">
+                  {movie.title}
+                </span>
+                <span className="text-xs text-gray-400">
                   {new Date(movie.release_date).toLocaleDateString("en-US", {
                     year: "numeric",
                     month: "long",

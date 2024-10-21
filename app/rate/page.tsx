@@ -23,10 +23,17 @@ const RatePage = async () => {
   const lists: Prisma.ListSelect = await fetchLists();
 
   return (
-    <div>
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 sm:mb-8">
-        <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-4 sm:mb-0">Your Movie Lists</h1>
-        <AddList />
+    <div >
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <div className="flex flex-col sm:flex-row justify-between items-center mb-6">
+          <h1 className="text-3xl sm:text-4xl font-bold text-cinema-">
+            Your Movie Lists
+          </h1>
+          <AddList />
+        </div>
+        <p className="text-gray-300 text-sm mb-4">
+          Manage and rate your favorite movies in personalized lists.
+        </p>
       </div>
       <Lists lists={lists} userId={session.user.id} />
     </div>

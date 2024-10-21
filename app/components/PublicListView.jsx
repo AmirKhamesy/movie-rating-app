@@ -3,8 +3,8 @@
 import PublicRating from "./PublicRating";
 import React, { useEffect, useState, useCallback } from "react";
 import InfiniteScroll from "react-infinite-scroll-component";
-import { motion } from "framer-motion";
 import FilterModal from "./FilterModal";
+import Link from "next/link";
 
 const PublicListView = ({ hash }) => {
   const [ratings, setRatings] = useState([]);
@@ -83,40 +83,52 @@ const PublicListView = ({ hash }) => {
   };
 
   return (
-    <div className="max-w-4xl mx-auto mt-8 px-4">
-      {loading ? (
-        <div className="mx-auto spinner"></div>
-      ) : (
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.3 }}
-        >
-          <h1 className="text-3xl font-bold text-gray-900 mb-6">{list.name}</h1>
-          <div className="mb-4">
-            <FilterModal filters={filters} setFilters={setFilters} />
+    <div className="min-h-screen">
+      <div className="max-w-7xl mx-auto sm:px-6 lg:px-8 py-12">
+        {loading ? (
+          <div className="flex justify-center items-center h-64">
+            <div className="w-16 h-16 border-4 border-cinema-gold border-t-cinema-gold-dark rounded-full animate-spin"></div>
           </div>
-          <div className="bg-white rounded-lg shadow-sm overflow-hidden">
+        ) : (
+          <div>
+            <Link
+              href="/"
+              className="inline-block mb-6 text-lg text-cinema-gold font-medium hover:text-cinema-gold-dark transition-colors duration-200"
+            >
+              &larr; Back to Home
+            </Link>
+            <div className="bg-cinema-blue-light rounded-lg shadow-lg p-6 mb-8">
+              <h1 className="text-3xl sm:text-4xl font-bold text-cinema-gold mb-6">
+                {list.name}
+              </h1>
+              <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+                <div className="flex flex-wrap gap-2">
+                  <FilterModal filters={filters} setFilters={setFilters} />
+                </div>
+              </div>
+            </div>
+
             <InfiniteScroll
               dataLength={ratings.length}
               next={fetchMoreData}
               hasMore={hasMore}
               loader={
-                <div className="flex gap-2 justify-center py-4">
-                  <div className="h-5 w-5 bg-gray-600 rounded-full animate-pulse [animation-delay:-0.3s]"></div>
-                  <div className="h-5 w-5 bg-gray-600 rounded-full animate-pulse [animation-delay:-0.15s]"></div>
-                  <div className="h-5 w-5 bg-gray-600 rounded-full animate-pulse"></div>
+                <div className="flex gap-2 justify-center my-4">
+                  <div className="h-5 w-5 bg-cinema-gold rounded-full animate-pulse [animation-delay:-0.3s]"></div>
+                  <div className="h-5 w-5 bg-cinema-gold rounded-full animate-pulse [animation-delay:-0.15s]"></div>
+                  <div className="h-5 w-5 bg-cinema-gold rounded-full animate-pulse"></div>
                 </div>
               }
             >
-              {ratings &&
-                ratings.map((rating) => (
+              <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+                {ratings.map((rating) => (
                   <PublicRating key={rating.id} rating={rating} />
                 ))}
+              </div>
             </InfiniteScroll>
           </div>
-        </motion.div>
-      )}
+        )}
+      </div>
     </div>
   );
 };

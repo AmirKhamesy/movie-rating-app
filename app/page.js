@@ -16,7 +16,7 @@ const HomePage = async () => {
   ).then((res) => res.json());
 
   return (
-    <div className="min-h-screen bg-white py-12">
+    <div className=" py-12">
       <div className="container mx-auto px-4">
         <HomeContent userName={session.user.name} publicLists={publicLists} />
       </div>

@@ -4,6 +4,7 @@ import AddListRating from "./AddListRating";
 import EditList from "./EditList";
 import Rating from "./Rating";
 import FilterModal from "./FilterModal";
+import Link from "next/link";
 
 const RatingsList = (params) => {
   const [ratings, setRatings] = useState([]);
@@ -120,61 +121,67 @@ const RatingsList = (params) => {
   };
 
   return (
-    <div className="max-w-4xl mt-4">
-      {loading ? (
-        <div className="mx-auto spinner"></div>
-      ) : (
-        <div>
-          <a
-            className="cursor-pointer text-lg text-blue-600 font-medium"
-            href="/rate"
-          >
-            &lt; BACK TO LISTS
-          </a>
-          <h1 className="text-3xl my-2 font-extrabold">{ListName}</h1>
-          <div className="my-5 flex flex-col gap-4">
-            <div className="flex flex-row justify-between items-center">
-              <AddListRating listName={ListName} setRating={setRating} />
-              <div className="flex space-x-2">
-                <FilterModal filters={filters} setFilters={setFilters} />
-                <EditList
-                  listName={ListName}
-                  publicHash={list.publicHash}
-                  listPublic={list.public}
-                  listId={list.id}
-                  setList={setList}
-                  collaborators={collaborators}
-                  setCollaborators={setCollaborators}
-                />
+    <div className="min-h-screen">
+      <div className="max-w-7xl mx-auto sm:px-6 lg:px-8 py-12">
+        {loading ? (
+          <div className="flex justify-center items-center h-64">
+            <div className="w-16 h-16 border-4 border-cinema-gold border-t-cinema-gold-dark rounded-full animate-spin"></div>
+          </div>
+        ) : (
+          <div>
+            <Link
+              href="/rate"
+              className="inline-block mb-6 text-lg text-cinema-gold font-medium hover:text-cinema-gold-dark transition-colors duration-200"
+            >
+              &larr; Back to Lists
+            </Link>
+            <div className="bg-cinema-blue-light rounded-lg shadow-lg p-6 mb-8">
+              <h1 className="text-3xl sm:text-4xl font-bold text-cinema-gold mb-6">
+                {ListName}
+              </h1>
+              <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+                <AddListRating listName={ListName} setRating={setRating} />
+                <div className="flex flex-wrap gap-2">
+                  <FilterModal filters={filters} setFilters={setFilters} />
+                  <EditList
+                    listName={ListName}
+                    publicHash={list.publicHash}
+                    listPublic={list.public}
+                    listId={list.id}
+                    setList={setList}
+                    collaborators={collaborators}
+                    setCollaborators={setCollaborators}
+                  />
+                </div>
               </div>
             </div>
-          </div>
 
-          <ul>
             <InfiniteScroll
               dataLength={ratings.length}
               next={fetchMoreData}
               hasMore={hasMore}
               loader={
-                <div className="flex gap-2 justify-center">
-                  <div className="h-5 w-5 bg-gray-600 rounded-full animate-pulse [animation-delay:-0.3s]"></div>
-                  <div className="h-5 w-5 bg-gray-600 rounded-full animate-pulse [animation-delay:-0.15s]"></div>
-                  <div className="h-5 w-5 bg-gray-600 rounded-full animate-pulse"></div>
+                <div className="flex gap-2 justify-center my-4">
+                  <div className="h-5 w-5 bg-cinema-gold rounded-full animate-pulse [animation-delay:-0.3s]"></div>
+                  <div className="h-5 w-5 bg-cinema-gold rounded-full animate-pulse [animation-delay:-0.15s]"></div>
+                  <div className="h-5 w-5 bg-cinema-gold rounded-full animate-pulse"></div>
                 </div>
               }
             >
-              {ratings.map((rating, idx) => (
-                <Rating
-                  key={rating.id}
-                  idx={idx}
-                  rating={rating}
-                  setRating={setRating}
-                />
-              ))}
+              <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+                {ratings.map((rating, idx) => (
+                  <Rating
+                    key={rating.id}
+                    idx={idx}
+                    rating={rating}
+                    setRating={setRating}
+                  />
+                ))}
+              </div>
             </InfiniteScroll>
-          </ul>
-        </div>
-      )}
+          </div>
+        )}
+      </div>
     </div>
   );
 };

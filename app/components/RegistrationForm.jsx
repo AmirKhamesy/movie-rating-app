@@ -64,71 +64,68 @@ export default function RegisterForm() {
         const loginRes = await signIn("credentials", {
           email,
           password,
+          redirect: false,
         });
-        window.location.href = "/";
-        if (!loginRes.ok) {
-          console.log("User registration login failed.");
+        if (loginRes.ok) {
+          window.location.href = "/";
+        } else {
+          console.error("User registration login failed.");
         }
       } else {
-        console.log("User registration failed.");
+        console.error("User registration failed.");
       }
     } catch (error) {
-      console.log("Error during registration: ", error);
+      console.error("Error during registration: ", error);
     }
   };
 
   return (
-    <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
-      className="min-h-screen w-full flex items-center justify-center p-4"
-    >
+    <div className="w-full max-w-md mx-auto px-4 mt-[10vh]">
       <motion.div
         initial={{ y: -50, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ delay: 0.2 }}
-        className="bg-white p-8 rounded-lg shadow-2xl w-full max-w-md"
+        className="bg-white dark:bg-cinema-blue-light p-8 rounded-lg shadow-2xl"
       >
-        <h1 className="text-3xl font-bold mb-8 text-center text-gray-800">
+        <h1 className="text-3xl font-bold mb-8 text-center text-cinema-blue dark:text-cinema-gold">
           Create Account
         </h1>
 
         <form onSubmit={handleSubmit} className="space-y-6">
           <div className="relative">
-            <FaUser className="absolute top-3 left-3 text-gray-400" />
+            <FaUser className="absolute top-3 left-3 text-gray-400 dark:text-gray-300" />
             <input
               onChange={(e) => setName(e.target.value)}
               type="text"
               placeholder="Full Name"
-              className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              className="w-full pl-10 pr-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-cinema-gold dark:focus:ring-cinema-gold bg-white dark:bg-cinema-blue text-cinema-blue dark:text-white"
               required
             />
           </div>
           <div className="relative">
-            <FaEnvelope className="absolute top-3 left-3 text-gray-400" />
+            <FaEnvelope className="absolute top-3 left-3 text-gray-400 dark:text-gray-300" />
             <input
               onChange={(e) => setEmail(e.target.value)}
               type="email"
               placeholder="Email"
-              className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              className="w-full pl-10 pr-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-cinema-gold dark:focus:ring-cinema-gold bg-white dark:bg-cinema-blue text-cinema-blue dark:text-white"
               required
             />
           </div>
           <div className="relative">
-            <FaLock className="absolute top-3 left-3 text-gray-400" />
+            <FaLock className="absolute top-3 left-3 text-gray-400 dark:text-gray-300" />
             <input
               onChange={(e) => setPassword(e.target.value)}
               type="password"
               placeholder="Password"
-              className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              className="w-full pl-10 pr-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-cinema-gold dark:focus:ring-cinema-gold bg-white dark:bg-cinema-blue text-cinema-blue dark:text-white"
               required
             />
           </div>
           <motion.button
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
-            className="w-full bg-indigo-600 text-white font-bold py-2 px-4 rounded-md hover:bg-indigo-700 transition duration-300 flex items-center justify-center"
+            className="w-full bg-cinema-gold text-cinema-blue dark:bg-cinema-blue dark:text-cinema-gold font-bold py-2 px-4 rounded-md hover:bg-cinema-gold-dark dark:hover:bg-cinema-blue-light transition duration-300 flex items-center justify-center focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-cinema-gold dark:focus:ring-offset-cinema-blue"
           >
             <FaUserPlus className="mr-2" />
             Register
@@ -144,13 +141,13 @@ export default function RegisterForm() {
           )}
         </form>
 
-        <p className="mt-6 text-center text-gray-600">
+        <p className="mt-6 text-center text-gray-600 dark:text-gray-300">
           Already have an account?{" "}
-          <Link href="/" className="text-indigo-600 hover:underline">
+          <Link href="/" className="text-cinema-gold hover:underline">
             Login
           </Link>
         </p>
       </motion.div>
-    </motion.div>
+    </div>
   );
 }

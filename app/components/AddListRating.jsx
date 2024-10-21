@@ -224,20 +224,20 @@ const AddListRating = ({ listName, setRating, userId }) => {
     <div>
       <button
         onClick={() => setModalOpen(true)}
-        className="bg-indigo-600 text-white px-4 py-2 rounded-md hover:bg-indigo-700 transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+        className="bg-cinema-gold text-cinema-blue px-4 py-2 rounded-md hover:bg-cinema-gold-dark transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-cinema-gold"
       >
         + New Rating
       </button>
       <Modal modalOpen={modalOpen} setModalOpen={setModalOpen}>
-        <div className="w-full max-w-md mx-auto">
-          <h2 className="text-2xl font-bold text-gray-900 mb-6">
+        <div className="w-full max-w-lg mx-auto">
+          <h2 className="text-2xl font-bold text-cinema-gold mb-6">
             {editing.id ? "Update" : "New"} Rating
           </h2>
           <form onSubmit={handleSubmit} className="space-y-6">
             <div>
               <label
                 htmlFor="title"
-                className="block text-sm font-medium text-gray-700"
+                className="block text-sm font-medium text-cinema-gold"
               >
                 Movie Title
               </label>
@@ -249,40 +249,41 @@ const AddListRating = ({ listName, setRating, userId }) => {
               />
             </div>
 
-            {["scary", "story", "acting"].map((category) => (
-              <div key={category}>
-                <label
-                  htmlFor={category}
-                  className="block text-sm font-medium text-gray-700"
-                >
-                  {category.charAt(0).toUpperCase() + category.slice(1)} Rating:{" "}
-                  {editing.id ? editing[category] : inputs[category]}
-                </label>
-                <input
-                  type="range"
-                  id={category}
-                  name={category}
-                  min="0"
-                  max="10"
-                  step="0.5"
-                  value={editing.id ? editing[category] : inputs[category]}
-                  onChange={handleChange}
-                  className="mt-1 block w-full"
-                />
-              </div>
-            ))}
+
+                {["scary", "story", "acting"].map((category) => (
+                  <div key={category}>
+                    <label
+                      htmlFor={category}
+                      className="block text-sm font-medium text-cinema-gold"
+                    >
+                      {category.charAt(0).toUpperCase() + category.slice(1)} Rating:{" "}
+                      {editing.id ? editing[category] : inputs[category]}
+                    </label>
+                    <input
+                      type="range"
+                      id={category}
+                      name={category}
+                      min="0"
+                      max="10"
+                      step="0.5"
+                      value={editing.id ? editing[category] : inputs[category]}
+                      onChange={handleChange}
+                      className="mt-1 block w-full slider"
+                    />
+                  </div>
+                ))}
 
             <div className="flex justify-end space-x-3">
               <button
                 type="button"
                 onClick={() => setModalOpen(false)}
-                className="px-4 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                className="px-4 py-2 bg-cinema-blue-light text-cinema-gold rounded-md hover:bg-cinema-blue transition-colors duration-300"
               >
                 Cancel
               </button>
               <button
                 type="submit"
-                className="px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                className="px-4 py-2 bg-cinema-gold text-cinema-blue rounded-md hover:bg-cinema-gold-dark transition-colors duration-300 disabled:bg-cinema-gold-darker disabled:cursor-not-allowed"
                 disabled={
                   (!editing.id &&
                     (inputs.story === undefined ||

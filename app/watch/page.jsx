@@ -8,7 +8,7 @@ import { FaStar, FaInfoCircle, FaTimes, FaCalendar } from "react-icons/fa";
 const MovieCard = React.memo(({ movie, onClick }) => (
   <motion.div
     layout
-    className="relative aspect-[2/3] shadow-lg cursor-pointer overflow-hidden"
+    className="relative aspect-[2/3] shadow-lg cursor-pointer overflow-hidden rounded-lg"
     onClick={() => onClick(movie)}
     whileHover={{ scale: 1.05 }}
     whileTap={{ scale: 0.95 }}
@@ -35,7 +35,7 @@ const MovieModal = ({ movie, onClose }) => (
       initial={{ y: 50, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
       exit={{ y: 50, opacity: 0 }}
-      className="relative w-full max-w-md max-h-[90vh] overflow-y-auto rounded-lg shadow-lg "
+      className="relative w-full max-w-md max-h-[90vh] overflow-y-auto rounded-lg shadow-lg"
       onClick={(e) => e.stopPropagation()}
     >
       <div
@@ -49,34 +49,36 @@ const MovieModal = ({ movie, onClose }) => (
       <div className="relative p-6 text-white">
         <button
           onClick={onClose}
-          className="absolute top-2 right-2 text-white hover:text-gray-300 focus:outline-none"
+          className="absolute top-2 right-2 text-white hover:text-cinema-gold focus:outline-none"
           aria-label="Close"
         >
           <FaTimes size={24} />
         </button>
 
-        <h2 className="text-2xl font-bold mb-4">{movie.title}</h2>
+        <h2 className="text-2xl font-bold mb-4 text-cinema-gold">
+          {movie.title}
+        </h2>
 
         <div className="flex items-center mb-4">
-          <FaStar className="text-yellow-400 mr-2" />
+          <FaStar className="text-cinema-gold mr-2" />
           <span className="font-semibold">
             {movie.vote_average.toFixed(1)}/10
           </span>
         </div>
 
         <div className="flex items-center mb-4">
-          <FaCalendar className="mr-2" />
+          <FaCalendar className="mr-2 text-cinema-gold" />
           <span>{movie.release_date}</span>
         </div>
 
         {movie.genres && (
           <div className="mb-4">
-            <p className="font-semibold mb-2">Genres:</p>
+            <p className="font-semibold mb-2 text-cinema-gold">Genres:</p>
             <div className="flex flex-wrap gap-2">
               {movie.genres.map((genre, index) => (
                 <span
                   key={index}
-                  className="bg-indigo-600 px-2 py-1 rounded-full text-sm"
+                  className="bg-cinema-blue px-2 py-1 rounded-full text-sm text-white"
                 >
                   {genre}
                 </span>
@@ -91,7 +93,7 @@ const MovieModal = ({ movie, onClose }) => (
           href={`https://www.themoviedb.org/movie/${movie.id}`}
           target="_blank"
           rel="noopener noreferrer"
-          className="inline-block bg-blue-500 text-white font-bold py-2 px-4 rounded hover:bg-blue-600 transition-colors duration-200"
+          className="inline-block bg-cinema-gold text-cinema-blue font-bold py-2 px-4 rounded hover:bg-cinema-gold-dark transition-colors duration-200"
         >
           View on TMDB
         </a>
@@ -156,13 +158,13 @@ const WatchPage = () => {
   }
 
   return (
-    <div className="min-h-screen bg-white py-12">
+    <div className="min-h-screen bg-cinema-blue text-white py-12">
       <div className="container mx-auto px-4">
         <motion.h1
           initial={{ y: -50, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           transition={{ duration: 0.5 }}
-          className="text-3xl sm:text-4xl md:text-5xl font-bold mb-8 sm:mb-12 text-center text-gray-800"
+          className="text-3xl sm:text-4xl md:text-5xl font-bold mb-8 sm:mb-12 text-center text-cinema-gold"
         >
           Movie Recommendations
         </motion.h1>
@@ -172,8 +174,8 @@ const WatchPage = () => {
             className="flex flex-col items-center justify-center h-64"
             aria-live="polite"
           >
-            <div className="w-16 h-16 border-4 border-indigo-200 border-t-indigo-600 rounded-full animate-spin"></div>
-            <p className="mt-4 text-lg text-gray-600">
+            <div className="w-16 h-16 border-4 border-cinema-gold border-t-cinema-gold-dark rounded-full animate-spin"></div>
+            <p className="mt-4 text-lg text-cinema-gold">
               Loading recommendations...
             </p>
           </div>
@@ -182,7 +184,7 @@ const WatchPage = () => {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.5 }}
-            className="text-center text-lg text-gray-600"
+            className="text-center text-lg text-white"
           >
             <p>
               Please rate at least 10 movies before we can provide personalized
@@ -198,9 +200,12 @@ const WatchPage = () => {
                 transition={{ duration: 0.5 }}
                 className="mb-8 text-center"
               >
-                <p className="text-xl text-gray-700">
-                  Based on your enjoyment of <strong>{baseMovie.title}</strong>,
-                  we recommend:
+                <p className="text-xl text-white">
+                  Based on your enjoyment of{" "}
+                  <strong className="text-cinema-gold">
+                    {baseMovie.title}
+                  </strong>
+                  , we recommend:
                 </p>
               </motion.div>
             )}
@@ -231,7 +236,7 @@ const WatchPage = () => {
         >
           <button
             onClick={fetchRecommendations}
-            className="bg-indigo-600 text-white font-semibold py-2 px-4 border border-indigo-600 rounded-md shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-opacity-50 transition-colors duration-200"
+            className="bg-cinema-gold text-cinema-blue font-semibold py-2 px-4 border border-cinema-gold rounded-md shadow-sm hover:bg-cinema-gold-dark focus:outline-none focus:ring-2 focus:ring-cinema-gold focus:ring-opacity-50 transition-colors duration-200"
           >
             Get New Recommendations
           </button>
@@ -241,9 +246,12 @@ const WatchPage = () => {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.5, delay: 0.7 }}
-          className="mt-8 text-center text-sm text-gray-600"
+          className="mt-8 text-center text-sm text-white"
         >
-          <FaInfoCircle className="inline mr-1" aria-hidden="true" />
+          <FaInfoCircle
+            className="inline mr-1 text-cinema-gold"
+            aria-hidden="true"
+          />
           <span>
             Recommendations are personalized based on your viewing history and
             ratings.
